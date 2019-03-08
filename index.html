@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Springs Data</title>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Caroline Rose | cmrrose.github.com | March 2019 | Wisconsin Geological and Natural History Survey-->
+  
+  <!-- Load Leaflet from a CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+  
+  <style>
+    /* Make the map fill the entire page */
+    #map {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+     
+  </style>
+  
+</head>
+<body>
+  <div id="map"></div>
+  
+  <script>
+    /* JAVASCRIPT */
+    
+    /* ~~~~~~~~ Map ~~~~~~~~ */
+    //create a map, center it, and set the zoom level. 
+    //set zoomcontrol to false because we will add it in a different corner. 
+    var map = L.map('map', {zoomControl:false}).setView([45.06698,-92.810302], 7);
+    
+    /* ~~~~~~~~ Map Layers ~~~~~~~~ */
+    //basemap from Open Street Map
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+    
+    /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
+    //place a zoom control in the top right: 
+    new L.Control.Zoom({position: 'topright'}).addTo(map);
+    
+    
+    
+  </script>
+  
+</body>
+</html>
