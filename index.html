@@ -31,14 +31,14 @@
   <script>
     /* JAVASCRIPT */
     
-    /* ~~~~~~~~ Map ~~~~~~~~ */
+      /* ~~~~~~~~ Map ~~~~~~~~ */
     //create a map, center it, and set the zoom level. 
     //set zoomcontrol to false because we will add it in a different corner. 
     var map = L.map('map', {zoomControl:false}).setView([45.06698,-92.810302], 7);
     
     /* ~~~~~~~~ Map Layers ~~~~~~~~ */
     //basemap from Open Street Map
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
     
