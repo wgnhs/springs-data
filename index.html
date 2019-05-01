@@ -11,6 +11,9 @@
   <!-- Load Leaflet from a CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    
+   <!-- Load Esri Leaflet from CDN -->
+   <script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
   
   <style>
     /* Make the map fill the entire page */
@@ -34,11 +37,13 @@
       /* ~~~~~~~~ Map ~~~~~~~~ */
     //create a map, center it, and set the zoom level. 
     //set zoomcontrol to false because we will add it in a different corner. 
-    var map = L.map('map', {zoomControl:false}).setView([45.06698,-92.810302], 7);
+    var map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
+    
+
     
     /* ~~~~~~~~ Map Layers ~~~~~~~~ */
     //basemap from Open Street Map
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
     
