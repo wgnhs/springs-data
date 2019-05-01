@@ -51,7 +51,22 @@
     //place a zoom control in the top right: 
     new L.Control.Zoom({position: 'topright'}).addTo(map);
     
-    
+      
+      
+    /* +++++++++++ Springs layer +++++++++++ */ 
+    var springs = L.esri.featureLayer({
+        url: "https://geodata.wgnhs.uwex.edu/arcgis/rest/services/springs/springs_inventory/MapServer/1",
+        
+    }).addTo(map);
+      
+      
+    var popupTemplate = "<h3>{County} County Spring #{SpringID}</h3>";
+      
+    springs.bindPopup(function(e){
+        return L.Util.template(popupTemplate, e.feature.properties); 
+    });
+
+      
     
   </script>
   
