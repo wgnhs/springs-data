@@ -6,10 +6,19 @@ export class AppSidebar extends AppComponent {
     super();
     this.observedAttributes = AppSidebar.observedAttributes;
     this.initTemplate(tpl, this.data);
+
+    this.data.renderTime = function() {
+      return new Date();
+    }
+
+    var track = (function() {
+      this.data.trackTime = this.data.renderTime();
+    }).bind(this);
+    setInterval(track, 1000);
   }
 
   static get observedAttributes() {
-    return ['helpme', 'replaceme'];
+    return ['title'];
   }
 }
 
