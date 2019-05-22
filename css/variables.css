@@ -1,0 +1,12 @@
+html {
+    --palette-white: #f9f9f9;
+    --palette-dark: #b5b5b5;
+    --palette-light: #e5e5e5;
+    --palette-accent: #777777;
+    --palette-900: #333333;
+    --palette-black: #000000;
+    --font-family: 'open_sansregular','Open Sans',sans_serif;
+    --font-size: 18px;
+    --line-height: 1.5;
+    --box-shadow: inset 0px 0px 6px #888888;
+}

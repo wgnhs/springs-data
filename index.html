@@ -11,25 +11,46 @@
   <!-- Load Leaflet from a CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1/dist/leaflet.js"></script>
-    
-   <!-- Load Esri Leaflet from CDN -->
-   <script src="https://unpkg.com/esri-leaflet@2/dist/esri-leaflet.js"></script>
-  
+
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="https://unpkg.com/esri-leaflet@2/dist/esri-leaflet.js"></script>
+
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/typography.css" />
+
   <style>
-    /* Make the map fill the entire page */
-    #map {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
-     
+    #app {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    @media (min-width: 770px) {
+      #app {
+        display: grid;
+        grid-template-columns: 50% 50%;
+      }
+    }
+    @media (max-width: 769px) {
+      #app {
+        display: grid;
+        grid-template-rows: 80% 100%;
+        overflow: scroll;
+      }
+      #map {
+        grid-row-start: 1;
+      }
+    }
   </style>
   
 </head>
 <body>
-  <div id="map"></div>
+  <div id=app>
+    <div id="TODO"></div>
+    <div id="map"></div>
+  </div>
   
   <script>
     /* JAVASCRIPT */
@@ -38,37 +59,27 @@
     //create a map, center it, and set the zoom level. 
     //set zoomcontrol to false because we will add it in a different corner. 
     var map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
-    
 
-    
     /* ~~~~~~~~ Map Layers ~~~~~~~~ */
     //basemap from Open Street Map
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-    
+      attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
     /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
     //place a zoom control in the top right: 
     new L.Control.Zoom({position: 'topright'}).addTo(map);
-    
-      
-      
+
     /* +++++++++++ Springs layer +++++++++++ */ 
     var springs = L.esri.featureLayer({
         url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/1",
-        
     }).addTo(map);
-      
-      
+
     var popupTemplate = "<h3>{County} County Spring #{SpringID}</h3>";
-      
+
     springs.bindPopup(function(e){
         return L.Util.template(popupTemplate, e.feature.properties); 
     });
-
-      
-    
   </script>
-  
 </body>
 </html>
