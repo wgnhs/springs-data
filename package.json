@@ -4,21 +4,36 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "build": "run-s build:clean build:start",
+    "build": "run-s build:clean build:prepare build:start",
     "build:clean": "rimraf dist",
-    "build:start": "run-s build:prepare build:copy-resources",
     "build:prepare": "mkdirp dist",
-    "build:copy-resources": "cpy *.html *.css *.js dist/",
-    "develop": "run-s develop:serve",
-    "develop:serve": "live-server --wait=500",
-    "start": "run-s develop"
+    "build:start": "run-p build:rollup build:copy-resources",
+    "build:rollup": "rollup -c",
+    "build:copy-resources": "cpy \"*.html\" css/ dist/ --parents",
+    "develop": "run-p develop:watch develop:watch-copy develop:serve",
+    "develop:watch": "rollup -c -w",
+    "develop:watch-copy": "onchange \"*.html\" \"css/*\" -- npx cpy {{changed}} dist/ --parents",
+    "develop:serve": "live-server dist/",
+    "start": "run-s develop",
+    "pages": "run-s build pages:ghpages",
+    "pages:ghpages": "gh-pages -d dist",
+    "postversion": "run-s postversion:push-tags pages",
+    "postversion:push-tags": "git push && git push --tags"
   },
   "author": "",
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "cpy-cli": "^2.0.0",
     "live-server": "^1.2.1",
     "mkdirp": "^0.5.1",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^2.6.3"
-  }
+    "onchange": "^6.0.0",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.12.3",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-html": "^0.2.1",
+    "rollup-plugin-minify-es": "^1.1.1"
+  },
+  "dependencies": {}
 }
