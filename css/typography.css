@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    background-color: var(--palette-white)
+}
+
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--palette-black);
+    font-family: var(--font-family);
+    padding: 0;
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--palette-900);
+    font-weight: 400;
+}
+
+a {
+    color: var(--palette-accent);
+    cursor: pointer;
+    text-decoration: none;
+}
