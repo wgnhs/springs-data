@@ -1,8 +1,25 @@
-<link rel="stylesheet" href="css/reset.css" />
-<link rel="stylesheet" href="css/variables.css" />
-<link rel="stylesheet" href="css/typography.css" />
+<style>
+  @import url("./css/reset.css");
+  @import url("./css/variables.css");
+  @import url("./css/typography.css");
 
-<h1>{{title}}</h1>
+  :host([hidden]) {
+    display: none;
+  }
+
+  :host {
+    padding: 0 1.5em;
+  }
+
+  .header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    background-color: var(--palette-white);
+  }
+</style>
+
+<h1 class="header">{{title}}</h1>
+<div>The current time is <span>{{trackTime}}</span></div>
 <slot></slot>
-<p>Last refresh: {{renderTime}}</p>
-<p>The current time is {{trackTime}}</p>
+<div>Last refresh: {{renderTime}}</div>
