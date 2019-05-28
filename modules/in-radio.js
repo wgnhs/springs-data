@@ -14,6 +14,15 @@ export class InRadio extends AppComponent {
         option.checked = true;
       }
     }).bind(this));
+
+    this.on('attributechange', (function(){
+      this.dispatchEvent(
+        new CustomEvent('attributechange', {
+          bubbles: true,
+          cancelable: true
+        })
+      );
+    }).bind(this));
   }
 
   get eventListeners() {

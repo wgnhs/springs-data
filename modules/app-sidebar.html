@@ -15,7 +15,7 @@
     padding: 1em;
   }
 
-  .views {
+  [data-element=views] {
     display: grid;
     grid-template-columns: 33% 33% 33%;
   }
@@ -23,14 +23,8 @@
 
 <h1 class="header">{{title}}</h1>
 <div>The current time is <span>{{trackTime}}</span></div>
-<in-radio in-name="view" choices='["default","filter","details"]' class="views"></in-radio>
-<div data-element="default">
-  <slot></slot>
-</div>
-<div data-element="filter">
-  <slot name="filter"></slot>
-</div>
-<div data-element="details">
-  <slot name="details"></slot>
-</div>
+<in-radio data-element="views" in-name="view" choices='["default","filter","details"]'></in-radio>
+<slot></slot>
+<slot name="filter" hidden></slot>
+<slot name="details" hidden></slot>
 <div>Last refresh: {{renderTime}}</div>
