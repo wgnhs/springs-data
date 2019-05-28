@@ -3,12 +3,8 @@
   @import url("./css/variables.css");
   @import url("./css/typography.css");
 
-  :host([hidden]) {
-    display: none;
-  }
-
   :host {
-    padding: 0 1.5em;
+    padding: 0 1.5em 1.5em 1.5em;
   }
 
   .header {
@@ -16,10 +12,25 @@
     position: sticky;
     top: 0px;
     background-color: var(--palette-white);
+    padding: 1em;
+  }
+
+  .views {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
   }
 </style>
 
 <h1 class="header">{{title}}</h1>
 <div>The current time is <span>{{trackTime}}</span></div>
-<slot></slot>
+<in-radio in-name="view" choices='["default","filter","details"]' class="views"></in-radio>
+<div data-element="default">
+  <slot></slot>
+</div>
+<div data-element="filter">
+  <slot name="filter"></slot>
+</div>
+<div data-element="details">
+  <slot name="details"></slot>
+</div>
 <div>Last refresh: {{renderTime}}</div>

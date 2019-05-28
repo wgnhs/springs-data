@@ -4,8 +4,7 @@ import tpl from './app-sidebar.html';
 export class AppSidebar extends AppComponent {
   constructor() {
     super();
-    this.observedAttributes = AppSidebar.observedAttributes;
-    this.initTemplate(tpl, this.data);
+    AppComponent.init(this, AppSidebar, tpl);
 
     this.data.renderTime = function() {
       return new Date();
