@@ -1,4 +1,5 @@
 import { AppComponent } from '@sibley/app-component';
+import { genId } from './gen-id.js';
 import tpl from './in-radio.html';
 
 export class InRadio extends AppComponent {
@@ -44,11 +45,6 @@ export class InRadio extends AppComponent {
     }
 
     container.querySelectorAll('.choice').forEach((el) => {el.remove()})
-
-    // https://gist.github.com/gordonbrander/2230317
-    const genId = function() {
-      return '_' + Math.random().toString(36).substr(2, 9);
-    }
 
     let checked = false;
     for (let choice of choices) {

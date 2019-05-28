@@ -25,6 +25,10 @@ export class AppSidebar extends AppComponent {
   }
 
   switchTab(choice) {
+    if (choice !== this.$views.getAttribute('choice')) {
+      this.$views.setAttribute('choice', choice);
+      return;
+    }
     this.shadowRoot.querySelectorAll('slot').forEach((el) => {
       if ((choice === 'default' && !el.getAttribute('name')) || (el.getAttribute('name') === choice)) {
         el.hidden = false;

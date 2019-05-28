@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/esri-leaflet@^2/dist/esri-leaflet.js"></script>
 
   <!-- Load Web Component base -->
-  <script src="https://unpkg.com/@sibley/app-component@0.5.3/dist/app-component.js"></script>
+  <script src="https://unpkg.com/@sibley/app-component@0.5.4/dist/app-component.js"></script>
 
   <!-- <link rel="stylesheet" href="css/reset.css" /> -->
   <link rel="stylesheet" href="css/variables.css" />
@@ -35,6 +35,9 @@
         display: grid;
         grid-template-columns: 50% 50%;
       }
+      app-sidebar {
+        overflow-y: scroll;
+      }
     }
     @media (max-width: 769px) {
       #app {
@@ -45,9 +48,6 @@
       #map {
         grid-row-start: 1;
       }
-    }
-    app-sidebar {
-      overflow-y: scroll;
     }
   </style>
   <script src="./index.js"></script>
@@ -143,7 +143,7 @@
         <span>Hi There, I'm a different view, for filtering!</span>
       </div>
       <div slot="details">
-        <span>Hi There, I'm a different view, for details!</span>
+        <site-details></site-details>
       </div>
       <div>
         <span>I'm added to the default slot.</span>
@@ -180,6 +180,11 @@
     springs.bindPopup(function(e){
         return L.Util.template(popupTemplate, e.feature.properties); 
     });
+
+    springs.on('click', function(e) {
+      document.querySelector('app-sidebar').switchTab('details');
+      document.querySelector('site-details').setAttribute('siteinfo', JSON.stringify(e.propagatedFrom.feature.properties));
+    })
   </script>
 </body>
 </html>

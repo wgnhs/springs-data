@@ -1,0 +1,29 @@
+<style>
+  @import url("./css/reset.css");
+  @import url("./css/variables.css");
+  @import url("./css/typography.css");
+
+  [data-element="table"] {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-gap: 0.5em;
+  }
+
+  td {
+    padding: 0.5em;
+  }
+
+  .label {
+    background-color: var(--palette-dark);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .detail {
+    background-color: var(--palette-light);
+  }
+</style>
+<h1>{{siteinfo.County}} County Spring #{{siteinfo.SpringID}}</h1>
+<template data-element="rowTpl">
+    <td class="label"><label for></label></td><td class="detail"><span id></span></td>
+</template>
+<div data-element="table"></div>

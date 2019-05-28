@@ -26,16 +26,16 @@ h3,
 h4,
 h5 {
     padding: 0.25em 0 0.75em 0;
-    font-weight: 600;
+    font-weight: var(--font-weight-bold);
 }
 
 h1 {
-    font-size: 1.3em;
+    font-size: var(--font-size-extra-large);
     color: var(--palette-accent);
 }
 
 h2 {
-    font-size: 1.2em;
+    font-size: var(--font-size-large);
 }
 
 p {
