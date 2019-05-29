@@ -25,16 +25,12 @@ export class SiteDetails extends AppComponent {
     container.querySelectorAll('*').forEach((el) => {el.remove()});
 
     for (const [key, value] of Object.entries(this.data.siteinfo)) {
-      let result = template.content.cloneNode(true);
-      let id = genId();
-      
-      let $label = result.querySelector('label');
-      $label.setAttribute('for', id);
-      $label.textContent = key;
-
-      let $span = result.querySelector('span');
-      $span.setAttribute('id', id);
-      $span.textContent = value;
+      let tplb = AppComponent.stashe(template.content.cloneNode(true));
+      let context = {};
+      context.id = genId();
+      context.key = key;
+      context.value = value;
+      let result = tplb(context);
       container.appendChild(result);
     }
   }
