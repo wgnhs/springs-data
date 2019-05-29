@@ -37,8 +37,9 @@ function buildConfig({filename='index', min=false, iife=false}) {
     external: ['@sibley/app-component'],
     output: {
       file: `dist/${filename}${minifyToken}.js`,
-      format: 'iife',
+      format: 'umd',
       name: 'bundle',
+      sourcemap: min,
       globals: {
         '@sibley/app-component': 'AppComponent'
       }
