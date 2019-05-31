@@ -6,7 +6,12 @@ html {
     --palette-900: #333333;
     --palette-black: #000000;
     --font-family: 'open_sansregular','Open Sans',sans_serif;
-    --font-size: 18px;
+    --font-size-small: 0.8em;
+    --font-size: 16px;
+    --font-size-large: 1.2em;
+    --font-size-extra-large: 1.4em;
+    --font-weight: 400;
+    --font-weight-bold: 600;
     --line-height: 1.5;
     --box-shadow: inset 0px 0px 6px #888888;
 }

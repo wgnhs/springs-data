@@ -25,12 +25,27 @@ h2,
 h3,
 h4,
 h5 {
-    color: var(--palette-900);
-    font-weight: 400;
+    padding: 0.25em 0 0.75em 0;
+    font-weight: var(--font-weight-bold);
+}
+
+h1 {
+    font-size: var(--font-size-extra-large);
+    color: var(--palette-accent);
+}
+
+h2 {
+    font-size: var(--font-size-large);
+}
+
+p {
+    line-height: 1.4em;
+    margin: 0 0 1em 0;
 }
 
 a {
-    color: var(--palette-accent);
+    color: var(--palette-900);
     cursor: pointer;
     text-decoration: none;
+    border-bottom: 1px dashed var(--palette-900);
 }
