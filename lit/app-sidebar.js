@@ -22,10 +22,10 @@ export class AppSidebar extends LitElement {
     super();
     this.renderTime = renderTime();
     
-    let track = (function() {
-      this.trackTime = renderTime();
-    }).bind(this);
-    setInterval(track, 1000);
+    // let track = (function() {
+    //   this.trackTime = renderTime();
+    // }).bind(this);
+    // setInterval(track, 1000);
   }
 
   static get styles() {
@@ -73,7 +73,6 @@ export class AppSidebar extends LitElement {
       </style>
 
       <h1 class="header">${this.title}</h1>
-      <div>The current time is <span>${this.trackTime}</span></div>
       <in-radio
         data-element="views"
         in-name="view"

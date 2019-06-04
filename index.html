@@ -178,6 +178,10 @@
         url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/1",
     }).addTo(map);
 
+    var springPhotos = L.esri.featureLayer({
+      url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/6"
+    });
+
     var popupTemplate = "<h3>{County} County Spring #{SpringID}</h3>";
 
     springs.bindPopup(function(e){
@@ -185,8 +189,18 @@
     });
 
     springs.on('click', function(e) {
-      document.querySelector('app-sidebar').switchTab('details');
-      document.querySelector('site-details').setAttribute('siteinfo', JSON.stringify(e.propagatedFrom.feature.properties));
+      var sidebar = document.querySelector('app-sidebar');
+      var details = document.querySelector('site-details');
+      var info = e.propagatedFrom.feature.properties;
+
+      details['siteinfo'] = null;
+      details['photos'] = null;
+      springPhotos.query().where("Site_Code = '" + info['Site_Code'] + "'").run(function(err, col) {
+        var photos = col.features.map( function(value, index) { return value.properties.FileURL; } );
+        details['siteinfo'] = info;
+        details['photos'] = photos;
+        sidebar.switchTab('details');
+      });
     })
   </script>
 </body>

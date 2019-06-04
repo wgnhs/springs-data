@@ -18,7 +18,7 @@ function buildPlugins({dir=wcDir, min=false}) {
       }
     }));
   } else if (litDir === dir) {
-
+    result.push(resolve());
   } else if ('js' === dir) {
     result.push(resolve());
   }
