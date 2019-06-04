@@ -16,7 +16,9 @@
   <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@^2/dist/esri-leaflet.js"></script>
 
   <!-- Load Web Component base -->
-  <script src="https://cdn.jsdelivr.net/npm/@sibley/app-component@0.6.0/dist/app-component.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@sibley/app-component@0.6.0/dist/app-component.js"></script> -->
+  <script src="./js/common.js"></script>
 
   <link rel="stylesheet" href="css/reset.css" />
   <link rel="stylesheet" href="css/variables.css" />
@@ -35,7 +37,7 @@
         display: grid;
         grid-template-columns: 50% 50%;
       }
-      app-sidebar {
+      #sidebar {
         overflow-y: scroll;
       }
     }
@@ -50,11 +52,12 @@
       }
     }
   </style>
-  <script src="./index.js"></script>
+  <!-- <script src="./modules/index.js"></script> -->
+  <script src="./lit/index.js"></script>
 </head>
 <body>
   <div id="app">
-    <app-sidebar title="Wisconsin Geological and Natural History Survey">
+    <app-sidebar id="sidebar" title="Wisconsin Geological and Natural History Survey">
       <div>Some content</div>
       <section>
         <h2>
