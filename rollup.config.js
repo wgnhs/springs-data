@@ -1,18 +1,28 @@
 import html from 'rollup-plugin-html';
 import minify from 'rollup-plugin-minify-es';
-import babel from 'rollup-plugin-babel';
+import resolve from 'rollup-plugin-node-resolve';
+import filesize from 'rollup-plugin-filesize';
 
+const wcDir = 'modules';
+const litDir = 'lit';
 
-function buildPlugins({min=false, iife=false}) {
+function buildPlugins({dir=wcDir, min=false}) {
   let result = [];
-  result.push(html({
-    include: `modules/*.html`,
-    htmlMinifierOptions: {
-      collapseWhitespace: true,
-      collapseBooleanAttributes: true,
-      conservativeCollapse: true
-    }
-  }));
+  if (wcDir === dir) {
+    result.push(html({
+      include: `${dir}/*.html`,
+      htmlMinifierOptions: {
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        conservativeCollapse: true
+      }
+    }));
+  } else if (litDir === dir) {
+    result.push(resolve());
+  } else if ('js' === dir) {
+    result.push(resolve());
+  }
+
   if (min) {
     result.push(minify({
       output: {
@@ -20,29 +30,43 @@ function buildPlugins({min=false, iife=false}) {
       }
     }));
   }
-  if (iife) {
-    result.push(babel({
-      exclude: 'node_modules/**',
-      presets: [['@babel/env', { modules: false }]]
-    }));
+  result.push(filesize());
+  return result;
+}
+
+function buildApp({dir=wcDir, filename='index', min=false, format='umd'}) {
+  let minifyToken = (min) ? '.min': '';
+  let result = {
+    input: `${dir}/${filename}.js`,
+    plugins: buildPlugins({dir, min}),
+    external: [
+      '@sibley/app-component',
+      'lit-element'
+    ],
+    output: {
+      file: `dist/${dir}/${filename}${minifyToken}.js`,
+      format: format,
+      name: filename,
+      sourcemap: min,
+      globals: {
+        '@sibley/app-component': 'AppComponent',
+        'lit-element': 'common'
+      }
+    }
   }
   return result;
 }
 
-function buildConfig({filename='index', min=false, iife=false}) {
+function buildCommon({dir='js', filename='common', min=false, format='umd'}) {
   let minifyToken = (min) ? '.min': '';
   let result = {
-    input: `${filename}.js`,
-    plugins: buildPlugins({min, iife}),
-    external: ['@sibley/app-component'],
+    input: `${dir}/${filename}.js`,
+    plugins: buildPlugins({dir, min}),
     output: {
-      file: `dist/${filename}${minifyToken}.js`,
-      format: 'umd',
-      name: 'bundle',
-      sourcemap: min,
-      globals: {
-        '@sibley/app-component': 'AppComponent'
-      }
+      file: `dist/${dir}/${filename}${minifyToken}.js`,
+      format: format,
+      name: filename,
+      sourcemap: min
     }
   }
   return result;
@@ -50,6 +74,9 @@ function buildConfig({filename='index', min=false, iife=false}) {
 
 
 export default [
-  buildConfig({iife: true}),
-  buildConfig({min: true, iife: true})
+  buildCommon({}),
+  buildApp({}),
+  buildApp({min: true}),
+  buildApp({dir: litDir}),
+  buildApp({dir: litDir, min: true})
 ];

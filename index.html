@@ -16,7 +16,9 @@
   <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@^2/dist/esri-leaflet.js"></script>
 
   <!-- Load Web Component base -->
-  <script src="https://cdn.jsdelivr.net/npm/@sibley/app-component@0.6.0/dist/app-component.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@sibley/app-component@0.6.0/dist/app-component.js"></script> -->
+  <script src="./js/common.js"></script>
 
   <link rel="stylesheet" href="css/reset.css" />
   <link rel="stylesheet" href="css/variables.css" />
@@ -35,7 +37,7 @@
         display: grid;
         grid-template-columns: 50% 50%;
       }
-      app-sidebar {
+      #sidebar {
         overflow-y: scroll;
       }
     }
@@ -50,11 +52,12 @@
       }
     }
   </style>
-  <script src="./index.js"></script>
+  <!-- <script src="./modules/index.js"></script> -->
+  <script src="./lit/index.js"></script>
 </head>
 <body>
   <div id="app">
-    <app-sidebar title="Wisconsin Geological and Natural History Survey">
+    <app-sidebar id="sidebar" title="Wisconsin Geological and Natural History Survey">
       <div>Some content</div>
       <section>
         <h2>
@@ -175,6 +178,10 @@
         url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/1",
     }).addTo(map);
 
+    var springPhotos = L.esri.featureLayer({
+      url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/6"
+    });
+
     var popupTemplate = "<h3>{County} County Spring #{SpringID}</h3>";
 
     springs.bindPopup(function(e){
@@ -182,8 +189,18 @@
     });
 
     springs.on('click', function(e) {
-      document.querySelector('app-sidebar').switchTab('details');
-      document.querySelector('site-details').setAttribute('siteinfo', JSON.stringify(e.propagatedFrom.feature.properties));
+      var sidebar = document.querySelector('app-sidebar');
+      var details = document.querySelector('site-details');
+      var info = e.propagatedFrom.feature.properties;
+
+      details['siteinfo'] = null;
+      details['photos'] = null;
+      springPhotos.query().where("Site_Code = '" + info['Site_Code'] + "'").run(function(err, col) {
+        var photos = col.features.map( function(value, index) { return value.properties.FileURL; } );
+        details['siteinfo'] = info;
+        details['photos'] = photos;
+        sidebar.switchTab('details');
+      });
     })
   </script>
 </body>
