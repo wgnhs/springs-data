@@ -196,10 +196,14 @@
       details['siteinfo'] = null;
       details['photos'] = null;
       springPhotos.query().where("Site_Code = '" + info['Site_Code'] + "'").run(function(err, col) {
-        var photos = col.features.map( function(value, index) { return value.properties.FileURL; } );
-        details['siteinfo'] = info;
-        details['photos'] = photos;
-        sidebar.switchTab('details');
+        if (!err) {
+          var photos = col.features.map( function(value, index) { return value.properties.FileURL; } );
+          details['siteinfo'] = info;
+          details['photos'] = photos;
+          sidebar.switchTab('details');
+        } else {
+          console.log('Could not get Spring Photos', err);
+        }
       });
     })
   </script>
