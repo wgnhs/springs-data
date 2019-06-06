@@ -5,7 +5,7 @@ Web map is live here: https://wgnhs.github.io/springs-data/
 
 
 ## Development
-This project requires NodeJS 8+ installed on your development system.
+This project requires [NodeJS 8+](https://nodejs.org/) installed on your development system. We recommend using the latest LTS version.
 
 ### Setup
 ```
