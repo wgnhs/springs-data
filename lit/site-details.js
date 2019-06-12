@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 export { SitePhotos } from './site-photos.js';
+export { SiteBedMaterials } from './site-bed-materials.js';
 import { genId } from './gen-id.js';
 
 export class SiteDetails extends LitElement {
@@ -59,6 +60,7 @@ export class SiteDetails extends LitElement {
       ${(!this.siteinfo)? '' : html`
         <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
         <site-photos .photos="${this.photos}"></site-photos>
+        <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
         <div data-element="table">
           ${Object.entries(this.siteinfo).map((el, index) => html`
             <td class="label">
