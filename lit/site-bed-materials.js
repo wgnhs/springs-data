@@ -108,7 +108,7 @@ export class SiteBedMaterials extends LitElement{
         var arc = d3.arc()
                     .outerRadius(radius)
                     .innerRadius(radius - 45)   //lower numbers here make a thinner ring 
-                    .padAngle(0.0);              //about 0.025 is a good visible gap.                              
+                    .padAngle(0.025);              //about 0.025 is a good visible gap.                              
         
         
         donutGroup.selectAll("path")                            // we are using all paths within the group
