@@ -195,7 +195,10 @@
       details['photos'] = null;
       springPhotos.query().where("Site_Code = '" + info['Site_Code'] + "'").run(function(err, col) {
         if (!err) {
-          var photos = col.features.map( function(value, index) { return value.properties.FileURL; } );
+          var photos = col.features.map( function(value, index) { return value.properties; } );
+          photos.sort(function(a, b) {
+            return a.Image_Number - b.Image_Number;
+          });
           details['siteinfo'] = info;
           details['photos'] = photos;
           sidebar.switchTab('details');
