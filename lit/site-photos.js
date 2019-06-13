@@ -17,6 +17,7 @@ export class SitePhotos extends LitElement {
       macro-carousel {
         padding: 0 3em;
         max-width: 75vw;
+        margin: 0 auto;
       }
       .slide {
         min-height: 10em;
