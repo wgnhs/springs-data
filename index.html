@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@^2/dist/esri-leaflet.js"></script>
     
   <!--load D3 --> 
-    <script src="https://d3js.org/d3.v5.js"></script>  
+  <script src="https://d3js.org/d3.v5.js"></script>  
 
   <!-- Load Web Component base -->
   <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
@@ -27,42 +27,44 @@
   <link rel="stylesheet" href="css/typography.css" />
 
   <style>
-    #app {
+    @media (min-width: 770px) {
+      [data-view=app] {
+        display: grid;
+        grid-template-columns: 50% 50%;
+      }
+      app-sidebar {
+        overflow-y: auto;
+      }
+    }
+    @media (max-width: 769px) {
+      [data-view=app] {
+        display: grid;
+        grid-template-rows: 80% 100%;
+        overflow-y: auto;
+      }
+      #map {
+        grid-row-start: 1;
+      }
+    }
+    [data-view] {
       position: fixed;
       top: 0;
       bottom: 0;
       left: 0;
       right: 0;
     }
-    @media (min-width: 770px) {
-      #app {
-        display: grid;
-        grid-template-columns: 50% 50%;
-      }
-      #sidebar {
-        overflow-y: scroll;
-      }
-    }
-    @media (max-width: 769px) {
-      #app {
-        display: grid;
-        grid-template-rows: 80% 100%;
-        overflow-y: scroll;
-      }
-      #map {
-        grid-row-start: 1;
-      }
+    [data-closed] {
+      display: none;
     }
   </style>
   <script src="./lit/index.js"></script>
 </head>
 <body>
-  <div id="app">
-    <app-sidebar id="sidebar" title="Wisconsin Geological and Natural History Survey">
-      <div>Some content</div>
+  <div data-view="app">
+    <app-sidebar id="sidebar">
       <section>
         <h2>
-          Section 1
+          Select a spring to learn more!
         </h2>
         <p>
           Lorem ipsum dolor sit amet, viris efficiendi suscipiantur 
@@ -72,90 +74,16 @@
           comprehensam te. Magna recusabo intellegebat mei in. Purto 
           rebum tibique no qui, enim minim eleifend ut pro.
         </p>
-        <p>
-          Eum errem iisque facilis ut. Ne vis affert sanctus indoctum, 
-          mea purto homero id. Eam at scripta noluisse ponderum, per 
-          prima mucius et. No omnes congue accusam has, an vero 
-          euismod interesset pro. Dicta postea veritus per cu, id 
-          quodsi hendrerit definitiones pro. In nec animal tractatos, 
-          per paulo congue ea.
-        </p>
-        <p>
-          Nobis splendide ex nam. Vis at periculis delicatissimi. Vel 
-          at elit dolores, <a href="#">sit aeque forensibus</a> id. His erat saepe et, 
-          everti sententiae pri te, accusam expetenda consequat eum cu. 
-          Hinc omnis mei ei. His ei tantas animal.
-        </p>
-        <p>
-          Quo et facete habemus posidonium, sed in esse eripuit 
-          deserunt, modo adipiscing complectitur ut vix. Persius 
-          labores eleifend an quo, eos et nostrum suscipiantur. Mei 
-          ex liber euripidis incorrupte. Ius ei odio ridens, laoreet 
-          maluisset at qui. Eu harum necessitatibus pro, vitae 
-          verterem repudiare eu has, solum concludaturque eam ei.
-        </p>
-        <p>
-          In nec esse clita graeci, quodsi doctus ne est. Ad vim 
-          detraxit elaboraret. Duo cibo verear ponderum ei. Te mei 
-          patrioque consetetur. Cum cu mollis impetus. Vis an quas 
-          graecis oportere, ut legimus vocibus mei.
-        </p>
       </section>
-        
-      <section>
-        <h2>
-          Section 2
-        </h2>
-        <p>
-          Lorem ipsum dolor sit amet, viris efficiendi suscipiantur 
-          quo eu, eam altera iudicabit eu. Eu per molestie antiopam, 
-          eam in nemore iracundia, cum ei audiam iuvaret. Sed an erat 
-          sonet dolor, <a href="#">option lucilius</a> sed cu, qui sadipscing 
-          comprehensam te. Magna recusabo intellegebat mei in. Purto 
-          rebum tibique no qui, enim minim eleifend ut pro.
-        </p>
-        <p>
-          Eum errem iisque facilis ut. Ne vis affert sanctus indoctum, 
-          mea purto homero id. Eam at scripta noluisse ponderum, per 
-          prima mucius et. No omnes congue accusam has, an vero 
-          euismod interesset pro. Dicta postea veritus per cu, id 
-          quodsi hendrerit definitiones pro. In nec animal tractatos, 
-          per paulo congue ea.
-        </p>
-        <p>
-          Nobis splendide ex nam. Vis at periculis delicatissimi. Vel 
-          at elit dolores, sit aeque forensibus id. His erat saepe et, 
-          everti sententiae pri te, accusam expetenda consequat eum cu. 
-          Hinc omnis mei ei. His ei tantas animal.
-        </p>
-        <p>
-          Quo et facete habemus posidonium, sed in esse eripuit 
-          deserunt, modo adipiscing complectitur ut vix. Persius 
-          labores eleifend an quo, eos et nostrum suscipiantur. Mei 
-          ex liber euripidis incorrupte. Ius ei odio ridens, <a href="#">laoreet 
-          maluisset at qui</a>. Eu harum necessitatibus pro, vitae 
-          verterem repudiare eu has, solum concludaturque eam ei.
-        </p>
-        <p>
-          In nec esse clita graeci, quodsi doctus ne est. Ad vim 
-          detraxit elaboraret. Duo cibo verear ponderum ei. Te mei 
-          patrioque consetetur. Cum cu mollis impetus. Vis an quas 
-          graecis oportere, ut legimus vocibus mei.
-        </p>
-      </section>
-      <div slot="filter">
-        <span>Hi There, I'm a different view, for filtering!</span>
-      </div>
       <div slot="details">
         <site-details></site-details>
-      </div>
-      <div>
-        <span>I'm added to the default slot.</span>
       </div>
     </app-sidebar>
     <div id="map"></div>
   </div>
-  
+  <div data-view="details" data-closed>
+    <site-details></site-details>
+  </div>
   <script>
     /* JAVASCRIPT */
     
@@ -190,26 +118,32 @@
     });
 
     springs.on('click', function(e) {
-      var sidebar = document.querySelector('app-sidebar');
-      var details = document.querySelector('site-details');
+      var sidebar = document.querySelector('#sidebar');
+      var details = document.querySelectorAll('site-details');
       var info = e.propagatedFrom.feature.properties;
 
-      details['siteinfo'] = null;
-      details['photos'] = null;
+      details.forEach(function(el) {
+        el['siteinfo'] = null;
+        el['photos'] = null;
+      });
+
       springPhotos.query().where("Site_Code = '" + info['Site_Code'] + "'").run(function(err, col) {
         if (!err) {
           var photos = col.features.map( function(value, index) { return value.properties; } );
           photos.sort(function(a, b) {
             return a.Image_Number - b.Image_Number;
           });
-          details['siteinfo'] = info;
-          details['photos'] = photos;
+
+          details.forEach(function(el) {
+            el['siteinfo'] = info;
+            el['photos'] = photos;
+          });
           sidebar.switchTab('details');
         } else {
           console.log('Could not get Spring Photos', err);
         }
       });
-    })
+    });
   </script>
 </body>
 </html>
