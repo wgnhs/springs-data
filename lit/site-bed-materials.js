@@ -1,5 +1,4 @@
 import {LitElement, html, css} from 'lit-element'; 
-export * from 'd3'
 
 export class SiteBedMaterials extends LitElement{
     static get properties(){
@@ -95,8 +94,7 @@ export class SiteBedMaterials extends LitElement{
         // the pie function always returns 7 objects. filter it down to only the objects with a percent value greater than zero, so we are not going to draw any 0-dimension paths. 
         var filterpie = pie.filter(function(el){return el.value > 0;}); 
         
-        console.log("d3.pie() returns:", pie);
-        console.log("filtered pie is ", filterpie);
+        //console.log("filtered pie is ", filterpie);
         
         /* ~~~~~~~~~ DONUT SEGMENTS ~~~~~~~~~ */ 
         // right now, the website is set up so that it re-renders everything in the side panel when a each spring is queried. 
