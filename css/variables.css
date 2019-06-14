@@ -15,5 +15,8 @@ html {
     --font-weight-bold: 600;
     --line-height: 1.5em;
     --box-shadow: inset 0px 0px 6px #888888;
+    --border-radius: 0.5em;
     --transition: all 0.3s;
+    --z-index-base: 0;
+    --z-index-interrupt: 2000;
 }
