@@ -1,10 +1,15 @@
 import { LitElement, html, css } from 'lit-element';
-export * from 'macro-carousel'
+export * from 'macro-carousel';
+export { ModalDialog } from './modal-dialog.js';
 
 export class SitePhotos extends LitElement {
   static get properties() {
     return {
-      photos: Array
+      photos: Array,
+      clickedImg: {
+        type: String,
+        attribute: false
+      }
     };
   }
 
@@ -51,12 +56,16 @@ export class SitePhotos extends LitElement {
 
   render() {
     return html`
-    ${(!this.photos)?'': html`
+    ${(!this.photos)?'':html`
     <macro-carousel navigation pagination>
     <slot>
-      ${this.photos.map((el) => (!el.FileURL)?'': html`
+      ${this.photos.map((el) => (!el.FileURL)?'':html`
       <div class="slide">
-        <img src="${el.FileURL}" />
+        <img 
+          src="${el.FileURL}"
+          alt="${el.Description}"
+          @dblclick="${this.handleImageClick}"
+        />
 
         ${(!el.Image_Number)?'':html`
         <div class="title text">
@@ -77,8 +86,19 @@ export class SitePhotos extends LitElement {
       `)}
     </slot>
     </macro-carousel>
+    <modal-dialog></modal-dialog>
     `}
     `;
+  }
+
+  firstUpdated() {
+    this.$modal = this.renderRoot.querySelector('modal-dialog');
+  }
+
+  handleImageClick(e) {
+    this.clickedImg = e.target.src;
+    this.$modal.source = this.clickedImg;
+    this.$modal.toggleOpen();
   }
 }
 customElements.define('site-photos', SitePhotos);
