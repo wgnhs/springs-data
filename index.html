@@ -196,6 +196,38 @@
     .notFound(function() {
     })
     .resolve();
+
+    // Define what we want to collect
+    var springsAggrData = {
+      'Site_Code': { data: [] },
+      'Water_Temp_C': { data: [] },
+      'Conductivity_uS': { data: [] },
+      'pH': { data: [] }
+    }
+
+    springs.on('load', function() {
+      // Collect datasets and aggregates
+      springs.eachFeature(function(obj, l) {
+        for (let [key, aggr] of Object.entries(springsAggrData)) {
+          let value = obj.feature.properties[key];
+          aggr.data.push(value);
+          if (value && 'number' === typeof value) {
+            if (!aggr.max || aggr.max < value) {
+              aggr.max = value;
+            }
+            if (!aggr.min || aggr.min > value) {
+              aggr.min = value;
+            }
+          }
+        }
+      });
+
+      // store in details element, for use in reports
+      var details = document.querySelectorAll('site-details');
+      details.forEach(function(el) {
+        el['aggrData'] = springsAggrData;
+      });
+    });
   </script>
 </body>
 </html>

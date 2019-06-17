@@ -11,6 +11,9 @@ export class SiteDetails extends LitElement {
       },
       photos: {
         type: Array
+      },
+      aggrData: {
+        type: Object
       }
     };
   }
