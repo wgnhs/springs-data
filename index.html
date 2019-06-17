@@ -28,6 +28,9 @@
   <!--load D3 --> 
   <script src="https://d3js.org/d3.v5.js"></script>  
 
+  <!-- Load PDF viewer -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@^2/build/pdf.min.js"></script>
+
   <!-- Load Web Component base -->
   <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
   <script src="js/common.min.js"></script>
@@ -86,10 +89,15 @@
         </p>
       </section>
       <div slot="details">
-        <site-details></site-details>
+        <site-details>
+          <div slot="sketch">
+            <site-sketch></site-sketch>
+          </div>
+        </site-details>
       </div>
     </app-sidebar>
     <div id="map"></div>
+    <div id="sketch" data-closed></div>
   </div>
   <div data-view="print" data-closed>
     <site-details></site-details>
@@ -121,6 +129,10 @@
       url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/6"
     });
 
+    var springSketches = L.esri.featureLayer({
+      url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/4"
+    });
+
     var popupTemplate = "<h3>{County} County Spring #{SpringID}</h3>";
 
     springs.bindPopup(function(e){
@@ -130,11 +142,13 @@
     var selectFeature = function(info) {
       var sidebar = document.querySelector('#sidebar');
       var details = document.querySelectorAll('site-details');
-
       details.forEach(function(el) {
         el['siteinfo'] = null;
         el['photos'] = null;
       });
+      var siteSketch = document.querySelector('site-sketch');
+      siteSketch['pdfsrc'] = null;
+
 
       springPhotos.query().where("Site_Code = '" + info['Site_Code'] + "'").run(function(err, col) {
         if (!err) {
@@ -152,16 +166,27 @@
           console.log('Could not get Spring Photos', err);
         }
       });
+
+      springSketches.query().where("File_Prefix = '" + info['Site_Code'] + "'").run(function(err, col) {
+        if (!err) {
+          var sketch = col.features.map( function(value, index) { return value.properties['FileURL']});
+          siteSketch['pdfsrc'] = sketch[0];
+        } else {
+          console.log('Could not get Spring Sketches', err);
+        }
+      });
     };
 
     var deselectFeature = function() {
       var sidebar = document.querySelector('#sidebar');
       var details = document.querySelectorAll('site-details');
-
       details.forEach(function(el) {
         el['siteinfo'] = null;
         el['photos'] = null;
       });
+      var siteSketch = document.querySelector('site-sketch');
+      siteSketch['pdfsrc'] = null;
+
       sidebar.switchTab('default');
     }
 

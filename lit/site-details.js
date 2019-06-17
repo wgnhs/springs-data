@@ -73,6 +73,7 @@ export class SiteDetails extends LitElement {
       ${(!this.siteinfo)? '' : html`
         <h1 class="header">${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
         <site-photos .photos="${this.photos}"></site-photos>
+        <slot name="sketch"></slot>
         <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
         <div data-element="table">
           ${Object.entries(this.siteinfo).map((el, index) => html`
