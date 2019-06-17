@@ -4,9 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>Springs Data</title>
+  <base href="/springs-data/">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  
   <!-- Caroline Rose | cmrrose.github.com | March 2019 | Wisconsin Geological and Natural History Survey-->
+  <script>
+    (function(){
+      var redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect;
+      if (redirect && redirect != location.href) {
+        history.replaceState(null, null, redirect);
+      }
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/navigo@^7/lib/navigo.js"></script>
   
   <!-- Load Leaflet from a CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@^1/dist/leaflet.css" />
@@ -20,7 +30,7 @@
 
   <!-- Load Web Component base -->
   <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
-  <script src="./js/common.min.js"></script>
+  <script src="js/common.min.js"></script>
 
   <link rel="stylesheet" href="css/reset.css" />
   <link rel="stylesheet" href="css/variables.css" />
@@ -81,7 +91,7 @@
     </app-sidebar>
     <div id="map"></div>
   </div>
-  <div data-view="details" data-closed>
+  <div data-view="print" data-closed>
     <site-details></site-details>
   </div>
   <script>
@@ -117,10 +127,9 @@
         return L.Util.template(popupTemplate, e.feature.properties); 
     });
 
-    springs.on('click', function(e) {
+    var selectFeature = function(info) {
       var sidebar = document.querySelector('#sidebar');
       var details = document.querySelectorAll('site-details');
-      var info = e.propagatedFrom.feature.properties;
 
       details.forEach(function(el) {
         el['siteinfo'] = null;
@@ -142,6 +151,81 @@
         } else {
           console.log('Could not get Spring Photos', err);
         }
+      });
+    };
+
+    var deselectFeature = function() {
+      var sidebar = document.querySelector('#sidebar');
+      var details = document.querySelectorAll('site-details');
+
+      details.forEach(function(el) {
+        el['siteinfo'] = null;
+        el['photos'] = null;
+      });
+      sidebar.switchTab('default');
+    }
+
+    springs.on('popupopen', function(e) {
+      var info = e.propagatedFrom.feature.properties;
+      router.pause()
+      router.navigate(router.generate('view.site', {siteCode: info['Site_Code']}));
+      router.resume();
+      selectFeature(info);
+    });
+
+    springs.on('popupclose', function(e) {
+      router.navigate('/');
+      deselectFeature();
+    });
+
+    var router = new Navigo(window.location.origin + '/springs-data/');
+    router.on({
+      '/view/:siteCode': {
+        as: 'view.site',
+        uses: function(params) {
+          springs.on('load', function() {
+            springs.eachFeature(function(obj, l) {
+              if (obj.feature.properties['Site_Code'] === params['siteCode']) {
+                obj.getElement().click();
+              }
+            });
+          });
+        }
+      }
+    })
+    .notFound(function() {
+    })
+    .resolve();
+
+    // Define what we want to collect
+    var springsAggrData = {
+      'Site_Code': { data: [] },
+      'Water_Temp_C': { data: [], max: undefined, min: undefined },
+      'Conductivity_uS': { data: [], max: undefined, min: undefined },
+      'pH': { data: [], max: undefined, min: undefined }
+    }
+
+    springs.on('load', function() {
+      // Collect datasets and aggregates
+      springs.eachFeature(function(obj, l) {
+        for (let [key, aggr] of Object.entries(springsAggrData)) {
+          let value = obj.feature.properties[key];
+          aggr.data.push(value);
+          if (value && 'number' === typeof value) {
+            if (!aggr.max || aggr.max < value) {
+              aggr.max = value;
+            }
+            if (!aggr.min || aggr.min > value) {
+              aggr.min = value;
+            }
+          }
+        }
+      });
+
+      // store in details element, for use in reports
+      var details = document.querySelectorAll('site-details');
+      details.forEach(function(el) {
+        el['aggrData'] = springsAggrData;
       });
     });
   </script>
