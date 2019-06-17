@@ -3,6 +3,7 @@ html {
     --palette-dark: #b5b5b5;
     --palette-light: #e5e5e5;
     --palette-accent: #777777;
+    --palette-accent-transparent: #777777AA;
     --palette-900: #333333;
     --palette-black: #000000;
     --font-family: 'open_sansregular','Open Sans',sans_serif;
@@ -12,6 +13,10 @@ html {
     --font-size-extra-large: 1.4em;
     --font-weight: 400;
     --font-weight-bold: 600;
-    --line-height: 1.5;
+    --line-height: 1.5em;
     --box-shadow: inset 0px 0px 6px #888888;
+    --border-radius: 0.5em;
+    --transition: all 0.3s;
+    --z-index-base: 0;
+    --z-index-interrupt: 2000;
 }

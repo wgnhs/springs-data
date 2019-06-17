@@ -49,6 +49,16 @@ export class SiteDetails extends LitElement {
       .detail {
         background-color: var(--palette-light);
       }
+
+      .header {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0px;
+        background-color: var(--palette-white);
+        padding: 1em;
+        z-index: 10;
+        width: 100%;
+      }
     `;
   }
 
@@ -59,7 +69,7 @@ export class SiteDetails extends LitElement {
       </style>
 
       ${(!this.siteinfo)? '' : html`
-        <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
+        <h1 class="header">${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
         <site-photos .photos="${this.photos}"></site-photos>
         <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
         <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 

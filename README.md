@@ -9,9 +9,9 @@ This project requires [NodeJS 8+](https://nodejs.org/) installed on your develop
 
 ### Setup
 ```
-npm install
+npm ci
 ```
-After cloning the repository, bring up a terminal in the repository's root directory and run `npm install`
+After cloning the repository, bring up a terminal in the repository's root directory and run `npm ci` to download the dependencies.
 
 ### Running
 ```
