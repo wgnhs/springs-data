@@ -505,6 +505,9 @@
         },
         photos: {
           type: Array
+        },
+        aggrData: {
+          type: Object
         }
       };
     }
