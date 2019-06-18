@@ -1,5 +1,4 @@
-import {LitElement, html, css} from 'lit-element'; 
-export * from 'd3'
+import {LitElement, html, css} from 'lit-element';
 
 export class SiteBedMaterials extends LitElement{
     static get properties(){
