@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('lit-element'), require('d3')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'lit-element', 'd3'], factory) :
-  (global = global || self, factory(global.index = {}, global.common, global.d3$1));
-}(this, function (exports, litElement, d3$1) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('lit-element')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'lit-element'], factory) :
+  (global = global || self, factory(global.index = {}, global.common));
+}(this, function (exports, litElement) { 'use strict';
 
   // https://gist.github.com/gordonbrander/2230317
   const genId = function() {
