@@ -61,7 +61,15 @@ export class SiteSketch extends LitElement {
 
   static get styles() {
     return css`
-
+      div {
+        min-height: 10em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      img {
+        max-height: 70vh;
+      }
     `;
   }
 
@@ -89,3 +97,85 @@ export class SiteSketch extends LitElement {
   }
 }
 customElements.define('site-sketch', SiteSketch);
+
+export class SiteSketchPanel extends LitElement {
+  static get properties() {
+    return {
+
+    };
+  }
+
+  constructor() {
+    super();
+  }
+
+  static get styles() {
+    return css`
+    div {
+      min-height: 10em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    `;
+  }
+
+  render() {
+    return html`
+    <div>
+      <slot></slot>
+    </div>
+    `;
+  }
+
+  handleSketchToggle(e) {
+    if (e.detail.closed) {
+      this.setAttribute('data-closed', true);
+    } else {
+      this.removeAttribute('data-closed');
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('toggle-sketch', this.handleSketchToggle.bind(this));
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('toggle-sketch', this.handleSketchToggle.bind(this));
+    super.disconnectedCallback();
+  }
+}
+customElements.define('site-sketch-panel', SiteSketchPanel);
+
+export class SiteSketchButton extends LitElement {
+  static get properties() {
+    return {
+      buttonText: String,
+    };
+  }
+
+  constructor() {
+    super();
+    this.closed=true;
+    this.buttonText="Show Sketch";
+  }
+
+  static get styles() {
+    return css`
+    `;
+  }
+
+  render() {
+    return html`
+    <button @click="${this.toggle}">${this.buttonText}</button>
+    `;
+  }
+
+  toggle() {
+    this.closed = !this.closed;
+    this.buttonText = (this.closed)?"Show Sketch":"Hide Sketch";
+    this.dispatchEvent(new CustomEvent('toggle-sketch', {bubbles: true, detail: {closed: this.closed}}));
+  }
+}
+customElements.define('site-sketch-button', SiteSketchButton);

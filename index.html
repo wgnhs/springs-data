@@ -48,6 +48,9 @@
       app-sidebar {
         overflow-y: auto;
       }
+      .right-panel {
+        grid-column-start: 2;
+      }
     }
     @media (max-width: 769px) {
       [data-view=app] {
@@ -55,7 +58,7 @@
         grid-template-rows: 80% 100%;
         overflow-y: auto;
       }
-      #map {
+      .right-panel {
         grid-row-start: 1;
       }
     }
@@ -74,7 +77,7 @@
 </head>
 <body>
   <div data-view="app">
-    <app-sidebar id="sidebar">
+    <app-sidebar id="sidebar" class="left-panel">
       <section>
         <h2>
           Select a spring to learn more!
@@ -91,21 +94,20 @@
       <div slot="details">
         <site-details>
           <div slot="sketch">
-            <site-sketch></site-sketch>
+            <site-sketch-button></site-sketch-button>
           </div>
         </site-details>
       </div>
     </app-sidebar>
-    <div id="map"></div>
-    <div id="sketch" data-closed></div>
-  </div>
-  <div data-view="print" data-closed>
-    <site-details></site-details>
+    <div id="map" class="right-panel"></div>
+    <site-sketch-panel id="sketch" class="right-panel" data-closed>
+      <site-sketch></site-sketch>
+    </site-sketch-panel>
   </div>
   <script>
     /* JAVASCRIPT */
     
-      /* ~~~~~~~~ Map ~~~~~~~~ */
+    /* ~~~~~~~~ Map ~~~~~~~~ */
     //create a map, center it, and set the zoom level. 
     //set zoomcontrol to false because we will add it in a different corner. 
     var map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
@@ -252,6 +254,16 @@
       details.forEach(function(el) {
         el['aggrData'] = springsAggrData;
       });
+    });
+
+    document.addEventListener('toggle-sketch', function(e) {
+      var mapEl = document.querySelector('#map');
+      if (!e.detail.closed) {
+        mapEl.setAttribute('data-closed', true);
+      } else {
+        mapEl.removeAttribute('data-closed');
+        map.invalidateSize();
+      }
     });
   </script>
 </body>
