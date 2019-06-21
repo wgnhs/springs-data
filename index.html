@@ -8,11 +8,15 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <!-- Caroline Rose | cmrrose.github.com | March 2019 | Wisconsin Geological and Natural History Survey-->
   <script>
+    var appBasePath = document.querySelector('base').href;
     (function(){
       var redirect = sessionStorage.redirect;
       delete sessionStorage.redirect;
       if (redirect && redirect != location.href) {
         history.replaceState(null, null, redirect);
+      }
+      if (location.pathname.split('/').filter((el)=>''!==el).length < 1) {
+        history.replaceState(null, null, appBasePath);
       }
     })();
   </script>

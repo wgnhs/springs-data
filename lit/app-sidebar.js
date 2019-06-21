@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit-element';
-import { InRadio } from './in-radio.js';
 
 export class AppSidebar extends LitElement {
   static get properties() {
