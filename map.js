@@ -106,7 +106,7 @@ router.on({
       springs.on('load', function() {
         springs.eachFeature(function(obj, l) {
           if (obj.feature.properties['Site_Code'] === params['siteCode']) {
-            obj.getElement().click();
+            obj.fire('click', null, true);
           }
         });
       });
