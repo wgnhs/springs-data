@@ -103,7 +103,7 @@ router.on({
   '/view/:siteCode': {
     as: 'view.site',
     uses: function(params) {
-      springs.on('load', function() {
+      springs.once('load', function() {
         springs.eachFeature(function(obj, l) {
           if (obj.feature.properties['Site_Code'] === params['siteCode']) {
             obj.fire('click', null, true);
