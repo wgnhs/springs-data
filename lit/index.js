@@ -4,79 +4,6 @@
   (global = global || self, factory(global.index = {}, global.common));
 }(this, function (exports, litElement) { 'use strict';
 
-  // https://gist.github.com/gordonbrander/2230317
-  const genId = function() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-  };
-
-  class InRadio extends litElement.LitElement {
-    static get properties() {
-      return {
-        inName: {
-          type: String,
-          attribute: 'in-name'
-        },
-        choices: {
-          type: Array
-        },
-        choice: {
-          type: String,
-          reflect: true
-        }
-      };
-    }
-
-    constructor() {
-      super();
-      this.checked = [];
-      this.genId = (function() {
-        const memo = {};
-        return function(index) {
-          if (!memo[index]) {
-            memo[index] = genId();
-          }
-          return memo[index];
-        }
-      })();
-    }
-
-    firstUpdated() {
-      if (!this.choice && this.choices) {
-        this.choice = this.choices[0];
-      }
-    }
-
-    inChange(e) {
-      this.choice = e.target.value;
-
-      let event = new CustomEvent('choice-change', {
-        detail: {
-          choice: this.choice
-        }
-      });
-      this.dispatchEvent(event);
-    }
-
-    render() {
-      return litElement.html`
-      ${this.choices.map((item, index) => litElement.html`
-        <div class="choice">
-          <input 
-            type="radio" 
-            name="${this.inName}" 
-            id="${this.genId(index)}" 
-            value="${item}" 
-            .checked="${(this.choice === item)}" 
-            @change="${this.inChange}"
-          >
-          <label for="${this.genId(index)}">${item}</label>
-        </div>
-      `)}
-    `;
-    }
-  }
-  customElements.define('in-radio', InRadio);
-
   class AppSidebar extends litElement.LitElement {
     static get properties() {
       return {
@@ -496,6 +423,11 @@
       } //close updated method.
   } //close export 
   customElements.define('site-bed-materials', SiteBedMaterials);
+
+  // https://gist.github.com/gordonbrander/2230317
+  const genId = function() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  };
 
   class SiteDetails extends litElement.LitElement {
     static get properties() {
