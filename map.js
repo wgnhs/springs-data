@@ -15,9 +15,74 @@ var osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
 //place a zoom control in the top right: 
 new L.Control.Zoom({position: 'topright'}).addTo(map);
 
+var colorRange = [
+  '#e0ecf4',
+  '#bfd3e6',
+  '#9ebcda',
+  '#8c96c6',
+  '#8c6bb1',
+  '#88419d',
+  '#810f7c'
+];
+var calcRadius = (a) => Math.max(a/1.5,3);
+var RestylingCircleMarker = L.CircleMarker.extend({ 
+  getEvents: function() {
+    return {
+      zoomend: this._restyle,
+      normalpoints: this._normal,
+      typepoints: this._orifice,
+      condpoints: this._conductivity,
+      flowpoints: this._discharge
+    }
+  },
+  _restyle: function(e) {
+    this.setRadius(calcRadius(e.target.getZoom()))
+  },
+  _normal: function(e) {
+    this.setStyle({'color': '#3388ff'});
+  },
+  _orifice: function(e) {
+    var color = '#3388ff';
+    if (this.feature.properties.Orifice_Geom === 'seepage/filtration') {
+      color = '#33AA44';
+    }
+    this.setStyle({'color': color});
+  },
+  _conductivity: function(e) {
+    var color = colorRange[colorRange.length-1];
+    var binWidth = (springsAggrData['Conductivity_uS'].max - springsAggrData['Conductivity_uS'].min) / colorRange.length;
+    for (var i = 1; i < colorRange.length; i++) {
+      if (((binWidth * i) + springsAggrData['Conductivity_uS'].min) > this.feature.properties['Conductivity_uS']) {
+        color = colorRange[i];
+        break;
+      }
+    }
+    this.setStyle({'color': color});
+  },
+  _discharge: function(e) {
+    var color = colorRange[colorRange.length-1];
+    var binWidth = (springsAggrData['Discharge_cfs'].max - springsAggrData['Discharge_cfs'].min) / colorRange.length;
+    for (var i = 1; i < colorRange.length; i++) {
+      if (((binWidth * i) + springsAggrData['Discharge_cfs'].min) > this.feature.properties['Discharge_cfs']) {
+        color = colorRange[i];
+        break;
+      }
+    }
+    this.setStyle({'color': color});
+  },
+
+});
 /* +++++++++++ Springs layer +++++++++++ */ 
 var springs = L.esri.featureLayer({
     url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/1",
+    pointToLayer: function(geoJsonPoint, latlon) {
+      var color = '#3388ff';
+      return new RestylingCircleMarker(latlon, {
+        weight: 2,
+        color: color,
+        radius: calcRadius(map.getZoom())
+      });
+    }
 }).addTo(map);
 
 var springPhotos = L.esri.featureLayer({
@@ -120,12 +185,13 @@ router.on({
 // Define what we want to collect
 var springsAggrData = {
   'Site_Code': { data: [] },
-  'Water_Temp_C': { data: [], max: undefined, min: undefined },
   'Conductivity_uS': { data: [], max: undefined, min: undefined },
-  'pH': { data: [], max: undefined, min: undefined }
+  'Discharge_cfs': { data: [], max: undefined, min: undefined },
+  'pH': { data: [], max: undefined, min: undefined },
+  'Water_Temp_C': { data: [], max: undefined, min: undefined }
 }
 
-springs.on('load', function() {
+springs.once('load', function() {
   // Collect datasets and aggregates
   springs.eachFeature(function(obj, l) {
     for (let [key, aggr] of Object.entries(springsAggrData)) {
