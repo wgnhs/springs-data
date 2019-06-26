@@ -77,7 +77,7 @@ export class SiteBedMaterials extends LitElement{
             {material: "sand", percent: this.siteinfo.Percent_sand, color: "#b7b098"},  
             {material: "gravel", percent: this.siteinfo.Percent_gravel, color: "#cccccc"},  
             {material: "cobble", percent: this.siteinfo.Percent_cobble, color: "#7b6888"},  
-            {material: "boulder", percent: this.siteinfo.Percent_boulder, color: "#685755"},  
+            {material: "boulder", percent: this.siteinfo.Percent_boulder, color: "#514b47"},  
             {material: "bedrock", percent: this.siteinfo.Percent_bedrock, color: "#98abc5"}
         ];
         
