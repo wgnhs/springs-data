@@ -11,6 +11,11 @@ export class {{class-name}} extends LitElement {
     super();
   }
 
+  static get styles() {
+    return css`
+    `;
+  }
+
   render() {
     return html`
     `;
