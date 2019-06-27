@@ -56,6 +56,8 @@ export class SiteWaterQuality extends LitElement {
       
       var siteph = [{pH:this.siteinfo.pH}];
       
+      
+      
       /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
       
       var container_height = 130;
@@ -165,22 +167,22 @@ export class SiteWaterQuality extends LitElement {
          
                 console.log("start, end", startpoint, endpoint)
                 return [startpoint, endpoint]        // return A, B
-            })
+         })
          
-         highlight.selectAll("text")
-            .data(siteph)
-            .enter()
-            .append("text")
-            .attr("font-weight", "bold")
-            .html(function(d){ return "pH: "+d.pH})
-            .attr("transform", function(d){
-               var textpoint = [0, 0]
-                   textpoint[0] = x_scale(d.pH);
-                   textpoint[1] = (height/2)-highlightRadius-highlightLineLength-highlightLabelPadding; 
-            return 'translate('+textpoint+')'
-            
-            })
-            .style('text-anchor', "middle")
+      highlight.selectAll("text")
+         .data(siteph)
+         .enter()
+         .append("text")
+         .attr("font-weight", "bold")
+         .html(function(d){ return "pH: "+d.pH})
+         .attr("transform", function(d){
+            var textpoint = [0, 0]
+                textpoint[0] = x_scale(d.pH);
+                textpoint[1] = (height/2)-highlightRadius-highlightLineLength-highlightLabelPadding; 
+         return 'translate('+textpoint+')'
+
+         })
+         .style('text-anchor', "middle")
      
   
       
