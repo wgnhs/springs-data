@@ -38,16 +38,20 @@ export class SiteWaterQuality extends LitElement {
         <div>
         <h2>Water quality</h2>
         
-        <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br>
-        <span class="label">temperature: </span><span>${this.siteinfo.Water_Temp_C}</span><br>
-        <span class="label">pH: </span><span>${this.siteinfo.pH}</span><br>
+       <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
+         <svg id="conductivity-chart"></svg><br>
+       <!-- <span class="label">temperature: </span><span>${this.siteinfo.Water_Temp_C}</span><br> -->
+         <svg id="temperature-chart"></svg><br>
+       <!-- <span class="label">pH: </span><span>${this.siteinfo.pH}</span><br> -->
          <svg id="ph-chart"></svg>
         </div>
     `;
   } //end render 
     
    firstUpdated() {
-      this.phchart = d3.select(this.renderRoot.querySelector('#ph-chart')); 
+      this.phchart = d3.select(this.renderRoot.querySelector('#ph-chart'));
+      this.temperaturechart = d3.select(this.renderRoot.querySelector('#temperature-chart'));
+      this.conductivitychart = d3.select(this.renderRoot.querySelector('#conductivity-chart'));
    }
    
    updated() {
@@ -110,89 +114,166 @@ export class SiteWaterQuality extends LitElement {
          {OBJECTID: 479, pH: 8.6, Conductivity_uS: 67, Water_Temp_C: 8}]; 
       
       var siteph = [{pH:this.siteinfo.pH}];
+      var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
+      var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
       
       
       
       /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
+      var svgWidth = 400;
       
-      var container_height = 130;
-      var container_width = 550;
+      var phDotPlotOptions = {
+         svg: this.phchart, 
+         label: "pH",         
+         attributeKey: "pH", 
+
+         tickValues:[6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
+         chartMin: 6, 
+         chartMax: 10,
+         
+         svgWidth: svgWidth,
+         siteInfo: this.siteinfo,
+         allData:  fakeoveralldataset 
+         
+      };
+      
+      var tempDotPlotOptions = {
+         svg: this.temperaturechart, 
+         label: "Temperature (C)",
+         attributeKey: "Water_Temp_C", 
+         
+         tickValues:[5,7,9,11,13,15,17], 
+         chartMin: 5, 
+         chartMax: 17,
+         
+         svgWidth: svgWidth,
+         siteInfo: this.siteinfo, 
+         allData:  fakeoveralldataset
+         
+      }; 
+      
+      var conductivityDotPlotOptions = {
+         svg: this.conductivitychart,
+         label: "Conductivity (uS)", 
+         attributeKey: "Conductivity_uS", 
+         
+         tickValues:[0, 500, 1000, 1500, 2000], 
+         chartMin: 0, 
+         chartMax: 2000,
+         
+         svgWidth: svgWidth,
+         siteInfo: this.siteinfo,
+         allData:  fakeoveralldataset
+      
+      };
+      
+      dotPlot.draw(tempDotPlotOptions);
+      dotPlot.draw(phDotPlotOptions);
+      dotPlot.draw(conductivityDotPlotOptions);
+      
+   }  //end updated() 
+    
+}   //end export class
+
+customElements.define('site-water-quality', SiteWaterQuality);
+
+
+
+
+// dotPlot is an immediately-invoked function expression. 
+
+var dotPlot = (function (){
+   
+   // define functions that will be methods of dotPlot 
+   
+   var draw = function(options){ 
+      
+      console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" highlighted. ");
+      
+      /* ---- SVG setup ---- */
+      
+      var svgHeight = 130;
+      var svgWidth = options.svgWidth;
       var margin = {
                      top: 50,
                      right: 20,
                      bottom: 50,
                      left: 20  
-                   }
-      var width = container_width - margin.left - margin.right,
-      height = container_height - margin.top - margin.bottom;
+                   }; 
+      var chartWidth = svgWidth - margin.left - margin.right,
+      chartHeight = svgHeight - margin.top - margin.bottom;
       
-      this.phchart.attr('width', container_width).attr("height", container_height)
+      options.svg.attr('width', svgWidth).attr("height", svgHeight)
         // .style('background', "#cecece")
       ;
       
-      var phgroup = this.phchart.append("g").attr("class", "phgroup").attr("transform", "translate("+margin.left+", "+margin.top+")"); //append a group. 
+      //append a group.
+      var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+margin.left+", "+margin.top+")");  
       
       /* ~~~~~~~~~ Draw the chart ~~~~~~~~~ */
       
-      var x_scale = d3.scaleLinear().domain([6, 10]).range([0, width]); 
+      var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]); 
             
-      var y_scale = d3.scaleBand().domain([""]).rangeRound([0, height]); 
+      var y_scale = d3.scaleBand().domain([""]).rangeRound([0, chartHeight]); 
       
       
-      var xAxis = phgroup.append("g").attr("class", "x-axis");
+      var xAxis = chartgroup.append("g").attr("class", "x-axis");
       xAxis
-         .attr("transform", "translate(0," + height + ")")
+         .attr("transform", "translate(0," + chartHeight + ")")
          .call(
            d3
              .axisBottom(x_scale)
-             .tickSizeInner(-height)
+             .tickSizeInner(-chartHeight)
              .tickSizeOuter(0)
              .tickPadding(5)
-             .tickValues([6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0])
+             .tickValues(options.tickValues)
          )
          .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis
       
       
-      var yAxis = phgroup.append("g").attr("class", "y-axis");
+      var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart. 
       yAxis
          .call(
            d3
              .axisLeft(y_scale)
-             .tickSizeInner(-width)
+             .tickSizeInner(-chartWidth)
              .tickSizeOuter(0)
              .tickPadding(0)
          )
-         .call(g => g.select(".domain").remove())
-         .call(g => g.selectAll("text").remove());
+         .call(g => g.select(".domain").remove())           // no vertical line for the y axis (all vertical lines are x axis ticks)
+         .call(g => g.selectAll("text").remove());          // no labels on y axis
 
      
      /* ~~~~~~~~~ circles ~~~~~~~~~ */ 
       
-     var circles = phgroup.append("g").attr("class", "circles");
+     var circles = chartgroup.append("g").attr("class", "circles");
       
       circles.selectAll("circle")
-         .data(fakeoveralldataset)
+         .data(options.allData)
          .enter()
          .append("circle")
-         .attr("cx", function(d){return x_scale(d.pH)})     // x position
-         .attr("cy", function(d){return height/2})          // y position
+         .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
+         .attr("cy", function(d){return chartHeight/2})     // y position
          .attr('r', 5)                                      // radius 
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7");                           // opacity
       
       
-      var highlight = phgroup.append("g").attr("class", "highlight"); 
+      var highlight = chartgroup.append("g").attr("class", "highlight"); 
       var highlightRadius = 8;
       var highlightLineLength = 20; 
       var highlightLabelPadding = 5;
+       
+      
+      var highlightData = [{rrr: options.siteInfo[options.attributeKey]}];
       
       highlight.selectAll("circle")
-         .data(siteph)
+         .data(highlightData)
          .enter()
          .append("circle")
-         .attr("cx", function(d){
-                        return x_scale(d.pH)})              // x position
-         .attr("cy", function(d){return height/2})          // y position
+         .attr("cx", function(d){                       
+                        return x_scale(d.rrr)})              // x position
+         .attr("cy", function(d){return chartHeight/2})     // y position
          .attr('r', highlightRadius)                        // radius 
          .attr("fill", "#406058")                           // fill color
          .attr("stroke", "#000")
@@ -200,7 +281,7 @@ export class SiteWaterQuality extends LitElement {
          .attr("opacity", "0.85");                           // opacity
       
       highlight.selectAll("polyline")
-         .data(siteph)
+         .data(highlightData)
          .enter()
          .append("polyline")
          .attr('stroke', "#333333")      //set appearance
@@ -213,35 +294,41 @@ export class SiteWaterQuality extends LitElement {
                 // B: 10 px above the circle
                 // each point is defined by an [x, y] 
                var startpoint = [0,0]
-                   startpoint[0] = x_scale(d.pH);
-                   startpoint[1] = height/2-highlightRadius; 
+                   startpoint[0] = x_scale(d.rrr);
+                   startpoint[1] = (chartHeight/2)-highlightRadius; 
          
                var endpoint = [0,0];
-                   endpoint[0] = x_scale(d.pH);
-                   endpoint[1] = (height/2)-highlightRadius-highlightLineLength; 
+                   endpoint[0] = x_scale(d.rrr);
+                   endpoint[1] = (chartHeight/2)-highlightRadius-highlightLineLength; 
          
                 console.log("start, end", startpoint, endpoint)
                 return [startpoint, endpoint]        // return A, B
          })
          
       highlight.selectAll("text")
-         .data(siteph)
+         .data(highlightData)
          .enter()
          .append("text")
          .attr("font-weight", "bold")
-         .html(function(d){ return "pH: "+d.pH})
+         .html(function(d){ return options.label+": "+d.rrr})
          .attr("transform", function(d){
             var textpoint = [0, 0]
-                textpoint[0] = x_scale(d.pH);
-                textpoint[1] = (height/2)-highlightRadius-highlightLineLength-highlightLabelPadding; 
+                textpoint[0] = x_scale(d.rrr);
+                textpoint[1] = (chartHeight/2)-highlightRadius-highlightLineLength-highlightLabelPadding; 
          return 'translate('+textpoint+')'
 
          })
          .style('text-anchor', "middle")
      
-  
+      
+      
       
    }
-    
-}
-customElements.define('site-water-quality', SiteWaterQuality);
+   
+   // return an object with all methods of dotPlot named
+   return {
+      
+      draw: draw
+   }
+   
+})();
