@@ -11,9 +11,17 @@ var osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+var sat = L.esri.basemapLayer('Imagery');
+
 /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
 //place a zoom control in the top right: 
 new L.Control.Zoom({position: 'topright'}).addTo(map);
+
+var basemapOptions = {
+  'OpenStreetMap': osm,
+  'Satellite': sat
+}
+L.control.layers(basemapOptions, null).addTo(map);
 
 var colorRange = [
   '#e0ecf4',
