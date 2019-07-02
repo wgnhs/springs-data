@@ -32,7 +32,7 @@ var RestylingCircleMarker = L.CircleMarker.extend({
       normalpoints: this._normal,
       typepoints: this._orifice,
       condpoints: this._conductivity,
-      flowpoints: this._discharge
+      qpoints: this._discharge
     }
   },
   _restyle: function(e) {
