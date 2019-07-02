@@ -225,6 +225,10 @@ springs.once('load', function() {
   });
 });
 
+document.addEventListener('clear-selection', function(e) {
+  springs.closePopup();
+});
+
 document.addEventListener('toggle-sketch', function(e) {
   var mapEl = document.querySelector('#map');
   if (!e.detail.closed) {
