@@ -50,9 +50,9 @@ var RestylingCircleMarker = L.CircleMarker.extend({
   },
   _conductivity: function(e) {
     var color = colorRange[colorRange.length-1];
-    var binWidth = (springsAggrData['Conductivity_uS'].max - springsAggrData['Conductivity_uS'].min) / colorRange.length;
+    var binWidth = (aggrData.aggr['Conductivity_uS'].max - aggrData.aggr['Conductivity_uS'].min) / colorRange.length;
     for (var i = 1; i < colorRange.length; i++) {
-      if (((binWidth * i) + springsAggrData['Conductivity_uS'].min) > this.feature.properties['Conductivity_uS']) {
+      if (((binWidth * i) + aggrData.aggr['Conductivity_uS'].min) > this.feature.properties['Conductivity_uS']) {
         color = colorRange[i];
         break;
       }
@@ -61,9 +61,9 @@ var RestylingCircleMarker = L.CircleMarker.extend({
   },
   _discharge: function(e) {
     var color = colorRange[colorRange.length-1];
-    var binWidth = (springsAggrData['Discharge_cfs'].max - springsAggrData['Discharge_cfs'].min) / colorRange.length;
+    var binWidth = (aggrData.aggr['Discharge_cfs'].max - aggrData.aggr['Discharge_cfs'].min) / colorRange.length;
     for (var i = 1; i < colorRange.length; i++) {
-      if (((binWidth * i) + springsAggrData['Discharge_cfs'].min) > this.feature.properties['Discharge_cfs']) {
+      if (((binWidth * i) + aggrData.aggr['Discharge_cfs'].min) > this.feature.properties['Discharge_cfs']) {
         color = colorRange[i];
         break;
       }
@@ -183,35 +183,37 @@ router.on({
 .resolve();
 
 // Define what we want to collect
-var springsAggrData = {
-  'Site_Code': { data: [] },
-  'Conductivity_uS': { data: [], max: undefined, min: undefined },
-  'Discharge_cfs': { data: [], max: undefined, min: undefined },
-  'pH': { data: [], max: undefined, min: undefined },
-  'Water_Temp_C': { data: [], max: undefined, min: undefined }
-}
+var aggrKeys = ['Site_Code', 'Conductivity_uS', 'Discharge_cfs', 'pH', 'Water_Temp_C'];
+var aggrData = {
+  aggr: {},
+  data: []
+};
 
 springs.once('load', function() {
   // Collect datasets and aggregates
   springs.eachFeature(function(obj, l) {
-    for (let [key, aggr] of Object.entries(springsAggrData)) {
-      let value = obj.feature.properties[key];
-      aggr.data.push(value);
-      if (value && 'number' === typeof value) {
-        if (!aggr.max || aggr.max < value) {
-          aggr.max = value;
+    let result = {};
+    aggrKeys.forEach(function(key) {
+      result[key] = obj.feature.properties[key]
+      if (!aggrData.aggr[key]) {
+        aggrData.aggr[key] = {};
+      }
+      if (result[key] && 'number' === typeof result[key]) {
+        if (!aggrData.aggr[key].max || aggrData.aggr[key].max < result[key]) {
+          aggrData.aggr[key].max = result[key];
         }
-        if (!aggr.min || aggr.min > value) {
-          aggr.min = value;
+        if (!aggrData.aggr[key].min || aggrData.aggr[key].min > result[key]) {
+          aggrData.aggr[key].min = result[key];
         }
       }
-    }
+    });
+    aggrData.data.push(result);
   });
 
   // store in details element, for use in reports
   var details = document.querySelectorAll('site-details');
   details.forEach(function(el) {
-    el['aggrData'] = springsAggrData;
+    el['aggrData'] = aggrData;
   });
 });
 
