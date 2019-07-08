@@ -101,7 +101,15 @@ var springSketches = L.esri.featureLayer({
   url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/4"
 });
 
-var popupTemplate = "<h3>{County} County Spring #{SpringID}</h3>";
+function zoomToPoint(site) {
+  springs.eachFeature(function(obj) {
+    if (obj.feature.properties['Site_Code'] === site) {
+      map.setZoomAround(obj.getLatLng(), 15);
+    }
+  });
+}
+
+var popupTemplate = "<div style=\"text-align: center; cursor: pointer;\" onclick=\"zoomToPoint('{Site_Code}')\"><div><i class=\"material-icons\">my_location</i></div><div>Zoom to Site</div></div>";
 
 springs.bindPopup(function(e){
     return L.Util.template(popupTemplate, e.feature.properties); 
