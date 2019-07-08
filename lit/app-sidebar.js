@@ -41,7 +41,7 @@ export class AppSidebar extends LitElement {
         @import url("./css/typography.css");
       </style>
 
-      <h1 class="header">${this.title}</h1>
+      ${(!this.title)?'':html`<h1 class="header">${this.title}</h1>`}
       <slot></slot>
       <slot name="details" hidden></slot>
     `;

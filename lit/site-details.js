@@ -58,9 +58,22 @@ export class SiteDetails extends LitElement {
         position: sticky;
         top: 0px;
         background-color: var(--palette-white);
-        padding: 1em;
+        padding: var(--font-size-extra-large);
         z-index: 10;
         width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+      }
+      .header h1 {
+        padding: 0;
+      }
+      .header i {
+        display: flex;
+        align-items: center;
+        font-size: var(--font-size-extra-large);
+        color: var(--palette-accent);
+        cursor: pointer;
       }
     `;
   }
@@ -90,7 +103,10 @@ export class SiteDetails extends LitElement {
       </style>
 
       ${(!this.siteinfo)? '' : html`
-        <h1 class="header">${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
+        <div class="header">
+          <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
+          <i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}">clear</i>
+        </div>
         <site-photos .photos="${this.photos}"></site-photos>
         <slot name="sketch"></slot>
         <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
@@ -100,6 +116,14 @@ export class SiteDetails extends LitElement {
         </div>
       `}
     `;
+  }
+
+  fireClearSelection() {
+    let event = new CustomEvent('clear-selection', {
+      bubbles: true,
+      detail: {}
+    });
+    this.dispatchEvent(event);
   }
 }
 customElements.define('site-details', SiteDetails);
