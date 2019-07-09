@@ -26,7 +26,7 @@ export class SiteWaterQuality extends LitElement {
             .tick line {
                stroke: #777;
             }
-            .highlight {
+            .annotation {
                font-size: 14px;
             }
 
