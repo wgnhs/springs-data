@@ -133,7 +133,7 @@ export class SiteWaterQuality extends LitElement {
          
          svgWidth: svgWidth,
          siteInfo: this.siteinfo,
-         allData:  fakeoveralldataset 
+         allData:  aggrData.data 
          
       };
       
@@ -148,7 +148,7 @@ export class SiteWaterQuality extends LitElement {
          
          svgWidth: svgWidth,
          siteInfo: this.siteinfo, 
-         allData:  fakeoveralldataset
+         allData:  aggrData.data
          
       }; 
       
@@ -163,7 +163,7 @@ export class SiteWaterQuality extends LitElement {
          
          svgWidth: svgWidth,
          siteInfo: this.siteinfo,
-         allData:  fakeoveralldataset
+         allData:  aggrData.data
       
       };
       

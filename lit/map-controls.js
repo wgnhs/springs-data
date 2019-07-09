@@ -23,7 +23,7 @@ export class MapControls extends LitElement {
         <button @click="${this.normalPoints}">Normal Styling</button>
         <button @click="${this.typePoints}">Style by Spring Type</button>
         <button @click="${this.condPoints}">Style by Conductivity</button>
-        <button @click="${this.flowPoints}">Style by Flow</button>
+        <button @click="${this.qPoints}">Style by Discharge</button>
       </div>
     `;
   }
@@ -37,8 +37,8 @@ export class MapControls extends LitElement {
   condPoints() {
     map.fire('condpoints');
   }
-  flowPoints() {
-    map.fire('flowpoints');
+  qPoints() {
+    map.fire('qpoints');
   }
 }
 customElements.define('map-controls', MapControls);
