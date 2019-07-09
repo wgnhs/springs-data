@@ -70,8 +70,8 @@ export class SiteWaterQuality extends LitElement {
          label: "pH",         
          attributeKey: "pH", 
 
-         tickValues:[6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
-         chartMin: 6, 
+         tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
+         chartMin: 5.5, 
          chartMax: 10,
          
          svgWidth: svgWidth,
@@ -100,9 +100,9 @@ export class SiteWaterQuality extends LitElement {
          label: "Conductivity (uS)", 
          attributeKey: "Conductivity_uS", 
          
-         tickValues:[0, 500, 1000, 1500, 2000], 
+         tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750], 
          chartMin: 0, 
-         chartMax: 2000,
+         chartMax: 1750,
          
          svgWidth: svgWidth,
          siteInfo: this.siteinfo,
