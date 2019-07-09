@@ -55,64 +55,7 @@ export class SiteWaterQuality extends LitElement {
    }
    
    updated() {
-      
-      var fakeoveralldataset = [
-         {OBJECTID: 463, pH: 7.13, Conductivity_uS: 1450, Water_Temp_C: 5.7}, 
-         {OBJECTID: 464, pH: 7.18, Conductivity_uS: 123, Water_Temp_C: 6.7}, 
-         {OBJECTID: 465, pH: 7.5, Conductivity_uS: 60, Water_Temp_C: 6}, 
-         {OBJECTID: 466, pH: 7.9, Conductivity_uS: 56, Water_Temp_C: 8}, 
-         {OBJECTID: 467, pH: 6.98, Conductivity_uS: 75, Water_Temp_C: 16}, 
-         {OBJECTID: 468, pH: 7.0, Conductivity_uS: 1000, Water_Temp_C: 14}, 
-         {OBJECTID: 469, pH: 7.3, Conductivity_uS: 589, Water_Temp_C: 12}, 
-         {OBJECTID: 470, pH: 7.3, Conductivity_uS: 555, Water_Temp_C: 11}, 
-         {OBJECTID: 471, pH: 7.3, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 472, pH: 7.3, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 473, pH: 8.0, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 478, pH: 6.6, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 477, pH: 6.7, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 476, pH: 6.3, Conductivity_uS: 67, Water_Temp_C: 12}, 
-         {OBJECTID: 474, pH: 8.1, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 475, pH: 7.4, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 479, pH: 6.6, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 463, pH: 7.13, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 464, pH: 7.18, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 465, pH: 7.5, Conductivity_uS: 67, Water_Temp_C: 10.6}, 
-         {OBJECTID: 466, pH: 7.9, Conductivity_uS: 67, Water_Temp_C: 12}, 
-         {OBJECTID: 467, pH: 6.98, Conductivity_uS: 67, Water_Temp_C: 12}, 
-         {OBJECTID: 468, pH: 7.0, Conductivity_uS: 1257, Water_Temp_C: 12}, 
-         {OBJECTID: 469, pH: 7.3, Conductivity_uS: 1167, Water_Temp_C: 12}, 
-         {OBJECTID: 470, pH: 7.3, Conductivity_uS: 1367, Water_Temp_C: 12}, 
-         {OBJECTID: 471, pH: 7.3, Conductivity_uS: 167, Water_Temp_C: 12}, 
-         {OBJECTID: 472, pH: 7.5, Conductivity_uS: 1617, Water_Temp_C: 16.2}, 
-         {OBJECTID: 473, pH: 8.0, Conductivity_uS: 58, Water_Temp_C: 16.8}, 
-         {OBJECTID: 478, pH: 6.6, Conductivity_uS: 367, Water_Temp_C: 12.2}, 
-         {OBJECTID: 477, pH: 6.9, Conductivity_uS: 258, Water_Temp_C: 12.3}, 
-         {OBJECTID: 476, pH: 7.71, Conductivity_uS: 178, Water_Temp_C: 12.4}, 
-         {OBJECTID: 474, pH: 8.0, Conductivity_uS: 596, Water_Temp_C: 12.5}, 
-         {OBJECTID: 475, pH: 7.7, Conductivity_uS: 67, Water_Temp_C: 12.8}, 
-         {OBJECTID: 479, pH: 8.6, Conductivity_uS: 67, Water_Temp_C: 12.96}, 
-         {OBJECTID: 476, pH: 9.3, Conductivity_uS: 67, Water_Temp_C: 12.5}, 
-         {OBJECTID: 474, pH: 8.1, Conductivity_uS: 67, Water_Temp_C: 11.6}, 
-         {OBJECTID: 475, pH: 7.4, Conductivity_uS: 167, Water_Temp_C: 11.5}, 
-         {OBJECTID: 479, pH: 9.6, Conductivity_uS: 267, Water_Temp_C: 14.3}, 
-         {OBJECTID: 463, pH: 9.13, Conductivity_uS: 367, Water_Temp_C: 12}, 
-         {OBJECTID: 464, pH: 7.18, Conductivity_uS: 467, Water_Temp_C: 11.8}, 
-         {OBJECTID: 465, pH: 7.5, Conductivity_uS: 567, Water_Temp_C: 12}, 
-         {OBJECTID: 466, pH: 7.9, Conductivity_uS: 667, Water_Temp_C: 12}, 
-         {OBJECTID: 467, pH: 9.98, Conductivity_uS: 767, Water_Temp_C: 11}, 
-         {OBJECTID: 468, pH: 9.0, Conductivity_uS: 867, Water_Temp_C: 12}, 
-         {OBJECTID: 469, pH: 7.3, Conductivity_uS: 967, Water_Temp_C: 10}, 
-         {OBJECTID: 470, pH: 8.3, Conductivity_uS: 1067, Water_Temp_C: 9.5}, 
-         {OBJECTID: 471, pH: 7.3, Conductivity_uS: 167, Water_Temp_C: 12}, 
-         {OBJECTID: 472, pH: 8.5, Conductivity_uS: 467, Water_Temp_C: 12}, 
-         {OBJECTID: 473, pH: 7.0, Conductivity_uS: 567, Water_Temp_C: 12}, 
-         {OBJECTID: 478, pH: 6.6, Conductivity_uS: 687, Water_Temp_C: 7.8}, 
-         {OBJECTID: 477, pH: 6.9, Conductivity_uS: 617, Water_Temp_C: 6.2}, 
-         {OBJECTID: 476, pH: 7.71, Conductivity_uS: 67, Water_Temp_C: 5.3}, 
-         {OBJECTID: 474, pH: 9.0, Conductivity_uS: 1400, Water_Temp_C: 6}, 
-         {OBJECTID: 475, pH: 9.7, Conductivity_uS: 67, Water_Temp_C: 7}, 
-         {OBJECTID: 479, pH: 8.6, Conductivity_uS: 67, Water_Temp_C: 8}]; 
-      
+            
       var siteph = [{pH:this.siteinfo.pH}];
       var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
       var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
@@ -127,8 +70,8 @@ export class SiteWaterQuality extends LitElement {
          label: "pH",         
          attributeKey: "pH", 
 
-         tickValues:[6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
-         chartMin: 6, 
+         tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
+         chartMin: 5.5, 
          chartMax: 10,
          
          svgWidth: svgWidth,
@@ -157,9 +100,9 @@ export class SiteWaterQuality extends LitElement {
          label: "Conductivity (uS)", 
          attributeKey: "Conductivity_uS", 
          
-         tickValues:[0, 500, 1000, 1500, 2000], 
+         tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750], 
          chartMin: 0, 
-         chartMax: 2000,
+         chartMax: 1750,
          
          svgWidth: svgWidth,
          siteInfo: this.siteinfo,
@@ -257,13 +200,13 @@ var dotPlot = (function (){
          .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
          // Math.random() returns values from 0 to less than 1, in approximately uniform distribution. 
          .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
-         .attr('r', 5)                                      // radius 
+         .attr('r', 3)                                      // radius 
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7");                           // opacity
       
       
       var annotation = chartgroup.append("g").attr("class", "annotation"); 
-      var annotationRadius = 8;
+      var annotationRadius = 5;
       var annotationLineLength = 20; 
       var annotationLabelPadding = 5;
        
