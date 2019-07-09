@@ -248,12 +248,15 @@ var dotPlot = (function (){
       
      var circles = chartgroup.append("g").attr("class", "circles");
       
-      circles.selectAll("circle")
+     var jitterWidth = chartHeight; 
+      
+     circles.selectAll("circle")
          .data(options.allData)
          .enter()
          .append("circle")
          .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
-         .attr("cy", function(d){return chartHeight/2})     // y position
+         // Math.random() returns values from 0 to less than 1, in approximately uniform distribution. 
+         .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
          .attr('r', 5)                                      // radius 
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7");                           // opacity
