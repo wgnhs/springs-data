@@ -188,7 +188,7 @@ var dotPlot = (function (){
    
    var draw = function(options){ 
       
-      console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" highlighted. ");
+      // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
       
       /* ---- SVG setup ---- */
       
@@ -228,7 +228,7 @@ var dotPlot = (function (){
              .tickPadding(5)
              .tickValues(options.tickValues)
          )
-         .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis
+         .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick. 
       
       
       var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart. 
@@ -262,29 +262,29 @@ var dotPlot = (function (){
          .attr("opacity", "0.7");                           // opacity
       
       
-      var highlight = chartgroup.append("g").attr("class", "highlight"); 
-      var highlightRadius = 8;
-      var highlightLineLength = 20; 
-      var highlightLabelPadding = 5;
+      var annotation = chartgroup.append("g").attr("class", "annotation"); 
+      var annotationRadius = 8;
+      var annotationLineLength = 20; 
+      var annotationLabelPadding = 5;
        
       
-      var highlightData = [{rrr: options.siteInfo[options.attributeKey]}];
+      var annotationData = [{rrr: options.siteInfo[options.attributeKey]}];
       
-      highlight.selectAll("circle")
-         .data(highlightData)
+      annotation.selectAll("circle")
+         .data(annotationData)
          .enter()
          .append("circle")
          .attr("cx", function(d){                       
                         return x_scale(d.rrr)})              // x position
          .attr("cy", function(d){return chartHeight/2})     // y position
-         .attr('r', highlightRadius)                        // radius 
+         .attr('r', annotationRadius)                        // radius 
          .attr("fill", "#406058")                           // fill color
          .attr("stroke", "#000")
          .attr("stroke-width", 2)
          .attr("opacity", "0.85");                           // opacity
       
-      highlight.selectAll("polyline")
-         .data(highlightData)
+      annotation.selectAll("polyline")
+         .data(annotationData)
          .enter()
          .append("polyline")
          .attr('stroke', "#333333")      //set appearance
@@ -298,18 +298,18 @@ var dotPlot = (function (){
                 // each point is defined by an [x, y] 
                var startpoint = [0,0]
                    startpoint[0] = x_scale(d.rrr);
-                   startpoint[1] = (chartHeight/2)-highlightRadius; 
+                   startpoint[1] = (chartHeight/2)-annotationRadius; 
          
                var endpoint = [0,0];
                    endpoint[0] = x_scale(d.rrr);
-                   endpoint[1] = (chartHeight/2)-highlightRadius-highlightLineLength; 
+                   endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength; 
          
                 console.log("start, end", startpoint, endpoint)
                 return [startpoint, endpoint]        // return A, B
          })
          
-      highlight.selectAll("text")
-         .data(highlightData)
+      annotation.selectAll("text")
+         .data(annotationData)
          .enter()
          .append("text")
          .attr("font-weight", "bold")
@@ -317,7 +317,7 @@ var dotPlot = (function (){
          .attr("transform", function(d){
             var textpoint = [0, 0]
                 textpoint[0] = x_scale(d.rrr);
-                textpoint[1] = (chartHeight/2)-highlightRadius-highlightLineLength-highlightLabelPadding; 
+                textpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding; 
          return 'translate('+textpoint+')'
 
          })
