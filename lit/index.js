@@ -299,7 +299,7 @@
      }
      
      updated() {
-        
+              
         var siteph = [{pH:this.siteinfo.pH}];
         var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
         var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
@@ -314,8 +314,8 @@
            label: "pH",         
            attributeKey: "pH", 
 
-           tickValues:[6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
-           chartMin: 6, 
+           tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
+           chartMin: 5.5, 
            chartMax: 10,
            
            svgWidth: svgWidth,
@@ -344,9 +344,9 @@
            label: "Conductivity (uS)", 
            attributeKey: "Conductivity_uS", 
            
-           tickValues:[0, 500, 1000, 1500, 2000], 
+           tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750], 
            chartMin: 0, 
-           chartMax: 2000,
+           chartMax: 1750,
            
            svgWidth: svgWidth,
            siteInfo: this.siteinfo,
@@ -444,13 +444,13 @@
            .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
            // Math.random() returns values from 0 to less than 1, in approximately uniform distribution. 
            .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
-           .attr('r', 5)                                      // radius 
+           .attr('r', 3)                                      // radius 
            .attr("fill", "#406058")                           // fill color
            .attr("opacity", "0.7");                           // opacity
         
         
         var annotation = chartgroup.append("g").attr("class", "annotation"); 
-        var annotationRadius = 8;
+        var annotationRadius = 5;
         var annotationLineLength = 20; 
         var annotationLabelPadding = 5;
          
