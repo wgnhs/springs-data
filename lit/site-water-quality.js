@@ -257,13 +257,13 @@ var dotPlot = (function (){
          .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
          // Math.random() returns values from 0 to less than 1, in approximately uniform distribution. 
          .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
-         .attr('r', 5)                                      // radius 
+         .attr('r', 3)                                      // radius 
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7");                           // opacity
       
       
       var annotation = chartgroup.append("g").attr("class", "annotation"); 
-      var annotationRadius = 8;
+      var annotationRadius = 5;
       var annotationLineLength = 20; 
       var annotationLabelPadding = 5;
        
