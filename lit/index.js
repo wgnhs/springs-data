@@ -166,7 +166,7 @@
         margin: 0 auto;
       }
       .slide {
-        min-height: 10em;
+        min-height: 50vh;
         display: flex;
         align-items: center;
         justify-content: center;
