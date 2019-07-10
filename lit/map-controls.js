@@ -28,17 +28,24 @@ export class MapControls extends LitElement {
     `;
   }
 
+  _fire(eventName, detail) {
+    let event = new CustomEvent(eventName, {
+      bubbles: true,
+      detail: detail || {}
+    });
+    this.dispatchEvent(event);
+  }
   normalPoints() {
-    map.fire('normalpoints');
+    this._fire('stylepoints', {type: 'normal'});
   }
   typePoints() {
-    map.fire('typepoints');
+    this._fire('stylepoints', {type: 'type'});
   }
   condPoints() {
-    map.fire('condpoints');
+    this._fire('stylepoints', {type: 'cond'});
   }
   qPoints() {
-    map.fire('qpoints');
+    this._fire('stylepoints', {type: 'q'});
   }
 }
 customElements.define('map-controls', MapControls);
