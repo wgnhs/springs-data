@@ -13,8 +13,9 @@ export class SiteDetails extends LitElement {
       photos: {
         type: Array
       },
-      aggrData: {
-        type: Object
+      printLayout: {
+        type: Boolean,
+        attribute: 'print-layout'
       }
     };
   }
@@ -36,8 +37,9 @@ export class SiteDetails extends LitElement {
     return css`
       [data-element="table"] {
         display: grid;
-        grid-template-columns: 30% 70%;
+        grid-template-columns: 30% 1fr;
         grid-gap: 0.5em;
+        width: 100%;
       }
 
       td {
@@ -69,11 +71,13 @@ export class SiteDetails extends LitElement {
         padding: 0;
       }
       .header i {
-        display: flex;
-        align-items: center;
         font-size: var(--font-size-extra-large);
         color: var(--palette-accent);
         cursor: pointer;
+      }
+      
+      [data-closed] {
+        display: none;
       }
     `;
   }
@@ -105,10 +109,14 @@ export class SiteDetails extends LitElement {
       ${(!this.siteinfo)? '' : html`
         <div class="header">
           <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
-          <i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}">clear</i>
+          <span>
+            <i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">print</i>
+            <i class="material-icons toggle-print" title="Back to website" @click="${this.fireTogglePrint}" ?data-closed="${!this.printLayout}">clear</i>
+            <i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}" ?data-closed="${this.printLayout}">clear</i>
+          </span>
         </div>
-        <site-photos .photos="${this.photos}"></site-photos>
-        <slot name="sketch"></slot>
+        <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
+        <slot ?data-closed="${this.printLayout}" name="sketch"></slot>
         <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
         <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
         <div data-element="table">
@@ -122,6 +130,16 @@ export class SiteDetails extends LitElement {
     let event = new CustomEvent('clear-selection', {
       bubbles: true,
       detail: {}
+    });
+    this.dispatchEvent(event);
+  }
+  fireTogglePrint() {
+    let event = new CustomEvent('toggle-print', {
+      bubbles: true,
+      detail: {
+        on: !this.printLayout,
+        params: this.siteinfo
+      }
     });
     this.dispatchEvent(event);
   }

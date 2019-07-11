@@ -25,13 +25,13 @@ export class SitePhotos extends LitElement {
         margin: 0 auto;
       }
       .slide {
-        min-height: 50vh;
+        min-height: 40vh;
         display: flex;
         align-items: center;
         justify-content: center;
       }
       .slide img {
-        max-height: 50vh;
+        max-height: 40vh;
       }
       .text {
         background-color: var(--palette-accent-transparent);
