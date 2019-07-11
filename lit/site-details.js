@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
+export { AppCollapsible } from './app-collapsible.js';
 export { SitePhotos } from './site-photos.js';
-export {SiteWaterQuality} from './site-water-quality.js'
+export { SiteWaterQuality } from './site-water-quality.js'
 export { SiteBedMaterials } from './site-bed-materials.js';
 import { genId } from './gen-id.js';
 
@@ -118,12 +119,24 @@ export class SiteDetails extends LitElement {
           </span>
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
-        <slot ?data-closed="${this.printLayout}" name="sketch"></slot>
-        <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
-        <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
-        <div data-element="table">
-          ${this.renderTable}
-        </div>
+        <app-collapsible>
+          <div slot="header"><slot ?data-closed="${this.printLayout}" name="sketch"></slot></div>
+        </app-collapsible>
+        <app-collapsible open>
+          <div slot="header">Report</div>
+          <div slot="content">
+            <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
+            <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
+          </div>
+        </app-collapsible>
+        <app-collapsible>
+          <div slot="header">Table</div>
+          <div slot="content">
+            <div data-element="table">
+              ${this.renderTable}
+            </div>
+          </div>
+        </app-collapsible>
       `}
     `;
   }
