@@ -94,7 +94,7 @@ export class SiteDetails extends LitElement {
     </td>
     <td class="detail" title="${(keyLookup[el[key]])?keyLookup[el[key]].desc:el[key]}">
       <span id="${this.genId(index)}">
-        ${el[value]}
+        ${(keyLookup[el[key]]&&keyLookup[el[key]].transform)?keyLookup[el[key]].transform(el[value]):el[value]}
       </span>
     </td>
   `)
@@ -162,7 +162,7 @@ let keyLookup = {
   'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
   'County': { 'title': 'County', 'desc': 'County where spring is located.' },
   'Surveyor': { 'title': 'Surveyor(s)', 'desc': 'Who conducted the survey (initials).' },
-  'Date': { 'title': 'Date', 'desc': 'Date of field survey.' },
+  'Date': { 'title': 'Date', 'desc': 'Date of field survey.', 'transform': function(item) {return (!item)?null:new Date(item).toISOString().substring(0,10)} },
   'Time': { 'title': 'Time', 'desc': 'Start time.' },
   'Easting_WTM': { 'title': 'Easting (WTM)', 'desc': 'Easting (WTM). As close to the spring source as possible.' },
   'Northing_WTM': { 'title': 'Northing (WTM)', 'desc': 'Northing (WTM). As close to the spring source as possible.' },
