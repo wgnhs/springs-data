@@ -811,11 +811,13 @@
 
       ${(!this.siteinfo)? '' : litElement.html`
         <div class="header">
+          <span>
+            <a href="${window.router.router.link('/view/' + this.siteinfo.Site_Code)}" onclick="event.preventDefault()"><i class="material-icons toggle-print" title="Back to website" @click="${this.fireTogglePrint}" ?data-closed="${!this.printLayout}">arrow_back</i></a>
+            <a href="${window.router.router.link('/')}" onclick="event.preventDefault()"><i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}" ?data-closed="${this.printLayout}">arrow_back</i></a>
+          </span>
           <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
           <span>
-            <i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">print</i>
-            <i class="material-icons toggle-print" title="Back to website" @click="${this.fireTogglePrint}" ?data-closed="${!this.printLayout}">clear</i>
-            <i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}" ?data-closed="${this.printLayout}">clear</i>
+            <a href="${window.router.router.link('/print/' + this.siteinfo.Site_Code)}" onclick="event.preventDefault()"><i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">print</i></a>
           </span>
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
