@@ -123,10 +123,10 @@ export class SiteMap extends window.L.Evented {
 
   setVisibility(isVisible) {
     if (isVisible) {
-      this.el.setAttribute('data-closed', true);
-    } else {
       this.el.removeAttribute('data-closed');
       this.map.invalidateSize();
+    } else {
+      this.el.setAttribute('data-closed', true);
     }
   }
 

@@ -3,6 +3,7 @@ import { SiteData } from './site-data.js';
 import { SiteRouter } from './site-router.js';
 
 window.siteMap = new SiteMap();
+window.sidebar = document.querySelector('#sidebar');
 
 window.siteMap.once('init', function() {
   window.siteData = new SiteData(window.siteMap.springs, window.siteMap.springPhotos, window.siteMap.springSketches);
@@ -42,20 +43,32 @@ window.siteMap.once('init', function() {
     // console.log('route-entry');
     window.siteMap.clearSelection();
     deselectFeature();
-    document.querySelector('#sidebar').switchTab('default');
+    document.querySelector('#app').setAttribute('data-view', 'app');
+    window.sidebar.switchTab('default');
+    window.siteMap.setVisibility(true);
   });
   window.router.on('route-view', (params) => {
     // console.log('route-view');
     let attr = window.siteMap.selectPoint(params['Site_Code']);
+    document.querySelectorAll('site-details').forEach(function(details) {
+      details['printLayout'] = false;
+    });
     selectFeature(attr).then(() => {
-      document.querySelector('#sidebar').switchTab('details');
+      document.querySelector('#app').setAttribute('data-view', 'app');
+      window.sidebar.switchTab('details');
+      window.siteMap.setVisibility(true);
     })
   });
   window.router.on('route-print', (params) => {
     // console.log('route-print');
     let attr = window.siteMap.selectPoint(params['Site_Code']);
+    document.querySelectorAll('site-details').forEach(function(details) {
+      details['printLayout'] = true;
+    });
     selectFeature(attr).then(() => {
-      document.querySelector('#sidebar').switchTab('details');
+      document.querySelector('#app').removeAttribute('data-view');
+      window.sidebar.switchTab('details');
+      window.siteMap.setVisibility(false);
     })
   });
   window.router.resolve();
@@ -75,14 +88,14 @@ document.addEventListener('clear-selection', function(e) {
 
 document.addEventListener('toggle-print', function(e) {
   if (e.detail.on) {
-    console.log('TODO print on');
+    window.router.setRoute('print', e.detail.params);
   } else {
-    console.log('TODO print off');
+    window.router.setRoute('view', e.detail.params);
   }
 });
 
 document.addEventListener('toggle-sketch', function(e) {
-  window.siteMap.setVisibility(!e.detail.closed);
+  window.siteMap.setVisibility(e.detail.closed);
 });
 
 
