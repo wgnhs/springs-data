@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
+export { AppCollapsible } from './app-collapsible.js';
 export { SitePhotos } from './site-photos.js';
-export {SiteWaterQuality} from './site-water-quality.js'
+export { SiteWaterQuality } from './site-water-quality.js'
 export { SiteBedMaterials } from './site-bed-materials.js';
 import { genId } from './gen-id.js';
 
@@ -71,13 +72,17 @@ export class SiteDetails extends LitElement {
         padding: 0;
       }
       .header i {
-        font-size: var(--font-size-extra-large);
+        font-size: var(--icon-size-large);
         color: var(--palette-accent);
         cursor: pointer;
       }
       
       [data-closed] {
         display: none;
+      }
+
+      app-collapsible i {
+        font-size: var(--icon-size-large);
       }
     `;
   }
@@ -94,7 +99,7 @@ export class SiteDetails extends LitElement {
     </td>
     <td class="detail" title="${(keyLookup[el[key]])?keyLookup[el[key]].desc:el[key]}">
       <span id="${this.genId(index)}">
-        ${el[value]}
+        ${(keyLookup[el[key]]&&keyLookup[el[key]].transform)?keyLookup[el[key]].transform(el[value]):el[value]}
       </span>
     </td>
   `)
@@ -108,20 +113,41 @@ export class SiteDetails extends LitElement {
 
       ${(!this.siteinfo)? '' : html`
         <div class="header">
+          <span>
+            <a href="${window.router.router.link('/view/' + this.siteinfo.Site_Code)}" onclick="event.preventDefault()"><i class="material-icons toggle-print" title="Back to website" @click="${this.fireTogglePrint}" ?data-closed="${!this.printLayout}">arrow_back</i></a>
+            <a href="${window.router.router.link('/')}" onclick="event.preventDefault()"><i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}" ?data-closed="${this.printLayout}">arrow_back</i></a>
+          </span>
           <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
           <span>
-            <i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">print</i>
-            <i class="material-icons toggle-print" title="Back to website" @click="${this.fireTogglePrint}" ?data-closed="${!this.printLayout}">clear</i>
-            <i class="material-icons clear-selection" title="Clear selection" @click="${this.fireClearSelection}" ?data-closed="${this.printLayout}">clear</i>
+            <a href="${window.router.router.link('/print/' + this.siteinfo.Site_Code)}" onclick="event.preventDefault()"><i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">print</i></a>
           </span>
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
         <slot ?data-closed="${this.printLayout}" name="sketch"></slot>
-        <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
-        <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
-        <div data-element="table">
-          ${this.renderTable}
-        </div>
+        <app-collapsible open>
+          <i slot="header-before" class="material-icons" title="Water quality">bar_chart</i>
+          <span slot="header">Water quality</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content">
+            <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
+          </div>
+        </app-collapsible>
+        <app-collapsible open>
+          <i slot="header-before" class="material-icons" title="Spring-bed materials">bar_chart</i>
+          <span slot="header">Spring-bed materials</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content">
+            <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
+          </div>
+        </app-collapsible>
+        <app-collapsible ?open="${this.printLayout}">
+          <i slot="header-before" class="material-icons" title="All data">view_list</i>
+          <span slot="header">All data</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content" data-element="table">
+            ${this.renderTable}
+          </div>
+        </app-collapsible>
       `}
     `;
   }
@@ -160,7 +186,7 @@ let keyLookup = {
   'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
   'County': { 'title': 'County', 'desc': 'County where spring is located.' },
   'Surveyor': { 'title': 'Surveyor(s)', 'desc': 'Who conducted the survey (initials).' },
-  'Date': { 'title': 'Date', 'desc': 'Date of field survey.' },
+  'Date': { 'title': 'Date', 'desc': 'Date of field survey.', 'transform': function(item) {return (!item)?null:new Date(item).toISOString().substring(0,10)} },
   'Time': { 'title': 'Time', 'desc': 'Start time.' },
   'Easting_WTM': { 'title': 'Easting (WTM)', 'desc': 'Easting (WTM). As close to the spring source as possible.' },
   'Northing_WTM': { 'title': 'Northing (WTM)', 'desc': 'Northing (WTM). As close to the spring source as possible.' },

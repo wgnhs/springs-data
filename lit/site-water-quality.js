@@ -19,7 +19,7 @@ export class SiteWaterQuality extends LitElement {
                font-size: 13px;
 
                /* why did I have to add this in?? */
-               font-family: 'open_sansregular','Open Sans',sans_serif; 
+               font-family: 'open_sansregular','Open Sans',sans_serif;
 
                color: #777;
             }
@@ -30,14 +30,19 @@ export class SiteWaterQuality extends LitElement {
                font-size: 14px;
             }
 
-        `; 
+            .container {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+            }
+        `;
     }
 
   render() {
     return html`
-        <div>
-        <h2>Water quality</h2>
-        
+        <div class="container">
+        <!-- <h2>Water quality</h2> -->
+
        <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
          <svg id="conductivity-chart"></svg><br>
        <!-- <span class="label">temperature: </span><span>${this.siteinfo.Water_Temp_C}</span><br> -->
@@ -46,90 +51,90 @@ export class SiteWaterQuality extends LitElement {
          <svg id="ph-chart"></svg>
         </div>
     `;
-  } //end render 
-    
+  } //end render
+
    firstUpdated() {
       this.phchart = d3.select(this.renderRoot.querySelector('#ph-chart'));
       this.temperaturechart = d3.select(this.renderRoot.querySelector('#temperature-chart'));
       this.conductivitychart = d3.select(this.renderRoot.querySelector('#conductivity-chart'));
-      
-      
+
+
       var siteph = [{pH:this.siteinfo.pH}];
       var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
       var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
-      
-      
-      
-      /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
-      
-      
-      var phDotPlotOptions = {
-         svg: this.phchart, 
-         label: "pH",         
-         attributeKey: "pH", 
 
-         tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
-         chartMin: 5.5, 
+
+
+      /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
+
+
+      var phDotPlotOptions = {
+         svg: this.phchart,
+         label: "pH",
+         attributeKey: "pH",
+
+         tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0],
+         chartMin: 5.5,
          chartMax: 10,
-         
+
         // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
-         allData:  aggrData.data 
-         
-      };
-      
-      var tempDotPlotOptions = {
-         svg: this.temperaturechart, 
-         attributeKey: "Water_Temp_C", 
-         
-         tickValues:[5,7,9,11,13,15,17], 
-         chartMin: 5, 
-         chartMax: 17,
-         
-        // svgWidth: svgWidth,
-         siteInfo: this.siteinfo, 
          allData:  aggrData.data
-         
-      }; 
-      
+
+      };
+
+      var tempDotPlotOptions = {
+         svg: this.temperaturechart,
+         attributeKey: "Water_Temp_C",
+
+         tickValues:[5,7,9,11,13,15,17],
+         chartMin: 5,
+         chartMax: 17,
+
+        // svgWidth: svgWidth,
+         siteInfo: this.siteinfo,
+         allData:  aggrData.data
+
+      };
+
       var conductivityDotPlotOptions = {
          svg: this.conductivitychart,
-         //label: "Conductivity (uS)", 
-         attributeKey: "Conductivity_uS", 
-         
-         tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750], 
-         chartMin: 0, 
+         //label: "Conductivity (uS)",
+         attributeKey: "Conductivity_uS",
+
+         tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750],
+         chartMin: 0,
          chartMax: 1750,
-         
+
         // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
-      
+
       };
-      
-     
-      
+
+
+
       /* -- draw the dot plots --*/
-      
+
       dotPlot.draw(tempDotPlotOptions);
       dotPlot.draw(phDotPlotOptions);
       dotPlot.draw(conductivityDotPlotOptions);
-      
+
    }
-   
+
    updated() {
       var annotateTempPlotOptions = {
          svg: this.temperaturechart,
          attributeKey: "Water_Temp_C",
          label: "Temperature (C)",
          siteInfo: this.siteinfo
-      }     
-      
-      
+      }
+
+
       dotPlot.annotate(annotateTempPlotOptions);
-      
-   }  //end updated() 
-    
+
+   }  //end updated()
+
 }   //end export class
 
 customElements.define('site-water-quality', SiteWaterQuality);
@@ -137,12 +142,12 @@ customElements.define('site-water-quality', SiteWaterQuality);
 
 
 
-// dotPlot is an immediately-invoked function expression. 
+// dotPlot is an immediately-invoked function expression.
 
 var dotPlot = (function (){
-   
-   /* --- set up SVG --- */ 
-   
+
+   /* --- set up SVG --- */
+
    var svgWidth = 400;
    var svgHeight = 130;
 
@@ -150,35 +155,48 @@ var dotPlot = (function (){
                   top: 50,
                   right: 20,
                   bottom: 50,
-                  left: 20  
-                }; 
+                  left: 20
+                };
    var chartWidth = svgWidth - margin.left - margin.right,
    chartHeight = svgHeight - margin.top - margin.bottom;
 
-   
-   
- 
-   // define functions that will be methods of dotPlot 
-   
-   var draw = function(options){ 
-      
+
+
+
+   // define functions that will be methods of dotPlot
+
+   var draw = function(options){
+
       // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
-      
+
+      /* ---- SVG setup ---- */
+
+      var svgHeight = 110;
+      var svgWidth = options.svgWidth;
+      var margin = {
+                     top: 40,
+                     right: 20,
+                     bottom: 40,
+                     left: 20
+                   };
+      var chartWidth = svgWidth - margin.left - margin.right,
+      chartHeight = svgHeight - margin.top - margin.bottom;
+
       options.svg.attr('width', svgWidth).attr("height", svgHeight)
      // .style('background', "#cecece")
       ;
-      
-      
+
+
       //append a group.
-      var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+margin.left+", "+margin.top+")");  
-      
+      var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+margin.left+", "+margin.top+")");
+
       /* ~~~~~~~~~ Draw the chart ~~~~~~~~~ */
-      
-      var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]); 
-            
-      var y_scale = d3.scaleBand().domain([""]).rangeRound([0, chartHeight]); 
-      
-      
+
+      var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]);
+
+      var y_scale = d3.scaleBand().domain([""]).rangeRound([0, chartHeight]);
+
+
       var xAxis = chartgroup.append("g").attr("class", "x-axis");
       xAxis
          .attr("transform", "translate(0," + chartHeight + ")")
@@ -190,10 +208,10 @@ var dotPlot = (function (){
              .tickPadding(5)
              .tickValues(options.tickValues)
          )
-         .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick. 
-      
-      
-      var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart. 
+         .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick.
+
+
+      var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart.
       yAxis
          .call(
            d3
@@ -205,22 +223,22 @@ var dotPlot = (function (){
          .call(g => g.select(".domain").remove())           // no vertical line for the y axis (all vertical lines are x axis ticks)
          .call(g => g.selectAll("text").remove());          // no labels on y axis
 
-     
-     /* ~~~~~~~~~ create circles ~~~~~~~~~ */ 
-      
+
+     /* ~~~~~~~~~ create circles ~~~~~~~~~ */
+
      var circles = chartgroup.append("g").attr("class", "circles");
-      
-     var jitterWidth = chartHeight; 
-      
-      
+
+     var jitterWidth = chartHeight;
+
+
      circles.selectAll("circle")
          .data(options.allData, function(d) { return d.Site_Code; })
          .enter()
          .append("circle")
          .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
-         // Math.random() returns values from 0 to less than 1, in approximately uniform distribution. 
+         // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
          .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
-         .attr('r', 3)                                      // radius 
+         .attr('r', 3)                                      // radius
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7")                           // opacity
          .attr("class", function(d){
@@ -230,22 +248,22 @@ var dotPlot = (function (){
                })
          .on('click', function(d){annotate(d[options.attributeKey])})
          ;
-      
+
    } // end draw function
-   
-   
-      
+
+
+
    var annotate = function(options){
-         
-         var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]); 
-      
-      
+
+         var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]);
+
+
          d3.select("circle").attr("fill", "#000");
 
-//         var annotation = options.svg.append("g").attr("class", "annotation"); 
-//      
+//         var annotation = options.svg.append("g").attr("class", "annotation");
+//
 //         var annotationRadius = 5;
-//         var annotationLineLength = 20; 
+//         var annotationLineLength = 20;
 //         var annotationLabelPadding = 5;
 //
 //
@@ -255,10 +273,10 @@ var dotPlot = (function (){
 //            .data(annotationData)
 //            .enter()
 //            .append("circle")
-//            .attr("cx", function(d){                       
+//            .attr("cx", function(d){
 //                           return x_scale(d.rrr)})              // x position
 //            .attr("cy", function(d){return chartHeight/2})     // y position
-//            .attr('r', annotationRadius)                        // radius 
+//            .attr('r', annotationRadius)                        // radius
 //            .attr("fill", "#406058")                           // fill color
 //            .attr("stroke", "#000")
 //            .attr("stroke-width", 2)
@@ -273,17 +291,17 @@ var dotPlot = (function (){
 //            .style('fill', 'none')          //set appearance
 //            .attr('points', function(d){
 //
-//                   // two points on each line: 
+//                   // two points on each line:
 //                   // A: centroid of the circle
 //                   // B: 10 px above the circle
-//                   // each point is defined by an [x, y] 
+//                   // each point is defined by an [x, y]
 //                  var startpoint = [0,0]
 //                      startpoint[0] = x_scale(d.rrr);
-//                      startpoint[1] = (chartHeight/2)-annotationRadius; 
+//                      startpoint[1] = (chartHeight/2)-annotationRadius;
 //
 //                  var endpoint = [0,0];
 //                      endpoint[0] = x_scale(d.rrr);
-//                      endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength; 
+//                      endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength;
 //
 //                   console.log("start, end", startpoint, endpoint)
 //                   return [startpoint, endpoint]        // return A, B
@@ -298,22 +316,22 @@ var dotPlot = (function (){
 //            .attr("transform", function(d){
 //               var textpoint = [0, 0]
 //                   textpoint[0] = x_scale(d.rrr);
-//                   textpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding; 
+//                   textpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding;
 //            return 'translate('+textpoint+')'
 //
 //            })
 //            .style('text-anchor', "middle")
 
-   } // end annotate function 
-      
-      
-   
-   
-   // return an object with all methods of dotPlot 
+   } // end annotate function
+
+
+
+
+   // return an object with all methods of dotPlot
    return {
-      
+
       draw: draw,
       annotate: annotate
    }
-   
+
 })();

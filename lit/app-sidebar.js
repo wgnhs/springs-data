@@ -16,7 +16,7 @@ export class AppSidebar extends LitElement {
   static get styles() {
     return css`
       :host {
-        padding: 0 1.5em 1.5em 1.5em;
+        padding: 0 var(--border-radius);
       }
     `;
   }
