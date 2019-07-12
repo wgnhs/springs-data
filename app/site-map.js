@@ -10,6 +10,10 @@ export class SiteMap extends window.L.Evented {
     //set zoomcontrol to false because we will add it in a different corner. 
     const map = this.map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
     this.el = document.querySelector('#map');
+     
+     /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
+    //place a zoom control in the top right: 
+    new L.Control.Zoom({position: 'topright'}).addTo(map);
 
     /* ~~~~~~~~ Map Layers ~~~~~~~~ */
     //basemap from Open Street Map
@@ -19,9 +23,6 @@ export class SiteMap extends window.L.Evented {
 
     const sat = L.esri.basemapLayer('Imagery');
 
-    /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
-    //place a zoom control in the top right: 
-    new L.Control.Zoom({position: 'topright'}).addTo(map);
 
     const basemapOptions = {
       'OpenStreetMap': osm,
