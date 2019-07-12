@@ -20,7 +20,7 @@
     static get styles() {
       return litElement.css`
       :host {
-        padding: 0 1.5em 1.5em 1.5em;
+        padding: 0 var(--border-radius);
       }
     `;
     }
@@ -53,6 +53,134 @@
   }
 
   customElements.define('app-sidebar', AppSidebar);
+
+  // https://gist.github.com/gordonbrander/2230317
+  const genId = function() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  };
+
+  /**
+   * Code use and modified from
+   * https://alligator.io/css/collapsible/
+   */
+  class AppCollapsible extends litElement.LitElement {
+    static get properties() {
+      return {
+        genId: {
+          type: String,
+          attribute: false
+        },
+        open: {
+          type: Boolean
+        }
+      };
+    }
+
+    constructor() {
+      super();
+      this.genId = genId();
+    }
+
+    static get styles() {
+      return litElement.css`
+    .wrap-collapsible {
+      margin: var(--border-radius) 0;
+    }
+
+    input[type='checkbox'] {
+      display: none;
+    }
+
+    .lbl-toggle {
+      display: block;
+
+      font-weight: var(--font-weight-bold);
+      font-size: var(--font-size-extra-large);
+      text-align: center;
+
+      padding: var(--border-radius);
+
+      color: var(--palette-accent);
+      background: var(--palette-light);
+
+      cursor: pointer;
+
+      border-radius: var(--border-radius);
+      transition: all 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    }
+
+    .lbl-toggle:hover {
+      color: var(--palette-900);
+    }
+
+    .collapsible-content {
+      max-height: 0px;
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+    }
+
+    .toggle:checked + .lbl-toggle + .collapsible-content {
+      max-height: var(--collapsible-max-height, 3000px);
+    }
+
+    .toggle:checked + .lbl-toggle {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .collapsible-content .content-inner {
+      background: var(--palette-white);
+      border-bottom: 1px solid var(--palette-light);
+      border-right: 1px solid var(--palette-light);
+      border-left: 1px solid var(--palette-light);
+      border-bottom-left-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+      padding: var(--font-size);
+    }
+    .collapsible-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    `;
+    }
+
+    render() {
+      return litElement.html`
+    <div class="wrap-collapsible">
+      <input id="${this.genId}" class="toggle" type="checkbox" ?checked="${this.open}">
+      <label for="${this.genId}" class="lbl-toggle" tabindex="0">
+        <div class="collapsible-header">
+          <div><slot name="header-before"></slot></div>
+          <div><slot name="header"></slot></div>
+          <div><slot name="header-after"></slot></div>
+        </div>
+      </label>
+      <div class="collapsible-content">
+        <div class="content-inner">
+          <slot name="content"></slot>
+        </div>
+      </div>
+    </div>
+    `;
+    }
+
+    firstUpdated() {
+      let myLabels = this.renderRoot.querySelectorAll('.lbl-toggle');
+
+      Array.from(myLabels).forEach(label => {
+        label.addEventListener('keydown', e => {
+          // 32 === spacebar
+          // 13 === enter
+          if (e.which === 32 || e.which === 13) {
+            e.preventDefault();
+            label.click();
+          }      });
+      });
+    }
+  }
+  customElements.define('app-collapsible', AppCollapsible);
 
   /*!
     @license https://github.com/ciampo/macro-carousel/blob/master/LICENSE
@@ -274,13 +402,18 @@
                font-size: 14px;
             }
 
+            .container {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+            }
         `; 
       }
 
     render() {
       return litElement.html`
-        <div>
-        <h2>Water quality</h2>
+        <div class="container">
+        <!-- <h2>Water quality</h2> -->
         
        <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
          <svg id="conductivity-chart"></svg><br>
@@ -379,12 +512,12 @@
         
         /* ---- SVG setup ---- */
         
-        var svgHeight = 130;
+        var svgHeight = 110;
         var svgWidth = options.svgWidth;
         var margin = {
-                       top: 50,
+                       top: 40,
                        right: 20,
-                       bottom: 50,
+                       bottom: 40,
                        left: 20  
                      }; 
         var chartWidth = svgWidth - margin.left - margin.right,
@@ -491,7 +624,7 @@
                      endpoint[0] = x_scale(d.rrr);
                      endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength; 
            
-                  console.log("start, end", startpoint, endpoint);
+                 //  console.log("start, end", startpoint, endpoint)
                   return [startpoint, endpoint]        // return A, B
            });
            
@@ -545,6 +678,11 @@
             fill: #414c43;
 
         }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .donutSegments {
 
         }
@@ -561,8 +699,8 @@
       render() {
 
           return litElement.html `
-        <div>
-        <h2>Spring-bed materials</h2>
+        <div class="container">
+        <!-- <h2>Spring-bed materials</h2> -->
         <svg id="bed-materials-chart"></svg>
         </div>
         `;
@@ -702,11 +840,6 @@
   } //close export
   customElements.define('site-bed-materials', SiteBedMaterials);
 
-  // https://gist.github.com/gordonbrander/2230317
-  const genId = function() {
-    return '_' + Math.random().toString(36).substr(2, 9);
-  };
-
   class SiteDetails extends litElement.LitElement {
     static get properties() {
       return {
@@ -774,13 +907,17 @@
         padding: 0;
       }
       .header i {
-        font-size: var(--font-size-extra-large);
+        font-size: var(--icon-size-large);
         color: var(--palette-accent);
         cursor: pointer;
       }
       
       [data-closed] {
         display: none;
+      }
+
+      app-collapsible i {
+        font-size: var(--icon-size-large);
       }
     `;
     }
@@ -822,11 +959,30 @@
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
         <slot ?data-closed="${this.printLayout}" name="sketch"></slot>
-        <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
-        <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
-        <div data-element="table">
-          ${this.renderTable}
-        </div>
+        <app-collapsible open>
+          <i slot="header-before" class="material-icons" title="Water quality">bar_chart</i>
+          <span slot="header">Water quality</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content">
+            <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
+          </div>
+        </app-collapsible>
+        <app-collapsible open>
+          <i slot="header-before" class="material-icons" title="Spring-bed materials">bar_chart</i>
+          <span slot="header">Spring-bed materials</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content">
+            <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
+          </div>
+        </app-collapsible>
+        <app-collapsible ?open="${this.printLayout}">
+          <i slot="header-before" class="material-icons" title="All data">view_list</i>
+          <span slot="header">All data</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content" data-element="table">
+            ${this.renderTable}
+          </div>
+        </app-collapsible>
       `}
     `;
     }
@@ -1073,7 +1229,7 @@
     constructor() {
       super();
       this.closed=true;
-      this.buttonText="Show Sketch";
+      this.buttonText="chevron_right";
     }
 
     static get styles() {
@@ -1083,13 +1239,20 @@
 
     render() {
       return litElement.html`
-    <button @click="${this.toggle}">${this.buttonText}</button>
+    <style>
+      @import url("./css/typography.css");
+    </style>
+    <app-collapsible @click="${this.toggle}" onclick="event.preventDefault()">
+      <i slot="header-before" class="material-icons" title="Site sketch map">picture_as_pdf</i>
+      <span slot="header">Site sketch map</span>
+      <i slot="header-after" class="material-icons">${this.buttonText}</i>
+    </app-collapsible>
     `;
     }
 
     toggle() {
       this.closed = !this.closed;
-      this.buttonText = (this.closed)?"Show Sketch":"Hide Sketch";
+      this.buttonText = (this.closed)?"chevron_right":"chevron_left";
       this.dispatchEvent(new CustomEvent('toggle-sketch', {bubbles: true, detail: {closed: this.closed}}));
     }
   }
@@ -1145,6 +1308,7 @@
   }
   customElements.define('map-controls', MapControls);
 
+  exports.AppCollapsible = AppCollapsible;
   exports.AppSidebar = AppSidebar;
   exports.MapControls = MapControls;
   exports.SiteDetails = SiteDetails;
