@@ -98,25 +98,40 @@
       //set zoomcontrol to false because we will add it in a different corner. 
       const map = this.map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
       this.el = document.querySelector('#map');
-
-      /* ~~~~~~~~ Map Layers ~~~~~~~~ */
-      //basemap from Open Street Map
-      const osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-
-      const sat = L.esri.basemapLayer('Imagery');
-
-      /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
+       
+       /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
       //place a zoom control in the top right: 
       new L.Control.Zoom({position: 'topright'}).addTo(map);
 
-      const basemapOptions = {
-        'OpenStreetMap': osm,
-        'Satellite': sat
-      };
-      L.control.layers(basemapOptions, null).addTo(map);
+       
+      /* ~~~~~~~~ Basemap Layers ~~~~~~~~ */
+       
+      // basemaps from Open Street Map
+      const osmhot = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
+         label: "OpenStreetMap Humanitarian"
+      }).addTo(map);
+       
+       const osmmapnik =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', 
+            label: "OpenStreetMap Mapnik"   
+       }); 
+      
+      // Esri basemaps 
+      const esrisat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
+     
+      const esritopo = L.esri.basemapLayer('Topographic', {label: "Esri Topographic"}); 
+       
+      // add the basemap control to the map  
+      var basemaps = [osmhot, esrisat]; 
+      map.addControl(L.control.basemaps({
+         basemaps: basemaps, 
+         tileX: 0, 
+         tileY: 0, 
+         tileZ: 1
 
+      })); 
 
 
       /* +++++++++++ Springs layer +++++++++++ */ 
