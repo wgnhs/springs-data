@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+export { AppCollapsible } from './app-collapsible.js';
 
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 
@@ -158,7 +159,7 @@ export class SiteSketchButton extends LitElement {
   constructor() {
     super();
     this.closed=true;
-    this.buttonText="Show Sketch";
+    this.buttonText="chevron_right"
   }
 
   static get styles() {
@@ -168,13 +169,20 @@ export class SiteSketchButton extends LitElement {
 
   render() {
     return html`
-    <button @click="${this.toggle}">${this.buttonText}</button>
+    <style>
+      @import url("./css/typography.css");
+    </style>
+    <app-collapsible @click="${this.toggle}" onclick="event.preventDefault()">
+      <i slot="header-before" class="material-icons" title="Site sketch map">picture_as_pdf</i>
+      <span slot="header">Site sketch map</span>
+      <i slot="header-after" class="material-icons">${this.buttonText}</i>
+    </app-collapsible>
     `;
   }
 
   toggle() {
     this.closed = !this.closed;
-    this.buttonText = (this.closed)?"Show Sketch":"Hide Sketch";
+    this.buttonText = (this.closed)?"chevron_right":"chevron_left";
     this.dispatchEvent(new CustomEvent('toggle-sketch', {bubbles: true, detail: {closed: this.closed}}));
   }
 }
