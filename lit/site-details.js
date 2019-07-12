@@ -72,13 +72,17 @@ export class SiteDetails extends LitElement {
         padding: 0;
       }
       .header i {
-        font-size: var(--font-size-extra-large);
+        font-size: var(--icon-size-large);
         color: var(--palette-accent);
         cursor: pointer;
       }
       
       [data-closed] {
         display: none;
+      }
+
+      app-collapsible i {
+        font-size: var(--icon-size-large);
       }
     `;
   }
@@ -119,22 +123,29 @@ export class SiteDetails extends LitElement {
           </span>
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
-        <app-collapsible>
-          <div slot="header"><slot ?data-closed="${this.printLayout}" name="sketch"></slot></div>
-        </app-collapsible>
+        <slot ?data-closed="${this.printLayout}" name="sketch"></slot>
         <app-collapsible open>
-          <div slot="header">Report</div>
+          <i slot="header-before" class="material-icons" title="Water quality">bar_chart</i>
+          <span slot="header">Water quality</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
           <div slot="content">
             <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
+          </div>
+        </app-collapsible>
+        <app-collapsible open>
+          <i slot="header-before" class="material-icons" title="Spring-bed materials">bar_chart</i>
+          <span slot="header">Spring-bed materials</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content">
             <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
           </div>
         </app-collapsible>
-        <app-collapsible>
-          <div slot="header">Table</div>
-          <div slot="content">
-            <div data-element="table">
-              ${this.renderTable}
-            </div>
+        <app-collapsible ?open="${this.printLayout}">
+          <i slot="header-before" class="material-icons" title="All data">view_list</i>
+          <span slot="header">All data</span>
+          <i slot="header-after" class="material-icons">expand_more</i>
+          <div slot="content" data-element="table">
+            ${this.renderTable}
           </div>
         </app-collapsible>
       `}

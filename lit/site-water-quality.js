@@ -30,13 +30,18 @@ export class SiteWaterQuality extends LitElement {
                font-size: 14px;
             }
 
+            .container {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+            }
         `; 
     }
 
   render() {
     return html`
-        <div>
-        <h2>Water quality</h2>
+        <div class="container">
+        <!-- <h2>Water quality</h2> -->
         
        <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
          <svg id="conductivity-chart"></svg><br>
@@ -135,12 +140,12 @@ var dotPlot = (function (){
       
       /* ---- SVG setup ---- */
       
-      var svgHeight = 130;
+      var svgHeight = 110;
       var svgWidth = options.svgWidth;
       var margin = {
-                     top: 50,
+                     top: 40,
                      right: 20,
-                     bottom: 50,
+                     bottom: 40,
                      left: 20  
                    }; 
       var chartWidth = svgWidth - margin.left - margin.right,
@@ -247,7 +252,7 @@ var dotPlot = (function (){
                    endpoint[0] = x_scale(d.rrr);
                    endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength; 
          
-                console.log("start, end", startpoint, endpoint)
+               //  console.log("start, end", startpoint, endpoint)
                 return [startpoint, endpoint]        // return A, B
          })
          

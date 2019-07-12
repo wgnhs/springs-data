@@ -22,6 +22,11 @@ export class SiteBedMaterials extends LitElement{
             fill: #414c43;
 
         }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .donutSegments {
 
         }
@@ -38,8 +43,8 @@ export class SiteBedMaterials extends LitElement{
     render() {
 
         return html `
-        <div>
-        <h2>Spring-bed materials</h2>
+        <div class="container">
+        <!-- <h2>Spring-bed materials</h2> -->
         <svg id="bed-materials-chart"></svg>
         </div>
         `;
