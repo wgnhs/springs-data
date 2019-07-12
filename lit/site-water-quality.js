@@ -147,7 +147,6 @@ customElements.define('site-water-quality', SiteWaterQuality);
 var dotPlot = (function (){
 
    /* --- set up SVG --- */
-
    var svgWidth = 400;
    var svgHeight = 130;
 
@@ -157,6 +156,7 @@ var dotPlot = (function (){
                   bottom: 50,
                   left: 20
                 };
+   
    var chartWidth = svgWidth - margin.left - margin.right,
    chartHeight = svgHeight - margin.top - margin.bottom;
 
@@ -169,18 +169,6 @@ var dotPlot = (function (){
 
       // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
 
-      /* ---- SVG setup ---- */
-
-      var svgHeight = 110;
-      var svgWidth = options.svgWidth;
-      var margin = {
-                     top: 40,
-                     right: 20,
-                     bottom: 40,
-                     left: 20
-                   };
-      var chartWidth = svgWidth - margin.left - margin.right,
-      chartHeight = svgHeight - margin.top - margin.bottom;
 
       options.svg.attr('width', svgWidth).attr("height", svgHeight)
      // .style('background', "#cecece")
@@ -258,7 +246,6 @@ var dotPlot = (function (){
          var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]);
 
 
-         d3.select("circle").attr("fill", "#000");
 
 //         var annotation = options.svg.append("g").attr("class", "annotation");
 //
