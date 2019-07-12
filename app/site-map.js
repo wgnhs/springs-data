@@ -15,20 +15,36 @@ export class SiteMap extends window.L.Evented {
     //place a zoom control in the top right: 
     new L.Control.Zoom({position: 'topright'}).addTo(map);
 
-    /* ~~~~~~~~ Map Layers ~~~~~~~~ */
+    /* ~~~~~~~~ Basemap Layers ~~~~~~~~ */
     //basemap from Open Street Map
     const osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+      attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
+       label: "OpenStreetMap "
     }).addTo(map);
+     
+    const stamen = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
+    attribution: 'Map data &copy; <a href="www.stamen.com">StamenDesign</a>', 
+       label: "Stamen Watercolor"
+    });  
 
-    const sat = L.esri.basemapLayer('Imagery');
+    const sat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
+    const natgeo = L.esri.basemapLayer('NationalGeographic', {label: "National Geographic"});
 
 
-    const basemapOptions = {
-      'OpenStreetMap': osm,
-      'Satellite': sat
-    }
-    L.control.layers(basemapOptions, null).addTo(map);
+//    const basemapOptions = {
+//      'OpenStreetMap': osm,
+//      'Satellite': sat
+//    }
+//    L.control.layers(basemapOptions, null).addTo(map);
+     
+    var basemaps = [osm, natgeo, stamen, sat]; 
+    map.addControl(L.control.basemaps({
+       basemaps: basemaps, 
+       tileX: 0, 
+       tileY: 0, 
+       tileZ: 1
+
+    })); 
 
 
 
