@@ -15,29 +15,28 @@ export class SiteMap extends window.L.Evented {
     //place a zoom control in the top right: 
     new L.Control.Zoom({position: 'topright'}).addTo(map);
 
+     
     /* ~~~~~~~~ Basemap Layers ~~~~~~~~ */
-    //basemap from Open Street Map
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+     
+    // basemaps from Open Street Map
+    const osmhot = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
-       label: "OpenStreetMap "
+       label: "OpenStreetMap Humanitarian"
     }).addTo(map);
      
-    const stamen = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
-    attribution: 'Map data &copy; <a href="www.stamen.com">StamenDesign</a>', 
-       label: "Stamen Watercolor"
-    });  
-
-    const sat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
-    const natgeo = L.esri.basemapLayer('NationalGeographic', {label: "National Geographic"});
-
-
-//    const basemapOptions = {
-//      'OpenStreetMap': osm,
-//      'Satellite': sat
-//    }
-//    L.control.layers(basemapOptions, null).addTo(map);
+     const osmmapnik =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', 
+          label: "OpenStreetMap Mapnik"   
+     }); 
+    
+    // Esri basemaps 
+    const esrisat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
+   
+    const esritopo = L.esri.basemapLayer('Topographic', {label: "Esri Topographic"}); 
      
-    var basemaps = [osm, natgeo, stamen, sat]; 
+    // add the basemap control to the map  
+    var basemaps = [osmhot, esrisat]; 
     map.addControl(L.control.basemaps({
        basemaps: basemaps, 
        tileX: 0, 
@@ -45,7 +44,6 @@ export class SiteMap extends window.L.Evented {
        tileZ: 1
 
     })); 
-
 
 
     /* +++++++++++ Springs layer +++++++++++ */ 
