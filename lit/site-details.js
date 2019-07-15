@@ -119,7 +119,8 @@ export class SiteDetails extends LitElement {
           </span>
           <h1>${this.siteinfo.County} County Spring #${this.siteinfo.SpringID}</h1>
           <span>
-            <a href="${window.router.router.link('/print/' + this.siteinfo.Site_Code)}" onclick="event.preventDefault()"><i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">print</i></a>
+            <a href="${window.router.router.link('/print/' + this.siteinfo.Site_Code)}" onclick="event.preventDefault()"><i class="material-icons toggle-print" title="Print layout" @click="${this.fireTogglePrint}" ?data-closed="${this.printLayout}">zoom_out_map</i></a>
+            <i class="material-icons print-action" title="Print this page" @click="${this.handlePrint}" ?data-closed="${!this.printLayout}">print</i>
           </span>
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
@@ -150,6 +151,10 @@ export class SiteDetails extends LitElement {
         </app-collapsible>
       `}
     `;
+  }
+
+  handlePrint() {
+    window.print();
   }
 
   fireClearSelection() {
