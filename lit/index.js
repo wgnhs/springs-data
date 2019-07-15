@@ -1290,7 +1290,6 @@
       <style>
         @import url("./css/typography.css");
       </style>
-      <h3>View sites by value:</h3>
       <div class="option-container">
         <map-control-item @click="${this.typePoints}">
           <div slot="item-before"><span>Spring Type</span></div>
