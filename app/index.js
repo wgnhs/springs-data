@@ -408,6 +408,7 @@
     window.aggrData = siteData.aggrData;
 
     var deselectFeature = function() {
+      document.dispatchEvent(new CustomEvent('toggle-sketch', {bubbles: true, detail: {closed: true}}));
       document.querySelectorAll('site-details').forEach(function(details) {
         details['siteinfo'] = null;
         details['photos'] = null;
