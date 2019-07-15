@@ -81,25 +81,49 @@
     [data-closed] {
       display: none;
     }
+    .header {
+      text-align: center;
+      font-size: var(--font-size-title);
+    }
+    .default-view {
+      margin: 0 var(--border-radius);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      height: 100%;
+    }
+    section p {
+      margin: 0 var(--line-height);
+    }
+    section h2 {
+      margin: 0 var(--border-radius);
+    }
   </style>
 </head>
 <body>
   <div id="app" data-view="app">
     <app-sidebar id="sidebar" class="left-panel">
-      <section>
-        <h2>
-          Select a spring to learn more!
-        </h2>
-        <p>
-          Lorem ipsum dolor sit amet, viris efficiendi suscipiantur 
-          quo eu, eam altera iudicabit eu. Eu per molestie antiopam, 
-          eam in nemore iracundia, cum ei audiam iuvaret. Sed an erat 
-          sonet dolor, option lucilius sed cu, qui sadipscing 
-          comprehensam te. Magna recusabo intellegebat mei in. Purto 
-          rebum tibique no qui, enim minim eleifend ut pro.
-        </p>
-      </section>
-      <map-controls></map-controls>
+      <div class="default-view">
+        <h1 class="header">Wisconsin Springs</h1>
+        <section>
+          <h2>
+            Select a spring on the map to learn more!
+          </h2>
+          <p>
+            Lorem ipsum dolor sit amet, viris efficiendi suscipiantur 
+            quo eu, eam altera iudicabit eu. Eu per molestie antiopam, 
+            eam in nemore iracundia, cum ei audiam iuvaret. Sed an erat 
+            sonet dolor, option lucilius sed cu, qui sadipscing 
+            comprehensam te. Magna recusabo intellegebat mei in. Purto 
+            rebum tibique no qui, enim minim eleifend ut pro.
+          </p>
+        </section>
+        <section>
+          <h2>View springs by value:</h2>
+          <map-controls></map-controls>
+        </section>
+      </div>
+
       <div slot="details">
         <site-details>
           <div slot="sketch">
