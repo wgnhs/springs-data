@@ -25,13 +25,13 @@ export class SitePhotos extends LitElement {
         margin: 0 auto;
       }
       .slide {
-        min-height: 40vh;
+        height: 40vh;
         display: flex;
         align-items: center;
         justify-content: center;
       }
       .slide img {
-        max-height: 40vh;
+        max-width: 100%;
       }
       .text {
         background-color: var(--palette-accent-transparent);
@@ -60,7 +60,7 @@ export class SitePhotos extends LitElement {
     <macro-carousel navigation pagination>
     <slot>
       ${this.photos.map((el) => (!el.FileURL)?'':html`
-      <div class="slide">
+      <div class="slide" title="Double-click to expand">
         <img 
           src="${el.FileURL}"
           alt="${el.Description}"

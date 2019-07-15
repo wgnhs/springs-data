@@ -55,6 +55,10 @@ export class AppCollapsible extends LitElement {
       color: var(--palette-900);
     }
 
+    .lbl-toggle:focus {
+      outline: thin dotted;
+    }
+
     .collapsible-content {
       max-height: 0px;
       overflow: hidden;
