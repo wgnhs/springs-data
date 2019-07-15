@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 export { AppCollapsible } from './app-collapsible.js';
+export { DownloadSection } from './download-section.js';
+export { AppSpinner } from './app-spinner.js';
 
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 
@@ -65,8 +67,10 @@ export class SiteSketch extends LitElement {
       div {
         min-height: 10em;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-between;
+
       }
       img {
         max-height: 70vh;
@@ -77,9 +81,12 @@ export class SiteSketch extends LitElement {
   render() {
     return html`
     <div>
-      ${(!this.imgsrc)?'':html`
+      ${(!this.imgsrc)?html`
+        <app-spinner></app-spinner>
+      `:html`
       <img src="${this.imgsrc}" />
       `}
+      <download-section file="${this.pdfsrc}"></download-section>
     </div>
     `;
   }
@@ -112,9 +119,10 @@ export class SiteSketchPanel extends LitElement {
 
   static get styles() {
     return css`
-    div {
+    :host {
       min-height: 10em;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -123,9 +131,7 @@ export class SiteSketchPanel extends LitElement {
 
   render() {
     return html`
-    <div>
       <slot></slot>
-    </div>
     `;
   }
 
