@@ -1016,12 +1016,34 @@
   }
   customElements.define('site-details', SiteDetails);
 
+  let formatDate = function formatDate(item) {
+    return (!item) ?
+      null :
+      new Date(item).toISOString().substring(0,10);
+  };
+
+  let roundToTwoDecimals = function roundToTwoDecimals(item) {
+    return (!item) ?
+      null :
+      item.toFixed(2);
+  };
+
+
   let ignoredKeys = [
     'OBJECTID',
     'GlobalID',
     'File_Prefix',
     'Site_Code',
-    'SpringID'
+    'SpringID',
+    'Surveyor',
+    'Time',
+    'Horz_Precision_m',
+    'Max_PDOP',
+    'Access',
+    'Ease_Access',
+    'Notes',
+    'gps_time_date',
+    'sat_signals'
   ];
   let keyLookup = {
     'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
@@ -1030,13 +1052,13 @@
     'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
     'County': { 'title': 'County', 'desc': 'County where spring is located.' },
     'Surveyor': { 'title': 'Surveyor(s)', 'desc': 'Who conducted the survey (initials).' },
-    'Date': { 'title': 'Date', 'desc': 'Date of field survey.', 'transform': function(item) {return (!item)?null:new Date(item).toISOString().substring(0,10)} },
+    'Date': { 'title': 'Date', 'desc': 'Date of field survey.', 'transform': formatDate },
     'Time': { 'title': 'Time', 'desc': 'Start time.' },
-    'Easting_WTM': { 'title': 'Easting (WTM)', 'desc': 'Easting (WTM). As close to the spring source as possible.' },
-    'Northing_WTM': { 'title': 'Northing (WTM)', 'desc': 'Northing (WTM). As close to the spring source as possible.' },
+    'Easting_WTM': { 'title': 'Easting (WTM)', 'desc': 'Easting (WTM). As close to the spring source as possible.', 'transform': roundToTwoDecimals },
+    'Northing_WTM': { 'title': 'Northing (WTM)', 'desc': 'Northing (WTM). As close to the spring source as possible.', 'transform': roundToTwoDecimals },
     'Horz_Precision_m': { 'title': 'Horizontal Precision (meters)', 'desc': 'Horizontal accuracy of GPS position (meters).' },
     'Max_PDOP': { 'title': 'Maximum PDOP', 'desc': 'Maximum positional dilution of precision (PDOP) during measurement.' },
-    'Elevation_m': { 'title': 'Elevation (meters)', 'desc': 'From digital elevation model (DEM) (meters).' },
+    'Elevation_m': { 'title': 'Elevation (meters)', 'desc': 'From digital elevation model (DEM) (meters).', 'transform': roundToTwoDecimals },
     'elevation_source': { 'title': 'Elevation Source', 'desc': 'DEM source and horizontal resolution of DEM used to extract elevation.' },
     'Land_Owner': { 'title': 'Land Ownership', 'desc': 'List: state, county, city, NPS, USFS, tribal, military, private, other.' },
     'Access': { 'title': 'Access', 'desc': 'Directions to springs.' },
