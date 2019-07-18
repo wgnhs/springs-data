@@ -282,6 +282,10 @@
         clickedImg: {
           type: String,
           attribute: false
+        },
+        printLayout: {
+          type: Boolean,
+          attribute: 'print-layout'
         }
       };
     }
@@ -298,10 +302,13 @@
         margin: 0 auto;
       }
       .slide {
-        height: 40vh;
+        min-height: 40vh;
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+      .slide[data-compact] {
+        max-height: 40vh;
       }
       .slide img {
         max-width: 100%;
@@ -333,7 +340,7 @@
     <macro-carousel navigation pagination>
     <slot>
       ${this.photos.map((el) => (!el.FileURL)?'':litElement.html`
-      <div class="slide" title="Double-click to expand">
+      <div class="slide" title="Double-click to expand" ?data-compact="${!this.printLayout}">
         <img 
           src="${el.FileURL}"
           alt="${el.Description}"
