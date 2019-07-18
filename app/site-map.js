@@ -117,14 +117,18 @@ export class SiteMap extends window.L.Evented {
   }
 
   selectPoint(site) {
+    let result = null;
     // console.log('select point on map:', site);
     let point = this.getPoint(site);
-    let highlightPoint = this.getHighlightPoint();
-    if (point !== highlightPoint) {
-      this.clearSelection();
-      this.setHighlightPoint(point);
+    if (point) {
+      result = point.feature.properties;
+      let highlightPoint = this.getHighlightPoint();
+      if (point !== highlightPoint) {
+        this.clearSelection();
+        this.setHighlightPoint(point);
+      }
     }
-    return point.feature.properties;
+    return result;
   }
 
   clearSelection() {
