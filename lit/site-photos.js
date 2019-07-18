@@ -9,6 +9,10 @@ export class SitePhotos extends LitElement {
       clickedImg: {
         type: String,
         attribute: false
+      },
+      printLayout: {
+        type: Boolean,
+        attribute: 'print-layout'
       }
     };
   }
@@ -25,10 +29,13 @@ export class SitePhotos extends LitElement {
         margin: 0 auto;
       }
       .slide {
-        height: 40vh;
+        min-height: 40vh;
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+      .slide[data-compact] {
+        max-height: 40vh;
       }
       .slide img {
         max-width: 100%;
@@ -60,7 +67,7 @@ export class SitePhotos extends LitElement {
     <macro-carousel navigation pagination>
     <slot>
       ${this.photos.map((el) => (!el.FileURL)?'':html`
-      <div class="slide" title="Double-click to expand">
+      <div class="slide" title="Double-click to expand" ?data-compact="${!this.printLayout}">
         <img 
           src="${el.FileURL}"
           alt="${el.Description}"
