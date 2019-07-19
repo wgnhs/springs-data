@@ -4,6 +4,9 @@ simple web map for our springs data viewer.
 Web map is live here: https://wgnhs.github.io/springs-data/
 
 
+It is embedded in the overall application; prototype here: http://uwex.maps.arcgis.com/apps/MapSeries/index.html?appid=5f3157d4ba6049edb4964568f6ab1ff9&entry=4
+
+
 ## Development
 This project requires [NodeJS 8+](https://nodejs.org/) installed on your development system. We recommend using the latest LTS version.
 
