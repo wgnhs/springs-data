@@ -96,7 +96,7 @@
       /* ~~~~~~~~ Map ~~~~~~~~ */
       //create a map, center it, and set the zoom level. 
       //set zoomcontrol to false because we will add it in a different corner. 
-      const map = this.map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
+      const map = this.map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 7);
       this.el = document.querySelector('#map');
        
        /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
