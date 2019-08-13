@@ -231,8 +231,8 @@ class DotPlot {
      var jitterWidth = this.chartHeight;
      
 
-     this.circles.selectAll("circle")
-         .data(options.allData, function(d) { return d.Site_Code; })
+     this.circles.selectAll("g")
+         .data(options.allData, (d) => { return d.Site_Code; })
          .enter()
          .append("g")
          .append("circle")
@@ -242,12 +242,13 @@ class DotPlot {
          .attr('r', 3)                                      // radius
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7")                           // opacity
-         .attr("class", function(d){
-                  // console.log(d)
-                  // console.log(d.Site_Code);
+         .attr("class", (d) => {
                   return d.Site_Code
                })
-         .on('click', function(d){annotate(d[options.attributeKey])})
+         .on('click', (d) => {
+            console.log('ho');
+            this.annotate(d['Site_Code'])
+         })
          ;
 
    } // END DRAW
