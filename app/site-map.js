@@ -8,7 +8,7 @@ export class SiteMap extends window.L.Evented {
     /* ~~~~~~~~ Map ~~~~~~~~ */
     //create a map, center it, and set the zoom level. 
     //set zoomcontrol to false because we will add it in a different corner. 
-    const map = this.map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 6);
+    const map = this.map = L.map('map', {zoomControl:false}).setView([45, -89.623861], 7);
     this.el = document.querySelector('#map');
      
      /* ~~~~~~~~ Zoom Control ~~~~~~~~ */
@@ -117,14 +117,18 @@ export class SiteMap extends window.L.Evented {
   }
 
   selectPoint(site) {
+    let result = null;
     // console.log('select point on map:', site);
     let point = this.getPoint(site);
-    let highlightPoint = this.getHighlightPoint();
-    if (point !== highlightPoint) {
-      this.clearSelection();
-      this.setHighlightPoint(point);
+    if (point) {
+      result = point.feature.properties;
+      let highlightPoint = this.getHighlightPoint();
+      if (point !== highlightPoint) {
+        this.clearSelection();
+        this.setHighlightPoint(point);
+      }
     }
-    return point.feature.properties;
+    return result;
   }
 
   clearSelection() {

@@ -29,20 +29,19 @@ export class MapControls extends LitElement {
       <style>
         @import url("./css/typography.css");
       </style>
-      <h3>View sites by value:</h3>
       <div class="option-container">
         <map-control-item @click="${this.typePoints}">
           <div slot="item-before"><span>Spring Type</span></div>
           <div slot="item"></div>
           <i slot="item-after" class="icon material-icons" title="View on map">map</i>
         </map-control-item>
-        <map-control-item @click="${this.condPoints}">
-          <div slot="item-before"><span>Conductivity</span></div>
+        <map-control-item @click="${this.qPoints}">
+          <div slot="item-before"><span>Discharge</span></div>
           <div slot="item"></div>
           <i slot="item-after" class="icon material-icons" title="View on map">map</i>
         </map-control-item>
-        <map-control-item @click="${this.qPoints}">
-          <div slot="item-before"><span>Discharge</span></div>
+        <map-control-item @click="${this.condPoints}">
+          <div slot="item-before"><span>Conductivity</span></div>
           <div slot="item"></div>
           <i slot="item-after" class="icon material-icons" title="View on map">map</i>
         </map-control-item>

@@ -10,6 +10,7 @@ window.siteMap.once('init', function() {
   window.aggrData = siteData.aggrData;
 
   var deselectFeature = function() {
+    document.dispatchEvent(new CustomEvent('toggle-sketch', {bubbles: true, detail: {closed: true}}));
     document.querySelectorAll('site-details').forEach(function(details) {
       details['siteinfo'] = null;
       details['photos'] = null;
@@ -50,26 +51,34 @@ window.siteMap.once('init', function() {
   window.router.on('route-view', (params) => {
     // console.log('route-view');
     let attr = window.siteMap.selectPoint(params['Site_Code']);
-    document.querySelectorAll('site-details').forEach(function(details) {
-      details['printLayout'] = false;
-    });
-    selectFeature(attr).then(() => {
-      document.querySelector('#app').setAttribute('data-view', 'app');
-      window.sidebar.switchTab('details');
-      window.siteMap.setVisibility(true);
-    })
+    if (attr) {
+      document.querySelectorAll('site-details').forEach(function(details) {
+        details['printLayout'] = false;
+      });
+      selectFeature(attr).then(() => {
+        document.querySelector('#app').setAttribute('data-view', 'app');
+        window.sidebar.switchTab('details');
+        window.siteMap.setVisibility(true);
+      })
+    } else {
+      window.router.clearRoute();
+    }
   });
   window.router.on('route-print', (params) => {
     // console.log('route-print');
     let attr = window.siteMap.selectPoint(params['Site_Code']);
-    document.querySelectorAll('site-details').forEach(function(details) {
-      details['printLayout'] = true;
-    });
-    selectFeature(attr).then(() => {
-      document.querySelector('#app').removeAttribute('data-view');
-      window.sidebar.switchTab('details');
-      window.siteMap.setVisibility(false);
-    })
+    if (attr) {
+      document.querySelectorAll('site-details').forEach(function(details) {
+        details['printLayout'] = true;
+      });
+      selectFeature(attr).then(() => {
+        document.querySelector('#app').removeAttribute('data-view');
+        window.sidebar.switchTab('details');
+        window.siteMap.setVisibility(false);
+      })
+    } else {
+      window.router.clearRoute();
+    }
   });
   window.router.resolve();
 
@@ -81,10 +90,10 @@ window.siteMap.once('init', function() {
     }
   });
 });
+
 document.addEventListener('clear-selection', function(e) {
   window.router.clearRoute();
 });
-
 
 document.addEventListener('toggle-print', function(e) {
   if (e.detail.on) {
