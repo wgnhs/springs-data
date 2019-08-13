@@ -116,24 +116,21 @@ export class SiteWaterQuality extends LitElement {
 
       /* -- draw the dot plots --*/
 
-      dotPlot.draw(tempDotPlotOptions);
-      dotPlot.draw(phDotPlotOptions);
-      dotPlot.draw(conductivityDotPlotOptions);
+      this.tempPlot = new DotPlot(tempDotPlotOptions);
+      this.phPlot = new DotPlot(phDotPlotOptions);
+      this.condPlot = new DotPlot(conductivityDotPlotOptions);
+
+      this.tempPlot.draw();
+      this.phPlot.draw();
+      this.condPlot.draw();
 
    }
 
    updated() {
-      var annotateTempPlotOptions = {
-         svg: this.temperaturechart,
-         attributeKey: "Water_Temp_C",
-         label: "Temperature (C)",
-         siteInfo: this.siteinfo
-      }
-
-
-      dotPlot.annotate(annotateTempPlotOptions);
-
-   }  //end updated()
+      this.tempPlot.annotate();
+      this.phPlot.annotate();
+      this.condPlot.annotate();
+   }
 
 }   //end export class
 
@@ -141,57 +138,56 @@ customElements.define('site-water-quality', SiteWaterQuality);
 
 
 
+class DotPlot {
+   constructor(dotPlotOptions) {
+   this.options = dotPlotOptions;
 
-// dotPlot is an immediately-invoked function expression.
+   this.svgWidth = 400;
+   this.svgHeight = 130;
 
-var dotPlot = (function (){
-
-   /* --- set up SVG --- */
-   var svgWidth = 400;
-   var svgHeight = 130;
-
-   var margin = {
+   this.margin = {
                   top: 50,
                   right: 20,
                   bottom: 50,
                   left: 20
                 };
    
-   var chartWidth = svgWidth - margin.left - margin.right,
-   chartHeight = svgHeight - margin.top - margin.bottom;
+   this.chartWidth = this.svgWidth - this.margin.left - this.margin.right,
+   this.chartHeight = this.svgHeight - this.margin.top - this.margin.bottom;
+   }
 
+   get x_scale() {
+      return d3.scaleLinear().domain([this.options.chartMin, this.options.chartMax]).range([0, this.chartWidth]);
+   }
 
+   get y_scale() {
+      return d3.scaleBand().domain([""]).rangeRound([0, this.chartHeight]);
+   }
 
-
-   // define functions that will be methods of dotPlot
-
-   var draw = function(options){
+   draw(){
+      var options = this.options;
 
       // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
 
 
-      options.svg.attr('width', svgWidth).attr("height", svgHeight)
+      options.svg.attr('width', this.svgWidth).attr("height", this.svgHeight)
      // .style('background', "#cecece")
       ;
 
 
       //append a group.
-      var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+margin.left+", "+margin.top+")");
+      var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
 
       /* ~~~~~~~~~ Draw the chart ~~~~~~~~~ */
-
-      var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]);
-
-      var y_scale = d3.scaleBand().domain([""]).rangeRound([0, chartHeight]);
 
 
       var xAxis = chartgroup.append("g").attr("class", "x-axis");
       xAxis
-         .attr("transform", "translate(0," + chartHeight + ")")
+         .attr("transform", "translate(0," + this.chartHeight + ")")
          .call(
            d3
-             .axisBottom(x_scale)
-             .tickSizeInner(-chartHeight)
+             .axisBottom(this.x_scale)
+             .tickSizeInner(-this.chartHeight)
              .tickSizeOuter(0)
              .tickPadding(5)
              .tickValues(options.tickValues)
@@ -203,8 +199,8 @@ var dotPlot = (function (){
       yAxis
          .call(
            d3
-             .axisLeft(y_scale)
-             .tickSizeInner(-chartWidth)
+             .axisLeft(this.y_scale)
+             .tickSizeInner(-this.chartWidth)
              .tickSizeOuter(0)
              .tickPadding(0)
          )
@@ -216,109 +212,94 @@ var dotPlot = (function (){
 
      var circles = chartgroup.append("g").attr("class", "circles");
 
-     var jitterWidth = chartHeight;
-
+     var jitterWidth = this.chartHeight;
+     
 
      circles.selectAll("circle")
          .data(options.allData, function(d) { return d.Site_Code; })
          .enter()
          .append("circle")
-         .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
+         .attr("cx", (d) => {return this.x_scale(d[options.attributeKey])})     // x position
          // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
-         .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
+         .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
          .attr('r', 3)                                      // radius
          .attr("fill", "#406058")                           // fill color
          .attr("opacity", "0.7")                           // opacity
          .attr("class", function(d){
-                  console.log(d)
-                  console.log(d.Site_Code);
+                  // console.log(d)
+                  // console.log(d.Site_Code);
                   return d.Site_Code
                })
          .on('click', function(d){annotate(d[options.attributeKey])})
          ;
 
-   } // end draw function
+   } // END DRAW
 
+   annotate() {
+      console.log('annotate');
+      var options = this.options;
 
+      var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
+      var annotationData = options.allData;
+      var annotationRadius = 5;
+      var annotationLineLength = 20;
+      var annotationLabelPadding = 5;
 
-   var annotate = function(options){
+      annotation.selectAll("circle")
+         .data(annotationData, (d) => { return d.Site_Code; })
+         .enter()
+         .append("circle")
+         .attr("cx", (d) => {
+               return this.x_scale(d[options.attributeKey])})              // x position
+         .attr("cy", (d) => {
+            console.log(this.chartHeight)
+            return this.chartHeight/2})     // y position
+         .attr('r', annotationRadius)                        // radius
+         .attr("fill", "#406058")                           // fill color
+         .attr("stroke", "#000")
+         .attr("stroke-width", 2)
+         .attr("opacity", "0.85");                           // opacity
 
-         var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]);
+      
+        annotation.selectAll("polyline")
+           .data(annotationData)
+           .enter()
+           .append("polyline")
+           .attr('stroke', "#333333")      //set appearance
+           .attr("stroke-width", 2)        //set appearance
+           .style('fill', 'none')          //set appearance
+           .attr('points', (d) => {
 
+                  // two points on each line:
+                  // A: centroid of the circle
+                  // B: 10 px above the circle
+                  // each point is defined by an [x, y]
+                 var startpoint = [0,0]
+                     startpoint[0] = this.x_scale(d[options.attributeKey]);
+                     startpoint[1] = (this.chartHeight/2)-annotationRadius;
 
+                 var endpoint = [0,0];
+                     endpoint[0] = this.x_scale(d[options.attributeKey]);
+                     endpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength;
 
-//         var annotation = options.svg.append("g").attr("class", "annotation");
-//
-//         var annotationRadius = 5;
-//         var annotationLineLength = 20;
-//         var annotationLabelPadding = 5;
-//
-//
-//         var annotationData = [{rrr: options.siteInfo[options.attributeKey]}];
-//
-//         annotation.selectAll("circle")
-//            .data(annotationData)
-//            .enter()
-//            .append("circle")
-//            .attr("cx", function(d){
-//                           return x_scale(d.rrr)})              // x position
-//            .attr("cy", function(d){return chartHeight/2})     // y position
-//            .attr('r', annotationRadius)                        // radius
-//            .attr("fill", "#406058")                           // fill color
-//            .attr("stroke", "#000")
-//            .attr("stroke-width", 2)
-//            .attr("opacity", "0.85");                           // opacity
-//
-//         annotation.selectAll("polyline")
-//            .data(annotationData)
-//            .enter()
-//            .append("polyline")
-//            .attr('stroke', "#333333")      //set appearance
-//            .attr("stroke-width", 2)        //set appearance
-//            .style('fill', 'none')          //set appearance
-//            .attr('points', function(d){
-//
-//                   // two points on each line:
-//                   // A: centroid of the circle
-//                   // B: 10 px above the circle
-//                   // each point is defined by an [x, y]
-//                  var startpoint = [0,0]
-//                      startpoint[0] = x_scale(d.rrr);
-//                      startpoint[1] = (chartHeight/2)-annotationRadius;
-//
-//                  var endpoint = [0,0];
-//                      endpoint[0] = x_scale(d.rrr);
-//                      endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength;
-//
-//                   console.log("start, end", startpoint, endpoint)
-//                   return [startpoint, endpoint]        // return A, B
-//            })
-//
-//         annotation.selectAll("text")
-//            .data(annotationData)
-//            .enter()
-//            .append("text")
-//            .attr("font-weight", "bold")
-//            .html(function(d){ return options.label+": "+d.rrr})
-//            .attr("transform", function(d){
-//               var textpoint = [0, 0]
-//                   textpoint[0] = x_scale(d.rrr);
-//                   textpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding;
-//            return 'translate('+textpoint+')'
-//
-//            })
-//            .style('text-anchor', "middle")
+                  // console.log("start, end", startpoint, endpoint)
+                  return [startpoint, endpoint]        // return A, B
+           })
 
-   } // end annotate function
+        annotation.selectAll("text")
+           .data(annotationData)
+           .enter()
+           .append("text")
+           .attr("font-weight", "bold")
+           .html((d) => { return options.label+": "+options.attributeKey})
+           .attr("transform", (d) => {
+              var textpoint = [0, 0]
+                  textpoint[0] = this.x_scale(d[options.attributeKey]);
+                  textpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding;
+           return 'translate('+textpoint+')'
 
-
-
-
-   // return an object with all methods of dotPlot
-   return {
-
-      draw: draw,
-      annotate: annotate
+           })
+           .style('text-anchor', "middle")
    }
+}
 
-})();
