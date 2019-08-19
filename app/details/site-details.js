@@ -1,9 +1,10 @@
 import { LitElement, html, css } from 'lit-element';
-export { AppCollapsible } from './app-collapsible.js';
+import { genId } from 'wgnhs-common';
+export { AppCollapsible } from 'wgnhs-layout';
+export { SiteWaterQuality } from 'wgnhs-viz';
+export { SiteBedMaterials } from 'wgnhs-viz';
+
 export { SitePhotos } from './site-photos.js';
-export { SiteWaterQuality } from './site-water-quality.js'
-export { SiteBedMaterials } from './site-bed-materials.js';
-import { genId } from './gen-id.js';
 
 export class SiteDetails extends LitElement {
   static get properties() {

@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { genId } from './gen-id.js';
+import { genId } from 'wgnhs-common';
 
 export class MapControls extends LitElement {
   static get properties() {

@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
-export { AppCollapsible } from './app-collapsible.js';
-export { DownloadSection } from './download-section.js';
-export { AppSpinner } from './app-spinner.js';
+export { AppCollapsible } from 'wgnhs-layout';
+export { DownloadSection } from 'wgnhs-interact';
+export { AppSpinner } from 'wgnhs-viz';
 
 let pdfjsLib = window['pdfjs-dist/build/pdf'];
 

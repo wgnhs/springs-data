@@ -1,6 +1,11 @@
-import { SiteMap } from './site-map.js';
+export { SiteDetails } from './details/site-details.js';
+export { SiteSketch, SiteSketchButton, SiteSketchPanel } from './details/site-sketch.js';
+export { MapControls } from './map/map-controls.js';
+
+import { SiteMap } from './map/site-map.js';
 import { SiteData } from './site-data.js';
 import { SiteRouter } from './site-router.js';
+
 
 window.siteMap = new SiteMap();
 window.sidebar = document.querySelector('#sidebar');
