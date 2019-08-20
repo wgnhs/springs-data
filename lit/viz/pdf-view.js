@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 export { AppCollapsible } from '../layout/app-collapsible.js';
 export { ButtonLink } from '../interact/button-link.js';
+export { AppSpinner } from './app-spinner.js';
 
 const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
@@ -47,7 +48,7 @@ class PDFRenderer {
 export class PDFViewPanel extends LitElement {
   static get properties() {
     return {
-      imgsrc: {
+      pdfsrc: {
         type: String,
         attribute: false
       },
@@ -78,6 +79,7 @@ export class PDFViewPanel extends LitElement {
       display: grid;
       grid-column-template: 1fr;
       grid-gap: var(--border-radius);
+      justify-content: center;
     }
     .content {
       max-width: 45vw;
@@ -105,6 +107,9 @@ export class PDFViewPanel extends LitElement {
       border: none;
       border-radius: 50%;
     }
+    [data-closed] {
+      display: none;
+    }
     `;
   }
 
@@ -120,11 +125,16 @@ export class PDFViewPanel extends LitElement {
       <button class="control" @click=${this.rotateLeft}><i class="material-icons" title="Rotate Left">rotate_left</i></button>
       <button class="control" @click=${this.rotateRight}><i class="material-icons" title="Rotate Right">rotate_right</i></button>
     </div>
-    <div class="container">
+    <app-spinner ?data-closed=${this.imgsrc}></app-spinner>
+    <div class="container" ?data-closed=${!this.imgsrc}>
       ${this.imageTag}
       <slot></slot>
     </div>
     `;
+  }
+
+  get imgsrc() {
+    return this.cache[this.pdfsrc];
   }
 
   static get MOD_ROTATE() {
@@ -214,13 +224,13 @@ export class PDFViewPanel extends LitElement {
     // console.log('show', url);
     this.dispatchEvent(new CustomEvent(TOGGLE_EVENT,
       {bubbles: true, composed: true, detail: {url, closed: false}}));
-    this.imgsrc = this.cache[url];
+    this.pdfsrc = url;
     this.removeAttribute('data-closed');
   }
 
   hide() {
     // console.log('hide');
-    this.imgsrc = null;
+    this.pdfsrc = null;
     this.setAttribute('data-closed', true);
     this.dispatchEvent(new CustomEvent(TOGGLE_EVENT,
       {bubbles: true, composed: true, detail: {closed: true}}));
@@ -242,6 +252,7 @@ export class PDFViewPanel extends LitElement {
     return this._getFromCache(url).catch(() => {
       return this.renderer.render(url).then((value) => {
         this.cache[url] = value;
+        this.requestUpdate('cache');
         return value;
       });
     });
