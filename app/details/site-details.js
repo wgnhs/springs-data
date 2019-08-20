@@ -4,7 +4,7 @@ import { keyLookup, ignoredKeys } from '../site-data.js';
 export { AppCollapsible } from 'wgnhs-layout';
 export { SiteWaterQuality } from 'wgnhs-viz';
 export { SiteBedMaterials } from 'wgnhs-viz';
-export { PDFViewButton } from 'wgnhs-viz';
+export { SiteSketchButton } from './site-sketch.js';
 
 export { SitePhotos } from './site-photos.js';
 
@@ -135,10 +135,9 @@ export class SiteDetails extends LitElement {
           </span>
         </div>
         <site-photos .photos="${this.photos}" ?print-layout="${this.printLayout}"></site-photos>
-        <pdf-view-button
+        <site-sketch-button
           .panel=${this.pdfpanel}
-          src="${this.pdfsrc}">
-        </pdf-view-button>
+          src="${this.pdfsrc}"></site-sketch-button>
         <app-collapsible open>
           <i slot="header-before" class="material-icons" title="Water quality">bar_chart</i>
           <span slot="header">Water quality</span>

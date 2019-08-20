@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit-element';
 export { AppCollapsible } from '../layout/app-collapsible.js';
 export { ButtonLink } from '../interact/button-link.js';
 
-let pdfjsLib = window['pdfjs-dist/build/pdf'];
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
 
 const TOGGLE_EVENT = 'toggle-pdf-panel';
 
@@ -75,9 +75,9 @@ export class PDFViewPanel extends LitElement {
     }
     .container {
       min-height: 10em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      grid-column-template: 1fr;
+      grid-gap: var(--border-radius);
     }
     .content {
       max-width: 45vw;
@@ -122,6 +122,7 @@ export class PDFViewPanel extends LitElement {
     </div>
     <div class="container">
       ${this.imageTag}
+      <slot></slot>
     </div>
     `;
   }

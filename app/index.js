@@ -3,12 +3,12 @@ import { SiteData } from './site-data.js';
 import { SiteRouter } from './site-router.js';
 
 export { SiteDetails } from './details/site-details.js';
-export { SiteSketch, SiteSketchButton, SiteSketchPanel } from './details/site-sketch.js';
 export { MapControls } from './map/map-controls.js';
 
 window.siteMap = new SiteMap();
 window.sidebar = document.querySelector('#sidebar');
 window.pdfPanel = document.querySelector('#sketch');
+window.pdfDownload = document.querySelector('#sketch-download');
 document.querySelectorAll('site-details').forEach(function(details) {
   details['pdfpanel'] = window.pdfPanel;
 });
@@ -18,10 +18,10 @@ window.siteMap.once('init', function() {
   window.aggrData = siteData.aggrData;
 
   var deselectFeature = function() {
-    document.dispatchEvent(new CustomEvent('toggle-sketch', {bubbles: true, detail: {closed: true}}));
     document.querySelectorAll('site-details').forEach(function(details) {
       details['siteinfo'] = null;
       details['photos'] = null;
+      pdfDownload['file'] = null;
     });
   }
 
@@ -37,6 +37,7 @@ window.siteMap.once('init', function() {
         details['photos'] = resolved[0];
         if (resolved[1]) {
           details['pdfsrc'] = resolved[1][0];
+          pdfDownload['file'] = resolved[1][0];
         }
       });
     })
