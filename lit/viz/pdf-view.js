@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { styles } from '../styles/index.js';
 export { AppCollapsible } from '../layout/app-collapsible.js';
 export { ButtonLink } from '../interact/button-link.js';
 export { AppSpinner } from './app-spinner.js';
@@ -70,7 +71,9 @@ export class PDFViewPanel extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [
+      ...styles,
+      css`
     :host {
       overflow: auto;
     }
@@ -110,14 +113,11 @@ export class PDFViewPanel extends LitElement {
     [data-closed] {
       display: none;
     }
-    `;
+    `];
   }
 
   render() {
     return html`
-    <style>
-      @import url("./css/typography.css");
-    </style>
     <div class="controls">
       <button class="control" @click=${this.hide}><i class="material-icons" title="Hide">close</i></button>
       <button class="control" @click=${this.zoomIn} ?disabled=${this.isMaxZoom}><i class="material-icons" title="Zoom In">zoom_in</i></button>
@@ -285,7 +285,9 @@ export class PDFViewButton extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [
+      ...styles,
+      css`
     .container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -295,14 +297,11 @@ export class PDFViewButton extends LitElement {
     [data-closed] {
       display: none;
     }
-    `;
+    `];
   }
 
   render() {
     return html`
-    <style>
-      @import url("./css/typography.css");
-    </style>
     <div class="container" ?data-closed=${this.missing}>
       <button-link href="${this.src}" target="_blank" download>
         <i slot="content-before" class="material-icons" title="Download">save_alt</i>

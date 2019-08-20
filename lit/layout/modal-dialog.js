@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { styles } from '../styles/index.js';
 
 export class ModalDialog extends LitElement {
   static get properties() {
@@ -20,7 +21,9 @@ export class ModalDialog extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [
+      ...styles,
+      css`
       .modal {
         position: fixed;
         background: var(--palette-accent-transparent);
@@ -49,20 +52,30 @@ export class ModalDialog extends LitElement {
         right: 0;
         border-radius: var(--border-radius);
       }
+      .control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: var(--icon-size-large);
+        color: var(--palette-accent);
+        text-align: center;
+        cursor: pointer;
+        padding: var(--border-radius);
+        background-color: var(--palette-light);
+        border: none;
+        border-radius: 50%;
+      }
       [data-closed] {
         display: none;
       }
-    `;
+    `];
   }
 
   render() {
     return html`
-      <style>
-        @import url("./css/typography.css");
-      </style>
       <div class="modal b-close-modal" role="dialog" aria-hidden="true" ?data-closed="${!this.open}" @click="${this.handleClick}">
         <div class="modal-window">
-            <button class="modal-close b-close-modal">X</button>
+            <button class="control modal-close b-close-modal"><i class="material-icons b-close-modal" title="Hide">close</i></button>
             ${(!this.source)?'':html`
               <img class="modal-content" src="${this.source}" />
             `}

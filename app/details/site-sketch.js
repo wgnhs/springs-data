@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { styles } from 'wgnhs-styles';
 export { AppCollapsible } from 'wgnhs-layout';
 
 const TOGGLE_EVENT = 'toggle-pdf-panel';
@@ -26,15 +27,14 @@ export class SiteSketchButton extends LitElement {
   }
 
   static get styles() {
-    return css`
-    `;
+    return [
+      ...styles,
+      css``
+    ];
   }
 
   render() {
     return html`
-    <style>
-      @import url("./css/typography.css");
-    </style>
     <app-collapsible @open="${this.toggle}" button>
       <i slot="header-before" class="material-icons" title="Site sketch map">picture_as_pdf</i>
       <span slot="header">Site sketch map</span>

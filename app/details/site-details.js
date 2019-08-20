@@ -4,8 +4,9 @@ import { keyLookup, ignoredKeys } from '../site-data.js';
 export { AppCollapsible } from 'wgnhs-layout';
 export { SiteWaterQuality } from 'wgnhs-viz';
 export { SiteBedMaterials } from 'wgnhs-viz';
-export { SiteSketchButton } from './site-sketch.js';
+import { styles } from 'wgnhs-styles';
 
+export { SiteSketchButton } from './site-sketch.js';
 export { SitePhotos } from './site-photos.js';
 
 export class SiteDetails extends LitElement {
@@ -44,7 +45,9 @@ export class SiteDetails extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [
+      ...styles,
+      css`
       [data-element="table"] {
         display: grid;
         grid-template-columns: 30% 1fr;
@@ -95,7 +98,7 @@ export class SiteDetails extends LitElement {
       app-collapsible i {
         font-size: var(--icon-size-large);
       }
-    `;
+    `];
   }
 
   get renderTable() {
@@ -118,10 +121,6 @@ export class SiteDetails extends LitElement {
 
   render() {
     return html`
-      <style>
-        @import url("./css/typography.css");
-      </style>
-
       ${(!this.siteinfo)? '' : html`
         <div class="header">
           <span>
