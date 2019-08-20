@@ -8,8 +8,7 @@ const colorRange = [
   '#88419d',
   '#810f7c'
 ];
-const calcRadius = (a) => Math.max(a/1.5,3);
-export const RestylingCircleMarker = L.CircleMarker.extend({ 
+export const RestylingCircleMarker = L.CircleMarker.extend({
   getEvents: function() {
     return {
       zoomend: this._restyle,
@@ -20,7 +19,7 @@ export const RestylingCircleMarker = L.CircleMarker.extend({
     }
   },
   _restyle: function(e) {
-    this.setRadius(calcRadius(e.target.getZoom()))
+    this.setRadius(RestylingCircleMarker.calcRadius(e.target.getZoom()))
   },
   _normal: function(e) {
     let color = '#3388ff';
@@ -81,5 +80,6 @@ export const RestylingCircleMarker = L.CircleMarker.extend({
       this._activeBackup = null;
     }
   }
-
 });
+
+RestylingCircleMarker.calcRadius = (a) => Math.max(Math.floor(a/1.5),3);

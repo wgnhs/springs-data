@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { genId } from 'wgnhs-common';
+import { genId, dispatch } from 'wgnhs-common';
 
 /**
  * Code use and modified from
@@ -13,6 +13,10 @@ export class AppCollapsible extends LitElement {
         attribute: false
       },
       open: {
+        type: Boolean,
+        reflect: true
+      },
+      button: {
         type: Boolean
       }
     };
@@ -65,13 +69,14 @@ export class AppCollapsible extends LitElement {
       transition: max-height 0.3s cubic-bezier(0.86, 0, 0.07, 1);
     }
 
-    .toggle:checked + .lbl-toggle + .collapsible-content {
+    .wrap-collapsible:not([button]) .toggle:checked ~ .collapsible-content {
       max-height: var(--collapsible-max-height, 3000px);
     }
 
-    .toggle:checked + .lbl-toggle {
+    .wrap-collapsible:not([button]) .toggle:checked ~ .lbl-toggle {
       border-bottom-right-radius: 0;
       border-bottom-left-radius: 0;
+      transition: border 0s;
     }
 
     .collapsible-content .content-inner {
@@ -94,8 +99,8 @@ export class AppCollapsible extends LitElement {
 
   render() {
     return html`
-    <div class="wrap-collapsible">
-      <input id="${this.genId}" class="toggle" type="checkbox" ?checked="${this.open}">
+    <div class="wrap-collapsible" ?button=${this.button}>
+      <input id="${this.genId}" class="toggle" type="checkbox" ?checked="${this.open}" @change=${this._handleChange}>
       <label for="${this.genId}" class="lbl-toggle" tabindex="0">
         <div class="collapsible-header">
           <div><slot name="header-before"></slot></div>
@@ -125,6 +130,17 @@ export class AppCollapsible extends LitElement {
         };
       });
     });
+  }
+
+  updated(changed) {
+    let eventName = 'open';
+    if (changed.has(eventName)) {
+      dispatch(this, eventName, { value: this[eventName] });
+    }
+  }
+
+  _handleChange(e) {
+    this.open = e.target.checked;
   }
 }
 customElements.define('app-collapsible', AppCollapsible);
