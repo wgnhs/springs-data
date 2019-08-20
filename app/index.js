@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@uirouter/core'), require('lit-element'), require('wgnhs-common'), require('wgnhs-layout'), require('wgnhs-viz')) :
-  typeof define === 'function' && define.amd ? define(['exports', '@uirouter/core', 'lit-element', 'wgnhs-common', 'wgnhs-layout', 'wgnhs-viz'], factory) :
-  (global = global || self, factory(global.app = {}, global.common, global.common, global.common, global.lit, global.lit));
-}(this, function (exports, core, litElement, wgnhsCommon, wgnhsLayout, wgnhsViz) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@uirouter/core'), require('lit-element'), require('wgnhs-common'), require('wgnhs-layout'), require('wgnhs-viz'), require('wgnhs-styles')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@uirouter/core', 'lit-element', 'wgnhs-common', 'wgnhs-layout', 'wgnhs-viz', 'wgnhs-styles'], factory) :
+  (global = global || self, factory(global.app = {}, global.common, global.common, global.common, global.lit, global.lit, global.lit));
+}(this, function (exports, core, litElement, wgnhsCommon, wgnhsLayout, wgnhsViz, wgnhsStyles) { 'use strict';
 
   const colorRange = [
     '#e0ecf4',
@@ -483,15 +483,14 @@
     }
 
     static get styles() {
-      return litElement.css`
-    `;
+      return [
+        ...wgnhsStyles.styles,
+        litElement.css``
+      ];
     }
 
     render() {
       return litElement.html`
-    <style>
-      @import url("./css/typography.css");
-    </style>
     <app-collapsible @open="${this.toggle}" button>
       <i slot="header-before" class="material-icons" title="Site sketch map">picture_as_pdf</i>
       <span slot="header">Site sketch map</span>
@@ -690,7 +689,9 @@
     }
 
     static get styles() {
-      return litElement.css`
+      return [
+        ...wgnhsStyles.styles,
+        litElement.css`
       [data-element="table"] {
         display: grid;
         grid-template-columns: 30% 1fr;
@@ -741,7 +742,7 @@
       app-collapsible i {
         font-size: var(--icon-size-large);
       }
-    `;
+    `];
     }
 
     get renderTable() {
@@ -764,10 +765,6 @@
 
     render() {
       return litElement.html`
-      <style>
-        @import url("./css/typography.css");
-      </style>
-
       ${(!this.siteinfo)? '' : litElement.html`
         <div class="header">
           <span>
@@ -848,22 +845,21 @@
     }
 
     static get styles() {
-      return litElement.css`
-    .option-container {
-      box-sizing: border-box;
-      padding: var(--border-radius)
-    }
-    .icon {
-      font-size: var(--icon-size-extra-large);
-    }
-    `;
+      return [
+        ...wgnhsStyles.styles,
+        litElement.css`
+      .option-container {
+        box-sizing: border-box;
+        padding: var(--border-radius)
+      }
+      .icon {
+        font-size: var(--icon-size-extra-large);
+      }
+    `];
     }
 
     render() {
       return litElement.html`
-      <style>
-        @import url("./css/typography.css");
-      </style>
       <div class="option-container">
         <map-control-item @click="${this.typePoints}">
           <div slot="item-before"><span>Spring Type</span></div>
