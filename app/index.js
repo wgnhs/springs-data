@@ -343,6 +343,7 @@
     'SpringID',
     'Surveyor',
     'Time',
+    'County',
     'Horz_Precision_m',
     'Max_PDOP',
     'Access',
