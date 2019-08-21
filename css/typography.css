@@ -50,5 +50,5 @@ a {
     cursor: pointer;
     text-decoration-line: underline;
     text-decoration-style: dashed;
-    text-decoration-color: var(--palette-900);
+    text-decoration-color: var(--palette-accent-transparent);
 }

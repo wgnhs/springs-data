@@ -45,7 +45,7 @@ export class SiteMap extends window.L.Evented {
       pointToLayer: function(geoJsonPoint, latlon) {
         return new RestylingCircleMarker(latlon, {
           weight: 2,
-          color: 'var(--palette-blue)',
+          color: 'var(--map-symbol)',
           radius: RestylingCircleMarker.calcRadius(map.getZoom())
         });
       }
