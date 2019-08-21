@@ -3,7 +3,7 @@ html {
     --palette-dark: #b5b5b5;
     --palette-light: #e5e5e5;
     --palette-accent: #777777;
-    --palette-accent-transparent: #777777AA;
+    --palette-accent-transparent: #777777CC;
     --palette-900: #333333;
     --palette-black: #000000;
     --palette-blue: #3388FF;
@@ -28,4 +28,15 @@ html {
     --transition: all 0.3s;
     --z-index-base: 0;
     --z-index-interrupt: 2000;
+
+    --map-symbol: var(--palette-blue);
+    --map-symbol-alt: var(--palette-green);
+    --map-symbol-active: var(--palette-orange);
+    --map-bin-0: #e0ecf4;
+    --map-bin-1: #bfd3e6;
+    --map-bin-2: #9ebcda;
+    --map-bin-3: #8c96c6;
+    --map-bin-4: #8c6bb1;
+    --map-bin-5: #88419d;
+    --map-bin-6: #810f7c;
 }

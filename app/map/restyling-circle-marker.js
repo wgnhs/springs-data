@@ -1,12 +1,12 @@
 
 const colorRange = [
-  '#e0ecf4',
-  '#bfd3e6',
-  '#9ebcda',
-  '#8c96c6',
-  '#8c6bb1',
-  '#88419d',
-  '#810f7c'
+  'var(--map-bin-0)',
+  'var(--map-bin-1)',
+  'var(--map-bin-2)',
+  'var(--map-bin-3)',
+  'var(--map-bin-4)',
+  'var(--map-bin-5)',
+  'var(--map-bin-6)'
 ];
 export const RestylingCircleMarker = L.CircleMarker.extend({
   getEvents: function() {
@@ -21,18 +21,19 @@ export const RestylingCircleMarker = L.CircleMarker.extend({
   _restyle: function(e) {
     this.setRadius(RestylingCircleMarker.calcRadius(e.target.getZoom()))
   },
-  _normal: function(e) {
-    let color = '#3388ff';
+  _normal: function() {
+    let color = 'var(--map-symbol)';
     if (!this._activeBackup) {
       this.setStyle({'color': color});
     } else {
       this._activeBackup = color;
     }
   },
-  _orifice: function(e) {
-    var color = '#3388ff';
-    if (this.feature.properties.Orifice_Geom === 'seepage/filtration') {
-      color = '#33AA44';
+  _orifice: function() {
+    var color = 'var(--map-symbol)';
+    var prop = 'Orifice_Geom';
+    if (this.feature.properties[prop] === 'seepage/filtration') {
+      color = 'var(--map-symbol-alt)';
     }
     if (!this._activeBackup) {
       this.setStyle({'color': color});
@@ -40,39 +41,49 @@ export const RestylingCircleMarker = L.CircleMarker.extend({
       this._activeBackup = color;
     }
   },
-  _conductivity: function(e) {
-    var color = colorRange[colorRange.length-1];
-    var binWidth = (aggrData.aggr['Conductivity_uS'].max - aggrData.aggr['Conductivity_uS'].min) / colorRange.length;
-    for (var i = 1; i < colorRange.length; i++) {
-      if (((binWidth * i) + aggrData.aggr['Conductivity_uS'].min) > this.feature.properties['Conductivity_uS']) {
-        color = colorRange[i];
-        break;
+  _conductivity: function() {
+    var binRanges = [
+      [],
+      [],
+      [0, 300],
+      [300, 502],
+      [502, 676],
+      [676, 926],
+      [926, 2000]
+    ];
+    var prop = 'Conductivity_uS';
+    this._binPoint(binRanges, colorRange, prop);
+  },
+  _discharge: function() {
+    var binRanges = [
+      [0.1, 0.2],
+      [0.2, 0.5],
+      [0.5, 1.0],
+      [1, 2],
+      [2, 5],
+      [5, 10],
+      [10, 20]
+    ];
+    var prop = 'Discharge_cfs';
+    this._binPoint(binRanges, colorRange, prop);
+  },
+  _binPoint: function(ranges, colors, prop) {
+    let result = colors[0];
+    const val = this.feature.properties[prop];
+    for (let i = 0; i < ranges.length; i++) {
+      if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
+        result = colors[i];
       }
     }
     if (!this._activeBackup) {
-      this.setStyle({'color': color});
+      this.setStyle({'color': result});
     } else {
-      this._activeBackup = color;
-    }
-  },
-  _discharge: function(e) {
-    var color = colorRange[colorRange.length-1];
-    var binWidth = (aggrData.aggr['Discharge_cfs'].max - aggrData.aggr['Discharge_cfs'].min) / colorRange.length;
-    for (var i = 1; i < colorRange.length; i++) {
-      if (((binWidth * i) + aggrData.aggr['Discharge_cfs'].min) > this.feature.properties['Discharge_cfs']) {
-        color = colorRange[i];
-        break;
-      }
-    }
-    if (!this._activeBackup) {
-      this.setStyle({'color': color});
-    } else {
-      this._activeBackup = color;
+      this._activeBackup = result;
     }
   },
   highlight: function() {
     this._activeBackup = this.options.color;
-    this.setStyle({'color': 'orange'})
+    this.setStyle({'color': 'var(--map-symbol-active'})
   },
   removeHighlight: function() {
     if (this._activeBackup) {
