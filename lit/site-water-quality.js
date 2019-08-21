@@ -230,7 +230,8 @@ class DotPlot {
 
      var jitterWidth = this.chartHeight;
      
-
+      
+      // within the circles group, append a (sub)group for each data point, and append to that (sub)group a circle. 
      this.circles.selectAll("g")
          .data(options.allData, (d) => { return d.Site_Code; })
          .enter()
@@ -246,9 +247,10 @@ class DotPlot {
                   return d.Site_Code
                })
          .on('click', (d) => {
-            console.log('ho');
             this.annotate(d['Site_Code'])
          })
+         .on('mouseenter', (d) => {this.highlight(d['Site_Code'])})
+         .on('mouseleave', (d) => {this.unhighlight(d['Site_Code'])})
          ;
 
    } // END DRAW
@@ -356,6 +358,35 @@ class DotPlot {
 
       //      })
       //      .style('text-anchor', "middle")
+   } //end ennotate 
+   
+   highlight(siteCode){
+      
+      var g = this.circles.selectAll("g")
+         .filter((d) => d['Site_Code'] === siteCode)
+         .moveToFront();
+
+         g.select('circle')
+         .attr('r', 5) 
+         .attr("fill", "#406058")                           // fill color
+         .attr("stroke", "#000")
+         .attr("stroke-width", 2)
+         .attr("opacity", "0.85")   
+      
+   } // end highlight
+   
+   unhighlight(siteCode){
+      var g = this.circles.selectAll("g")
+         .filter((d) => d['Site_Code'] === siteCode)
+         .moveToFront();
+
+         g.select('circle')
+         .attr('r', 3) 
+         .attr("fill", "#406058")                           // fill color
+         .attr("stroke", "#000")
+         .attr("stroke-width", 0)
+         .attr("opacity", "0.7") 
    }
+   
 }
 
