@@ -5,6 +5,9 @@ export class AppSidebar extends LitElement {
     return {
       title: {
         type: String
+      },
+      tabs: {
+        type: Array
       }
     };
   }
@@ -37,13 +40,11 @@ export class AppSidebar extends LitElement {
 
   render() {
     return html`
-      <style>
-        @import url("./css/typography.css");
-      </style>
-
       ${(!this.title)?'':html`<h1 class="header">${this.title}</h1>`}
       <slot></slot>
-      <slot name="details" hidden></slot>
+      ${!(this.tabs)?'':this.tabs.map((el) => html`
+      <slot name='${el}' hidden></slot>
+      `)}
     `;
   }
 }

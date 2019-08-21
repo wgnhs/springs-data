@@ -4,6 +4,7 @@ export class SiteMap extends window.L.Evented {
   constructor() {
     super();
     this.selected = false;
+    this._highlight = null;
 
     /* ~~~~~~~~ Map ~~~~~~~~ */
     //create a map, center it, and set the zoom level. 
@@ -23,18 +24,10 @@ export class SiteMap extends window.L.Evented {
       attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
        label: "OpenStreetMap Humanitarian"
     }).addTo(map);
-     
-     const osmmapnik =  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors', 
-          label: "OpenStreetMap Mapnik"   
-     }); 
-    
+
     // Esri basemaps 
     const esrisat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
-   
-    const esritopo = L.esri.basemapLayer('Topographic', {label: "Esri Topographic"}); 
-     
+
     // add the basemap control to the map  
     var basemaps = [osmhot, esrisat]; 
     map.addControl(L.control.basemaps({
@@ -50,26 +43,19 @@ export class SiteMap extends window.L.Evented {
     this.springs = L.esri.featureLayer({
       url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/1",
       pointToLayer: function(geoJsonPoint, latlon) {
-        let color = '#3388ff';
         return new RestylingCircleMarker(latlon, {
           weight: 2,
-          radius: 4,
-          color: color
+          color: 'var(--map-symbol)',
+          radius: RestylingCircleMarker.calcRadius(map.getZoom())
         });
       }
-    }).once('load', (function() {
-      this.fire('init');
-    }).bind(this)
-    ).on('click', (function(e) {
+    }).on('click', (function(e) {
       if (this._highlight !== e.propagatedFrom) {
         this.fire('interaction', e.propagatedFrom.feature.properties);
       } else {
         this.fire('interaction');
       }
-    }).bind(this)
-    ).addTo(map);
-
-    this._highlight = null;
+    }).bind(this));
 
     /**
      * Set up data layers for querying
@@ -80,20 +66,26 @@ export class SiteMap extends window.L.Evented {
     this.springSketches = L.esri.featureLayer({
       url: "https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer/4"
     });
+
+    this.springs.once('load', () => {
+      this.fire('init');
+    });
+
+    this.springs.addTo(map);
   }
 
-  getPoint(site) {
+  getPoint(params) {
     let result;
     this.springs.eachFeature(function(obj) {
-      if (obj.feature.properties['Site_Code'] === site) {
+      if (obj.feature.properties['Site_Code'] === params['Site_Code']) {
         result = obj;
       }
     });
     return result;
   }
 
-  zoomToPoint(site) {
-    let point = this.getPoint(site);
+  zoomToPoint(params) {
+    let point = this.getPoint(params);
     if (point) {
       this.map.setZoomAround(point.getLatLng(), 15);
     }
@@ -138,6 +130,10 @@ export class SiteMap extends window.L.Evented {
       this._highlight.removeHighlight();
     }
     this._highlight = null;
+  }
+
+  updatePoints(name) {
+    this.map.fire(name);
   }
 
   setVisibility(isVisible) {

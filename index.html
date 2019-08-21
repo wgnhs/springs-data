@@ -20,8 +20,7 @@
       }
     })();
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/navigo@^7/lib/navigo.js"></script>
-  
+
   <!-- Load Leaflet from a CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@^1/dist/leaflet.css" />
   <script src="https://cdn.jsdelivr.net/npm/leaflet@^1/dist/leaflet.js"></script>
@@ -78,12 +77,20 @@
       left: 0;
       right: 0;
     }
+    [data-view="spinner"] {
+      background-color: var(--palette-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: var(--z-index-interrupt);
+    }
     [data-closed] {
       display: none;
     }
     .header {
       text-align: center;
       font-size: var(--font-size-title);
+      padding: var(--font-size-title) var(--font-size);
     }
     .default-view {
       margin: 0 var(--border-radius);
@@ -101,8 +108,11 @@
   </style>
 </head>
 <body>
+  <div id="spinner" data-view="spinner">
+    <app-spinner></app-spinner>
+  </div>
   <div id="app" data-view="app">
-    <app-sidebar id="sidebar" class="left-panel">
+    <app-sidebar id="sidebar" class="left-panel" tabs='["details"]'>
       <div class="default-view">
         <h1 class="header">Wisconsin Springs</h1>
         <section>
@@ -110,12 +120,16 @@
             Select a spring on the map to learn more!
           </h2>
           <p>
-            Lorem ipsum dolor sit amet, viris efficiendi suscipiantur 
-            quo eu, eam altera iudicabit eu. Eu per molestie antiopam, 
-            eam in nemore iracundia, cum ei audiam iuvaret. Sed an erat 
-            sonet dolor, option lucilius sed cu, qui sadipscing 
-            comprehensam te. Magna recusabo intellegebat mei in. Purto 
-            rebum tibique no qui, enim minim eleifend ut pro.
+              Between 2014 and 2017, springs in Wisconsin were identified, mapped, and surveyed
+              by the <a title="WGNHS Home Page" href="https://wgnhs.wisc.edu/">Wisconsin Geological and Natural History Survey</a>.
+              The lower flow threshold for inclusion in this inventory was approximately 0.25 ft&sup3;/s
+              at the time of measurement. The inventory <a title="WGNHS Springs Inventory" href="https://data.wgnhs.wisc.edu/arcgis/rest/services/springs/springs_inventory/MapServer">(available as an ArcGIS REST Service)</a>
+              provides detailed descriptions of <span>415 springs</span> in <span>58 counties</span>.
+              It includes information on spring type, flow rate, water quality (pH, temperature, 
+              conductivity), ecological integrity (such as the presence of invasive plants, 
+              recreational activities, roads, livestock, agriculture, and other disturbances),
+              and geomorphic and geologic information (such as spring dimensions, surface type,
+              substrate composition, and bedrock type).
           </p>
         </section>
         <section>
@@ -125,17 +139,13 @@
       </div>
 
       <div slot="details">
-        <site-details>
-          <div slot="sketch">
-            <site-sketch-button></site-sketch-button>
-          </div>
-        </site-details>
+        <site-details></site-details>
       </div>
     </app-sidebar>
     <div id="map" class="right-panel"></div>
-    <site-sketch-panel id="sketch" class="right-panel" data-closed>
-      <site-sketch></site-sketch>
-    </site-sketch-panel>
+    <pdf-view-panel id="sketch" class="right-panel" data-closed>
+      <download-section id="sketch-download"></download-section>
+    </pdf-view-panel>
   </div>
   <script src="app/index.js"></script>
 </body>

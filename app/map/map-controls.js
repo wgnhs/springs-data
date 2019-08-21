@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
-import { genId } from './gen-id.js';
+import { genId } from 'wgnhs-common';
+import { styles } from 'wgnhs-styles';
 
 export class MapControls extends LitElement {
   static get properties() {
@@ -13,22 +14,21 @@ export class MapControls extends LitElement {
   }
 
   static get styles() {
-    return css`
-    .option-container {
-      box-sizing: border-box;
-      padding: var(--border-radius)
-    }
-    .icon {
-      font-size: var(--icon-size-extra-large);
-    }
-    `;
+    return [
+      ...styles,
+      css`
+      .option-container {
+        box-sizing: border-box;
+        padding: var(--border-radius)
+      }
+      .icon {
+        font-size: var(--icon-size-extra-large);
+      }
+    `];
   }
 
   render() {
     return html`
-      <style>
-        @import url("./css/typography.css");
-      </style>
       <div class="option-container">
         <map-control-item @click="${this.typePoints}">
           <div slot="item-before"><span>Spring Type</span></div>

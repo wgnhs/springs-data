@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 export * from 'macro-carousel';
-export { ModalDialog } from './modal-dialog.js';
+export { ModalDialog } from 'wgnhs-layout';
 
 export class SitePhotos extends LitElement {
   static get properties() {
