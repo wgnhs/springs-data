@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-
+import { keyLookup, ignoredKeys } from '../app/site-data.js';
 
     // https://github.com/wbkd/d3-extended
     d3.selection.prototype.moveToFront = function() {  
@@ -247,58 +247,49 @@ class DotPlot {
                   return d.Site_Code
                })
          .on('click', (d) => {
-            this.annotate(d['Site_Code'])
+               console.log("switch to "+d['Site_Code']);
+//            this.annotate(d['Site_Code'])
          })
          .on('mouseenter', (d) => {this.highlight(d['Site_Code'])})
          .on('mouseleave', (d) => {this.unhighlight(d['Site_Code'])})
          ;
 
-   } // END DRAW
-
+   } // END DRAW. draw is called once when on firstUpdated. 
+   
+   //annotate is called on update only. 
    annotate(siteCode) {
-      console.log('annotate', siteCode);
+     
       var options = this.options;
 
-      var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
+      // var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
       var annotationData = options.allData;
-      var annotationRadius = 5;
-      var annotationLineLength = 20;
+      var annotationRadius = 6;
+      var annotationLineLength = 30;
       var annotationLabelPadding = 5;
 
 
-      console.log(this.circles);
+
       var g = this.circles.selectAll("g")
          .filter((d) => d['Site_Code'] === siteCode)
          .moveToFront();
 
          g.select('circle')
          .attr('r', annotationRadius)                        // radius
-         .attr("fill", "#406058")                           // fill color
-         .attr("stroke", "#000")
+         .attr("fill", "#000")                           // fill color
+         .attr("stroke", "#eee")
          .attr("stroke-width", 2)
          .attr("opacity", "0.85")                           // opacity
-
-         g.append("polyline")
-         .attr('stroke', "#333333")      //set appearance
-         .attr("stroke-width", 2)        //set appearance
-         .style('fill', 'none')          //set appearance
-         .attr('points', (d) => {
-
-               // two points on each line:
-               // A: centroid of the circle
-               // B: 10 px above the circle
-               // each point is defined by an [x, y]
-               var startpoint = [0,0]
-                  startpoint[0] = this.x_scale(d[options.attributeKey]);
-                  startpoint[1] = (this.chartHeight/2)-annotationRadius;
-
-               var endpoint = [0,0];
-                  endpoint[0] = this.x_scale(d[options.attributeKey]);
-                  endpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength;
-
-               // console.log("start, end", startpoint, endpoint)
-               return [startpoint, endpoint]        // return A, B
+         
+      
+         g.append("text")
+         .attr('dy', '-1em')
+         .html((d) => { 
+            //console.log("keyLookup is: ", keyLookup[options.attributeKey]['title']);
+ 
+            return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
          })
+         ;
+        
 
 
 
@@ -368,7 +359,7 @@ class DotPlot {
 
          g.select('circle')
          .attr('r', 5) 
-         .attr("fill", "#406058")                           // fill color
+         
          .attr("stroke", "#000")
          .attr("stroke-width", 2)
          .attr("opacity", "0.85")   
@@ -382,11 +373,12 @@ class DotPlot {
 
          g.select('circle')
          .attr('r', 3) 
-         .attr("fill", "#406058")                           // fill color
+   
          .attr("stroke", "#000")
          .attr("stroke-width", 0)
          .attr("opacity", "0.7") 
-   }
+      
+   }  // end unhighlight 
    
 }
 
