@@ -1712,6 +1712,89 @@ a {
   } //close export
   customElements.define('site-bed-materials', SiteBedMaterials);
 
+  const formatDate = function formatDate(item) {
+    return (!item) ?
+      null :
+      new Date(item).toISOString().substring(0,10);
+  };
+
+  const roundToTwoDecimals = function roundToTwoDecimals(item) {
+    return (!item) ?
+      null :
+      item.toFixed(2);
+  };
+  const keyLookup = {
+    'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
+    'Conductivity_uS': { 'title': 'Specific Conductance (µmho/cm)', 'desc': 'Measured as close to spring source as possible (µmho/cm).' },
+    'Water_Temp_C': { 'title': 'Temperature (°C)', 'desc': 'Measured as close to spring source as possible (°C).' },
+    'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
+    'County': { 'title': 'County', 'desc': 'County where spring is located.' },
+    'Surveyor': { 'title': 'Surveyor(s)', 'desc': 'Who conducted the survey (initials).' },
+    'Date': { 'title': 'Date', 'desc': 'Date of field survey.', 'transform': formatDate },
+    'Time': { 'title': 'Time', 'desc': 'Start time.' },
+    'Easting_WTM': { 'title': 'Easting (WTM)', 'desc': 'Easting (WTM). As close to the spring source as possible.', 'transform': roundToTwoDecimals },
+    'Northing_WTM': { 'title': 'Northing (WTM)', 'desc': 'Northing (WTM). As close to the spring source as possible.', 'transform': roundToTwoDecimals },
+    'Horz_Precision_m': { 'title': 'Horizontal Precision (meters)', 'desc': 'Horizontal accuracy of GPS position (meters).' },
+    'Max_PDOP': { 'title': 'Maximum PDOP', 'desc': 'Maximum positional dilution of precision (PDOP) during measurement.' },
+    'Elevation_m': { 'title': 'Elevation (meters)', 'desc': 'From digital elevation model (DEM) (meters).', 'transform': roundToTwoDecimals },
+    'elevation_source': { 'title': 'Elevation Source', 'desc': 'DEM source and horizontal resolution of DEM used to extract elevation.' },
+    'Land_Owner': { 'title': 'Land Ownership', 'desc': 'List: state, county, city, NPS, USFS, tribal, military, private, other.' },
+    'Access': { 'title': 'Access', 'desc': 'Directions to springs.' },
+    'Ease_Access': { 'title': 'Ease of Access', 'desc': 'List: Easy access, Difficult access, Terrain prohibits access to other potential spring areas.' },
+    'Land_Cover': { 'title': 'Land Cover', 'desc': 'List: urban, residential, agriculture, grassland, forest, open water, wetland, barren, shrubland, other.' },
+    'Air_Temp_F': { 'title': 'Air Temperature (°F)', 'desc': 'Air temperature on date surveyed (°F).' },
+    'Cloud_Cover_percent': { 'title': 'Cloud Cover (%)', 'desc': 'Cloud cover at time of survey (%).' },
+    'Wind_Speed_mph': { 'title': 'Wind Speed (mph)', 'desc': 'Velocity measurement on date surveyed (mph).' },
+    'Aspect_degrees': { 'title': 'Aspect', 'desc': 'Direction that the spring orifice faces.' },
+    'Slope_degrees': { 'title': 'Slope (°)', 'desc': 'Channel slope (°).' },
+    'Slope_Variability': { 'title': 'Slope Variability', 'desc': 'List: high, medium, low, none.' },
+    'Condition': { 'title': 'Condition', 'desc': 'List: undisturbed, light, moderate, high.' },
+    'Type_of_Disturbance': { 'title': 'Type of Disturbance', 'desc': 'List: wildlife, livestock, recreation, diversion, residence, impounded, dredging, flooding, trails, roadway, invasives, spring house, encased, raceways, human-made structure, trash, storm-water, drain tile, agriculture, other.' },
+    'Spring_Area_sqm': { 'title': 'Spring Area (m²)', 'desc': 'List: <2 m², 2-10 m², 10-100 m², 100-1000 m², 1000-10,000 m², 10,000-100,000 m²' },
+    'Surface_Types': { 'title': 'Surface Type(s)', 'desc': 'List: backwall, colluvial slope, sloping bedrock, pool, channel, spring mound, cave, other.' },
+    'Width_ft': { 'title': 'Channel or Pool Width (feet)', 'desc': 'If a channel or pool exists, the mean width (feet).' },
+    'Width_Location': { 'title': 'Width Location', 'desc': 'List: pool, channel, pond, spring house, other.' },
+    'Depth_cm': { 'title': 'Channel or Pool Depth (cm)', 'desc': 'If a channel or pool exists, the mean depth (cm).' },
+    'Depth_Location': { 'title': 'Depth Location', 'desc': 'List: pool, channel, pond, spring house, other.' },
+    'Percent_organic': { 'title': 'Percent Organic', 'desc': 'Qualitative estimate of the % organics. Described as close to spring source as possible.' },
+    'Percent_fines': { 'title': 'Percent Fines', 'desc': 'Qualitative estimate of the % fines. Described as close to spring source as possible.' },
+    'Percent_sand': { 'title': 'Percent Sand', 'desc': 'Qualitative estimate of the % sand. Described as close to spring source as possible.' },
+    'Percent_gravel': { 'title': 'Percent Gravel', 'desc': 'Qualitative estimate of the % gravel. Described as close to spring source as possible.' },
+    'Percent_cobble': { 'title': 'Percent Cobble', 'desc': 'Qualitative estimate of the % cobble. Described as close to spring source as possible.' },
+    'Percent_boulder': { 'title': 'Percent Boulder', 'desc': 'Qualitative estimate of the % boulder. Described as close to spring source as possible.' },
+    'Percent_bedrock': { 'title': 'Percent Bedrock', 'desc': 'Qualitative estimate of the % bedrock. Described as close to spring source as possible.' },
+    'Bedrock_Comp': { 'title': 'Bedrock Composition', 'desc': 'List: shale, siltstone, sandstone, conglomerate, limestone, dolomite, igneous or metamorphic, NA, other.' },
+    'Spring_Type': { 'title': 'Spring Type', 'desc': 'List: helocrene, rheocrene, limnocrene, hillslope spring, cased, flowing well, other.' },
+    'Spring_Source': { 'title': 'Spring Source', 'desc': 'List: single orifice, multiple orifices, diffuse flow, other.' },
+    'Orifice_Geom': { 'title': 'Orifice Geomorphic Type', 'desc': 'List: seepage/filtration, fracture, tubular, contact.' },
+    'Discharge_cfs': { 'title': 'Discharge (cfs)', 'desc': 'Spring flow (cfs).' },
+    'Flow_Accuracy': { 'title': 'Flow Accuracy', 'desc': 'Level of accuracy of flow measurement, List: low, high' },
+    'Discharge_Meas': { 'title': 'How Measured', 'desc': 'List: timed volume, float velocity method, flume, AA meter, AD meter (acoustic Doppler meter), EM meter (electromagnetic meter).' },
+    'Flow_Location': { 'title': 'Flow Location', 'desc': 'Where flow was measured.' },
+    'Flow_percent': { 'title': 'Flow %', 'desc': 'Percent of flow captured (%).' },
+    'Veg_Bed_Cover_percent': { 'title': 'Vegetative Bed Cover (%)', 'desc': 'The proportion of the spring pool bed or channel bed that is covered by live vegetation (%).' },
+    'Veg_Bank_Cover_percent': { 'title': 'Vegetative Bank Cover (%)', 'desc': 'The proportion of the spring pool banks or channel banks that is covered by live vegetation (%).' },
+    'Notes': { 'title': 'Notes', 'desc': 'Other notes as necessary.' },
+    'GlobalID': { 'title': 'Global ID', 'desc': 'Automatically generated unique and global ID' },
+    'gps_time_date': { 'title': 'GPS time and date', 'desc': 'Automatically generated GPS time and date stamp' },
+    'sat_signals': { 'title': 'Number of satellites', 'desc': 'Automatically generated number of satellites visible' }
+  };
+
+  // https://github.com/wbkd/d3-extended
+      d3.selection.prototype.moveToFront = function() {  
+        return this.each(function(){
+          this.parentNode.appendChild(this);
+        });
+      };
+      d3.selection.prototype.moveToBack = function() {  
+          return this.each(function() { 
+              var firstChild = this.parentNode.firstChild; 
+              if (firstChild) { 
+                  this.parentNode.insertBefore(this, firstChild); 
+              } 
+          });
+      };
+
   class SiteWaterQuality extends litElement.LitElement {
     static get properties() {
       return {
@@ -1731,7 +1814,7 @@ a {
                font-size: 13px;
 
                /* why did I have to add this in?? */
-               font-family: 'open_sansregular','Open Sans',sans_serif; 
+               font-family: 'open_sansregular','Open Sans',sans_serif;
 
                color: #777;
             }
@@ -1747,14 +1830,14 @@ a {
                flex-direction: column;
                align-items: center;
             }
-        `; 
+        `;
       }
 
     render() {
       return litElement.html`
         <div class="container">
         <!-- <h2>Water quality</h2> -->
-        
+
        <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
          <svg id="conductivity-chart"></svg><br>
        <!-- <span class="label">temperature: </span><span>${this.siteinfo.Water_Temp_C}</span><br> -->
@@ -1763,238 +1846,314 @@ a {
          <svg id="ph-chart"></svg>
         </div>
     `;
-    } //end render 
-      
+    } //end render
+
      firstUpdated() {
         this.phchart = d3.select(this.renderRoot.querySelector('#ph-chart'));
         this.temperaturechart = d3.select(this.renderRoot.querySelector('#temperature-chart'));
         this.conductivitychart = d3.select(this.renderRoot.querySelector('#conductivity-chart'));
-     }
-     
-     updated() {
-              
+
+
         var siteph = [{pH:this.siteinfo.pH}];
         var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
         var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
-        
-        
-        
-        /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
-        var svgWidth = 400;
-        
-        var phDotPlotOptions = {
-           svg: this.phchart, 
-           label: "pH",         
-           attributeKey: "pH", 
 
-           tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0], 
-           chartMin: 5.5, 
+
+
+        /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
+
+
+        var phDotPlotOptions = {
+           svg: this.phchart,
+           label: "pH",
+           attributeKey: "pH",
+
+           tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0],
+           chartMin: 5.5,
            chartMax: 10,
-           
-           svgWidth: svgWidth,
+
+          // svgWidth: svgWidth,
            siteInfo: this.siteinfo,
-           allData:  aggrData.data 
-           
-        };
-        
-        var tempDotPlotOptions = {
-           svg: this.temperaturechart, 
-           label: "Temperature (C)",
-           attributeKey: "Water_Temp_C", 
-           
-           tickValues:[5,7,9,11,13,15,17], 
-           chartMin: 5, 
-           chartMax: 17,
-           
-           svgWidth: svgWidth,
-           siteInfo: this.siteinfo, 
            allData:  aggrData.data
-           
-        }; 
-        
+
+        };
+
+        var tempDotPlotOptions = {
+           svg: this.temperaturechart,
+           attributeKey: "Water_Temp_C",
+
+           tickValues:[5,7,9,11,13,15,17],
+           chartMin: 5,
+           chartMax: 17,
+
+          // svgWidth: svgWidth,
+           siteInfo: this.siteinfo,
+           allData:  aggrData.data
+
+        };
+
         var conductivityDotPlotOptions = {
            svg: this.conductivitychart,
-           label: "Conductivity (uS)", 
-           attributeKey: "Conductivity_uS", 
-           
-           tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750], 
-           chartMin: 0, 
+           //label: "Conductivity (uS)",
+           attributeKey: "Conductivity_uS",
+
+           tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750],
+           chartMin: 0,
            chartMax: 1750,
-           
-           svgWidth: svgWidth,
+
+          // svgWidth: svgWidth,
            siteInfo: this.siteinfo,
            allData:  aggrData.data
-        
+
         };
-        
-        dotPlot.draw(tempDotPlotOptions);
-        dotPlot.draw(phDotPlotOptions);
-        dotPlot.draw(conductivityDotPlotOptions);
-        
-     }  //end updated() 
-      
+
+
+
+        /* -- draw the dot plots --*/
+
+        this.tempPlot = new DotPlot(tempDotPlotOptions);
+        this.phPlot = new DotPlot(phDotPlotOptions);
+        this.condPlot = new DotPlot(conductivityDotPlotOptions);
+
+        this.tempPlot.draw();
+        this.phPlot.draw();
+        this.condPlot.draw();
+
+     }
+
+     updated() {
+        this.tempPlot.annotate(this.siteinfo['Site_Code']);
+        this.phPlot.annotate(this.siteinfo['Site_Code']);
+        this.condPlot.annotate(this.siteinfo['Site_Code']);
+     }
+
   }   //end export class
 
   customElements.define('site-water-quality', SiteWaterQuality);
 
 
 
+  class DotPlot {
+     constructor(dotPlotOptions) {
+     this.options = dotPlotOptions;
 
-  // dotPlot is an immediately-invoked function expression. 
+     this.svgWidth = 400;
+     this.svgHeight = 130;
 
-  var dotPlot = (function (){
+     this.margin = {
+                    top: 50,
+                    right: 20,
+                    bottom: 50,
+                    left: 20
+                  };
      
-     // define functions that will be methods of dotPlot 
-     
-     var draw = function(options){ 
-        
+     this.chartWidth = this.svgWidth - this.margin.left - this.margin.right,
+     this.chartHeight = this.svgHeight - this.margin.top - this.margin.bottom;
+     }
+
+     get x_scale() {
+        return d3.scaleLinear().domain([this.options.chartMin, this.options.chartMax]).range([0, this.chartWidth]);
+     }
+
+     get y_scale() {
+        return d3.scaleBand().domain([""]).rangeRound([0, this.chartHeight]);
+     }
+
+     draw(){
+        var options = this.options;
+
         // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
-        
-        /* ---- SVG setup ---- */
-        
-        var svgHeight = 110;
-        var svgWidth = options.svgWidth;
-        var margin = {
-                       top: 40,
-                       right: 20,
-                       bottom: 40,
-                       left: 20  
-                     }; 
-        var chartWidth = svgWidth - margin.left - margin.right,
-        chartHeight = svgHeight - margin.top - margin.bottom;
-        
-        options.svg.attr('width', svgWidth).attr("height", svgHeight)
-          // .style('background', "#cecece")
+
+
+        options.svg.attr('width', this.svgWidth).attr("height", this.svgHeight)
+       // .style('background', "#cecece")
         ;
-        
+
+
         //append a group.
-        var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+margin.left+", "+margin.top+")");  
-        
+        var chartgroup = options.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
+
         /* ~~~~~~~~~ Draw the chart ~~~~~~~~~ */
-        
-        var x_scale = d3.scaleLinear().domain([options.chartMin, options.chartMax]).range([0, chartWidth]); 
-              
-        var y_scale = d3.scaleBand().domain([""]).rangeRound([0, chartHeight]); 
-        
-        
+
+
         var xAxis = chartgroup.append("g").attr("class", "x-axis");
         xAxis
-           .attr("transform", "translate(0," + chartHeight + ")")
+           .attr("transform", "translate(0," + this.chartHeight + ")")
            .call(
              d3
-               .axisBottom(x_scale)
-               .tickSizeInner(-chartHeight)
+               .axisBottom(this.x_scale)
+               .tickSizeInner(-this.chartHeight)
                .tickSizeOuter(0)
                .tickPadding(5)
                .tickValues(options.tickValues)
            )
-           .call(g => g.select(".domain").remove());              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick. 
-        
-        
-        var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart. 
+           .call(g => g.select(".domain").remove());              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick.
+
+
+        var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart.
         yAxis
            .call(
              d3
-               .axisLeft(y_scale)
-               .tickSizeInner(-chartWidth)
+               .axisLeft(this.y_scale)
+               .tickSizeInner(-this.chartWidth)
                .tickSizeOuter(0)
                .tickPadding(0)
            )
            .call(g => g.select(".domain").remove())           // no vertical line for the y axis (all vertical lines are x axis ticks)
            .call(g => g.selectAll("text").remove());          // no labels on y axis
 
+
+       /* ~~~~~~~~~ create circles ~~~~~~~~~ */
+
+       this.circles = chartgroup.append("g").attr("class", "circles");
+
+       var jitterWidth = this.chartHeight;
        
-       /* ~~~~~~~~~ circles ~~~~~~~~~ */ 
         
-       var circles = chartgroup.append("g").attr("class", "circles");
-        
-       var jitterWidth = chartHeight; 
-        
-       circles.selectAll("circle")
-           .data(options.allData)
+        // within the circles group, append a (sub)group for each data point, and append to that (sub)group a circle. 
+       this.circles.selectAll("g")
+           .data(options.allData, (d) => { return d.Site_Code; })
            .enter()
+           .append("g")
            .append("circle")
-           .attr("cx", function(d){return x_scale(d[options.attributeKey])})     // x position
-           // Math.random() returns values from 0 to less than 1, in approximately uniform distribution. 
-           .attr("cy", function(d){return chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
-           .attr('r', 3)                                      // radius 
-           .attr("fill", "#406058")                           // fill color
-           .attr("opacity", "0.7");                           // opacity
-        
-        
-        var annotation = chartgroup.append("g").attr("class", "annotation"); 
-        var annotationRadius = 5;
-        var annotationLineLength = 20; 
-        var annotationLabelPadding = 5;
-         
-        
-        var annotationData = [{rrr: options.siteInfo[options.attributeKey]}];
-        
-        annotation.selectAll("circle")
-           .data(annotationData)
-           .enter()
-           .append("circle")
-           .attr("cx", function(d){                       
-                          return x_scale(d.rrr)})              // x position
-           .attr("cy", function(d){return chartHeight/2})     // y position
-           .attr('r', annotationRadius)                        // radius 
+           .attr("cx", (d) => {return this.x_scale(d[options.attributeKey])})     // x position
+           // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
+           .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
+           .attr('r', 3)                                      // radius
            .attr("fill", "#406058")                           // fill color
            .attr("stroke", "#000")
+           .attr("stroke-width", 0)
+           .attr("opacity", "0.7")                           // opacity
+           .attr("class", (d) => {
+                    return d.Site_Code
+                 })
+           .on('click', (d) => {
+                 console.log("switch to "+d['Site_Code']);
+  //            this.annotate(d['Site_Code'])
+           })
+           .on('mouseenter', (d) => {this.highlight(d['Site_Code']);})
+           .on('mouseleave', (d) => {this.unhighlight(d['Site_Code']);})
+           ;
+
+     } // END DRAW. draw is called once when on firstUpdated. 
+     
+     //annotate is called on update only. 
+     annotate(siteCode) {
+       
+        var options = this.options;
+
+        // var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
+        var annotationData = options.allData;
+        var annotationRadius = 6;
+
+
+
+        var g = this.circles.selectAll("g")
+           .filter((d) => d['Site_Code'] === siteCode)
+           .moveToFront();
+
+           g.select('circle')
+           .attr('r', annotationRadius)                        // radius
+           .attr("fill", "#000")                           // fill color
+           .attr("stroke", "#eee")
            .attr("stroke-width", 2)
            .attr("opacity", "0.85");                           // opacity
+           
         
-        annotation.selectAll("polyline")
-           .data(annotationData)
-           .enter()
-           .append("polyline")
-           .attr('stroke', "#333333")      //set appearance
-           .attr("stroke-width", 2)        //set appearance
-           .style('fill', 'none')          //set appearance
-           .attr('points', function(d){
-                 
-                  // two points on each line: 
-                  // A: centroid of the circle
-                  // B: 10 px above the circle
-                  // each point is defined by an [x, y] 
-                 var startpoint = [0,0];
-                     startpoint[0] = x_scale(d.rrr);
-                     startpoint[1] = (chartHeight/2)-annotationRadius; 
-           
-                 var endpoint = [0,0];
-                     endpoint[0] = x_scale(d.rrr);
-                     endpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength; 
-           
-                 //  console.log("start, end", startpoint, endpoint)
-                  return [startpoint, endpoint]        // return A, B
-           });
-           
-        annotation.selectAll("text")
-           .data(annotationData)
-           .enter()
-           .append("text")
-           .attr("font-weight", "bold")
-           .html(function(d){ return options.label+": "+d.rrr})
-           .attr("transform", function(d){
-              var textpoint = [0, 0];
-                  textpoint[0] = x_scale(d.rrr);
-                  textpoint[1] = (chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding; 
-           return 'translate('+textpoint+')'
-
+           g.append("text")
+           .attr('dy', '-1em')
+           .html((d) => { 
+              //console.log("keyLookup is: ", keyLookup[options.attributeKey]['title']);
+   
+              return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
            })
-           .style('text-anchor', "middle");
-       
+           ;
+          
+
+
+
+
+        // annotation.selectAll("circle")
+        //    .data(annotationData, (d) => { return d.Site_Code; })
+        //    .enter()
+        //    .append("circle")
+        //    .attr("cx", (d) => {
+        //          return this.x_scale(d[options.attributeKey])})              // x position
+        //    .attr("cy", (d) => {
+        //       console.log(this.chartHeight)
+        //       return this.chartHeight/2})     // y position
+        //    .attr('r', annotationRadius)                        // radius
+        //    .attr("fill", "#406058")                           // fill color
+        //    .attr("stroke", "#000")
+        //    .attr("stroke-width", 2)
+        //    .attr("opacity", "0.85");                           // opacity
+
         
-        
-        
-     };
+        //   annotation.selectAll("polyline")
+        //      .data(annotationData)
+        //      .enter()
+        //      .append("polyline")
+        //      .attr('stroke', "#333333")      //set appearance
+        //      .attr("stroke-width", 2)        //set appearance
+        //      .style('fill', 'none')          //set appearance
+        //      .attr('points', (d) => {
+
+        //             // two points on each line:
+        //             // A: centroid of the circle
+        //             // B: 10 px above the circle
+        //             // each point is defined by an [x, y]
+        //            var startpoint = [0,0]
+        //                startpoint[0] = this.x_scale(d[options.attributeKey]);
+        //                startpoint[1] = (this.chartHeight/2)-annotationRadius;
+
+        //            var endpoint = [0,0];
+        //                endpoint[0] = this.x_scale(d[options.attributeKey]);
+        //                endpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength;
+
+        //             // console.log("start, end", startpoint, endpoint)
+        //             return [startpoint, endpoint]        // return A, B
+        //      })
+
+        //   annotation.selectAll("text")
+        //      .data(annotationData)
+        //      .enter()
+        //      .append("text")
+        //      .attr("font-weight", "bold")
+        //      .html((d) => { return options.label+": "+options.attributeKey})
+        //      .attr("transform", (d) => {
+        //         var textpoint = [0, 0]
+        //             textpoint[0] = this.x_scale(d[options.attributeKey]);
+        //             textpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding;
+        //      return 'translate('+textpoint+')'
+
+        //      })
+        //      .style('text-anchor', "middle")
+     } //end ennotate 
      
-     // return an object with all methods of dotPlot named
-     return {
+     highlight(siteCode){
         
-        draw: draw
-     }
+        var g = this.circles.selectAll("g")
+           .filter((d) => d['Site_Code'] === siteCode)
+           .moveToFront();
+
+           g.select('circle')
+           .attr("stroke-width", 3)
+           .attr("opacity", "0.85");   
+        
+     } // end highlight
      
-  })();
+     unhighlight(siteCode){
+        var g = this.circles.selectAll("g")
+           .filter((d) => d['Site_Code'] === siteCode)
+           .moveToFront();
+
+           g.select('circle')
+           .attr("stroke-width", 0)
+           .attr("opacity", "0.7"); 
+        
+     }  // end unhighlight 
+     
+  }
 
   exports.AppCollapsible = AppCollapsible;
   exports.AppSidebar = AppSidebar;
