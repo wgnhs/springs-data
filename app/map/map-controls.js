@@ -84,6 +84,13 @@ export class MapControlItem extends LitElement {
     }
     app-collapsible {
       --transition-duration: 0;
+      --el-header-font-weight: var(--font-weight);
+      --el-header-font-size: var(--font-size);
+      --el-header-background: var(--palette-white);
+      --el-border: 1px solid var(--palette-light);
+    }
+    [slot] {
+      padding: var(--border-radius);
     }
     `];
   }

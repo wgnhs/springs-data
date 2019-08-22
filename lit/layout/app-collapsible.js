@@ -30,7 +30,10 @@ export class AppCollapsible extends LitElement {
   static get styles() {
     return css`
     .wrap-collapsible {
+      box-sizing: border-box;
       margin: var(--border-radius) 0;
+      border: var(--el-border, none);
+      border-radius: var(--border-radius);
     }
 
     input[type='checkbox'] {
