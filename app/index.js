@@ -13,6 +13,27 @@
     'var(--map-bin-5)',
     'var(--map-bin-6)'
   ];
+
+  const binRanges = {
+    'Conductivity_uS': [
+      [],
+      [],
+      [0, 300],
+      [300, 502],
+      [502, 676],
+      [676, 926],
+      [926, 2000]
+    ],
+    'Discharge_cfs': [
+      [0.1, 0.2],
+      [0.2, 0.5],
+      [0.5, 1.0],
+      [1, 2],
+      [2, 5],
+      [5, 10],
+      [10, 20]
+    ]
+  };
   const RestylingCircleMarker = L.CircleMarker.extend({
     getEvents: function() {
       return {
@@ -47,39 +68,15 @@
       }
     },
     _conductivity: function() {
-      var binRanges = [
-        [],
-        [],
-        [0, 300],
-        [300, 502],
-        [502, 676],
-        [676, 926],
-        [926, 2000]
-      ];
       var prop = 'Conductivity_uS';
-      this._binPoint(binRanges, colorRange, prop);
+      this._binPoint(prop);
     },
     _discharge: function() {
-      var binRanges = [
-        [0.1, 0.2],
-        [0.2, 0.5],
-        [0.5, 1.0],
-        [1, 2],
-        [2, 5],
-        [5, 10],
-        [10, 20]
-      ];
       var prop = 'Discharge_cfs';
-      this._binPoint(binRanges, colorRange, prop);
+      this._binPoint(prop);
     },
-    _binPoint: function(ranges, colors, prop) {
-      let result = colors[0];
-      const val = this.feature.properties[prop];
-      for (let i = 0; i < ranges.length; i++) {
-        if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
-          result = colors[i];
-        }
-      }
+    _binPoint: function(prop) {
+      let result = RestylingCircleMarker.binPoint(prop, this.feature.properties);
       if (!this._activeBackup) {
         this.setStyle({'color': result});
       } else {
@@ -99,6 +96,19 @@
   });
 
   RestylingCircleMarker.calcRadius = (a) => Math.max(Math.floor(a/1.5),3);
+  RestylingCircleMarker.binPoint = (prop, data) => {
+    let result = "#406058";
+    const ranges = binRanges[prop];
+    if (ranges) {
+      const val = data[prop];
+      for (let i = 0; i < ranges.length; i++) {
+        if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
+          result = colorRange[i];
+        }
+      }
+    }
+    return result;
+  };
 
   class SiteMap extends window.L.Evented {
     constructor() {
@@ -354,7 +364,7 @@
   ];
   const keyLookup = {
     'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
-    'Conductivity_uS': { 'title': 'Specific Conductance (µmho/cm)', 'desc': 'Measured as close to spring source as possible (µmho/cm).' },
+    'Conductivity_uS': { 'title': 'Conductivity (µS)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
     'Water_Temp_C': { 'title': 'Temperature (°C)', 'desc': 'Measured as close to spring source as possible (°C).' },
     'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
     'County': { 'title': 'County', 'desc': 'County where spring is located.' },
@@ -845,6 +855,10 @@
   }
   customElements.define('site-details', SiteDetails);
 
+  const CHANGE_EVENT = 'map-control';
+  const STYLE_EVENT = 'stylepoints';
+  const RESET_TYPE = 'normal';
+
   class MapControls extends litElement.LitElement {
     static get properties() {
       return {
@@ -864,60 +878,42 @@
         box-sizing: border-box;
         padding: var(--border-radius)
       }
-      .icon {
-        font-size: var(--icon-size-extra-large);
-      }
     `];
     }
 
     render() {
       return litElement.html`
       <div class="option-container">
-        <map-control-item @click="${this.typePoints}">
-          <div slot="item-before"><span>Spring Type</span></div>
-          <div slot="item"></div>
-          <i slot="item-after" class="icon material-icons" title="View on map">map</i>
+        <map-control-item 
+          name="Spring Type"
+          type="type">
+          <p>
+          About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 
+          percent have seepage-filtration morphologies. At a fracture spring, groundwater discharges 
+          from joints or fractures in bedrock. Contact springs discharge water at a stratigraphic 
+          contact, along which fractures often form. Groundwater discharges from many small openings 
+          in permeable, unlithified material at a seepage-filtration spring.
+          </p>
         </map-control-item>
-        <map-control-item @click="${this.qPoints}">
-          <div slot="item-before"><span>Discharge</span></div>
-          <div slot="item"></div>
-          <i slot="item-after" class="icon material-icons" title="View on map">map</i>
+        <map-control-item 
+          name="Discharge"
+          type="q">
+          <p>
+          The average flow rate of the springs for which flow could be measured was 0.96 ft3/s; 
+          values ranged from 0.14 ft3/s to 18.3 ft3/s.
+          </p>
         </map-control-item>
-        <map-control-item @click="${this.condPoints}">
-          <div slot="item-before"><span>Conductivity</span></div>
-          <div slot="item"></div>
-          <i slot="item-after" class="icon material-icons" title="View on map">map</i>
-        </map-control-item>
-        <map-control-item @click="${this.normalPoints}">
-          <div slot="item-before">Reset</div>
-          <i slot="item-after" class="icon material-icons" title="View on map">clear</i>
+        <map-control-item 
+          name="Conductivity"
+          type="cond">
+          <p>
+          Conductivity approximate the concentration of total dissolved solids in spring water. 
+          The lowest spring water conductivity values are in the north-central and northwestern 
+          parts of the state and the highest values are in southern and south-eastern Wisconsin.
+          </p>
         </map-control-item>
       </div>
     `;
-    }
-
-    handleSelection(fn) {
-
-    }
-
-    _fire(eventName, detail) {
-      let event = new CustomEvent(eventName, {
-        bubbles: true,
-        detail: detail || {}
-      });
-      this.dispatchEvent(event);
-    }
-    normalPoints() {
-      this._fire('stylepoints', {type: 'normal'});
-    }
-    typePoints() {
-      this._fire('stylepoints', {type: 'type'});
-    }
-    condPoints() {
-      this._fire('stylepoints', {type: 'cond'});
-    }
-    qPoints() {
-      this._fire('stylepoints', {type: 'q'});
     }
   }
   customElements.define('map-controls', MapControls);
@@ -925,8 +921,15 @@
   class MapControlItem extends litElement.LitElement {
     static get properties() {
       return {
+        name: {
+          type: String
+        },
+        type: {
+          type: String
+        },
         selected: {
-          type: Boolean
+          type: Boolean,
+          attribute: false
         }
       };
     }
@@ -934,75 +937,74 @@
     constructor() {
       super();
       this.genId = wgnhsCommon.genId();
+      this.selected = false;
     }
 
     static get styles() {
-      return litElement.css`
-
-    input[type='checkbox'] {
-      display: none;
+      return [
+        ...wgnhsStyles.styles,
+        litElement.css`
+    .icon {
+      font-size: var(--icon-size-extra-large);
     }
-    .lbl-toggle {
-      display: block;
-      text-align: center;
-      cursor: pointer;
+    .icon[active] {
+      color: var(--palette-active);
     }
-    .lbl-toggle:hover {
-      color: var(--palette-900);
+    app-collapsible {
+      --transition-duration: 0;
+      --el-header-font-weight: var(--font-weight);
+      --el-header-font-size: var(--font-size);
+      --el-header-background: var(--palette-white);
+      --el-border: 1px solid var(--palette-light);
     }
-    .lbl-toggle:focus {
-      outline: thin dotted;
+    [slot] {
+      padding: var(--border-radius);
     }
-    .option-row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-
-      background: var(--palette-white);
-      color: var(--palette-accent);
-      border: 1px solid var(--palette-light);
-      border-radius: var(--border-radius);
-      padding: var(--font-size);
-      margin: var(--border-radius) 0;
-    }
-    /* .toggle:checked + .option-row {
-      background: var(--palette-light);
-      color: var(--palette-900);
-    } */
-    .option-row > div {
-      display: flex;
-      align-items: center;
-    }
-    `;
+    `];
     }
 
     render() {
       return litElement.html`
-    <input id="${this.genId}" class="toggle" type="checkbox">
-    <label for="${this.genId}" class="lbl-toggle option-row" tabindex="0">
-      <!-- <div class="option-row"> -->
-        <div><slot name="item-before"></slot></div>
-        <div><slot name="item"></slot></div>
-        <div><slot name="item-after"></slot></div>
-      <!-- </div> -->
-    </label>
+    <app-collapsible @open="${this.handleOpen}" .open=${this.selected}>
+      <span slot="header-before">${this.name}</span>
+      <i slot="header-after" 
+        class="icon material-icons" 
+        title="View on map"
+        ?active=${this.selected}>map</i>
+      <slot slot="content"></slot>
+    </app-collapsible>
     `;
     }
 
-    firstUpdated() {
-      this.$input = this.renderRoot.querySelector('.toggle');
-      let myLabels = this.renderRoot.querySelectorAll('.lbl-toggle');
+    handleOpen(e) {
+      if (this.selected !== e.detail.value) {
+        wgnhsCommon.dispatch(this.parentElement, CHANGE_EVENT, {
+          type: this.type, 
+          value: e.detail.value
+        });
+      }
+    }
 
-      Array.from(myLabels).forEach(label => {
-        label.addEventListener('keydown', e => {
-          // 32 === spacebar
-          // 13 === enter
-          if (e.which === 32 || e.which === 13) {
-            e.preventDefault();
-            label.click();
-          }      });
-      });
+    handleSelect(e) {
+      if (e.detail.type === this.type) {
+        this.selected = e.detail.value;
+        wgnhsCommon.dispatch(document, STYLE_EVENT, {
+          type: (this.selected)?this.type:RESET_TYPE
+        });
+      } else {
+        this.selected = false;
+      }
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      this.__selectHandler = this.handleSelect.bind(this);
+      this.parentElement.addEventListener(CHANGE_EVENT, this.__selectHandler);
+    }
+
+    disconnectedCallback() {
+      this.parentElement.removeEventListener(CHANGE_EVENT, this.__selectHandler);
+      super.disconnectedCallback();
     }
   }
   customElements.define('map-control-item', MapControlItem);
@@ -1120,6 +1122,15 @@
         window.router.clearRoute();
       }
     });
+  });
+
+  document.addEventListener('interaction', function(e) {
+    const params = e.detail.params;
+    if (params['Site_Code']) {
+      window.router.setRoute('view', params);
+    } else {
+      window.router.clearRoute();
+    }
   });
 
   document.addEventListener('clear-selection', function(e) {

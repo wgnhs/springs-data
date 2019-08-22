@@ -4,335 +4,6 @@
   (global = global || self, factory(global.lit = {}, global.common, global.common));
 }(this, function (exports, litElement, wgnhsCommon) { 'use strict';
 
-  class DownloadSection extends litElement.LitElement {
-    static get properties() {
-      return {
-        file: {
-          type: String
-        }
-      };
-    }
-
-    constructor() {
-      super();
-    }
-
-    static get styles() {
-      return litElement.css`
-    a {
-      text-decoration: none;
-    }
-    .download-button:hover {
-      color: var(--palette-900);
-    }
-    .download-button:focus {
-      outline: thin dotted;
-    }
-    .download-button {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-
-      cursor: pointer;
-      text-align: center;
-      background: var(--palette-white);
-      color: var(--palette-accent);
-      border: 1px solid var(--palette-light);
-      border-radius: var(--border-radius);
-      padding: var(--font-size);
-      margin: var(--border-radius) 0;
-    }
-    .download-button > div {
-      display: flex;
-      align-items: center;
-    }
-    .icon {
-      font-size: var(--icon-size-extra-large);
-    }
-    `;
-    }
-
-    render() {
-      return litElement.html`
-    <style>
-      @import url("./css/typography.css");
-    </style>
-    <a class="download-button" href="${this.file}" target="_blank" download>
-      <div>
-        <span>Download</span>
-      </div>
-      <div>
-        <i class="icon material-icons" title="Download">save_alt</i>
-      </div>
-    </a>
-    `;
-    }
-  }
-  customElements.define('download-section', DownloadSection);
-
-  class InRadio extends litElement.LitElement {
-    static get properties() {
-      return {
-        inName: {
-          type: String,
-          attribute: 'in-name'
-        },
-        choices: {
-          type: Array
-        },
-        choice: {
-          type: String,
-          reflect: true
-        }
-      };
-    }
-
-    constructor() {
-      super();
-      this.checked = [];
-      this.genId = (function() {
-        const memo = {};
-        return function(index) {
-          if (!memo[index]) {
-            memo[index] = wgnhsCommon.genId();
-          }
-          return memo[index];
-        }
-      })();
-    }
-
-    firstUpdated() {
-      if (!this.choice && this.choices) {
-        this.choice = this.choices[0];
-      }
-    }
-
-    inChange(e) {
-      this.choice = e.target.value;
-
-      let event = new CustomEvent('choice-change', {
-        detail: {
-          choice: this.choice
-        }
-      });
-      this.dispatchEvent(event);
-    }
-
-    render() {
-      return litElement.html`
-      ${this.choices.map((item, index) => litElement.html`
-        <div class="choice">
-          <input 
-            type="radio" 
-            name="${this.inName}" 
-            id="${this.genId(index)}" 
-            value="${item}" 
-            .checked="${(this.choice === item)}" 
-            @change="${this.inChange}"
-          >
-          <label for="${this.genId(index)}">${item}</label>
-        </div>
-      `)}
-    `;
-    }
-  }
-  customElements.define('in-radio', InRadio);
-
-  /**
-   * Code use and modified from
-   * https://alligator.io/css/collapsible/
-   */
-  class AppCollapsible extends litElement.LitElement {
-    static get properties() {
-      return {
-        genId: {
-          type: String,
-          attribute: false
-        },
-        open: {
-          type: Boolean,
-          reflect: true
-        },
-        button: {
-          type: Boolean
-        }
-      };
-    }
-
-    constructor() {
-      super();
-      this.genId = wgnhsCommon.genId();
-    }
-
-    static get styles() {
-      return litElement.css`
-    .wrap-collapsible {
-      margin: var(--border-radius) 0;
-    }
-
-    input[type='checkbox'] {
-      display: none;
-    }
-
-    .lbl-toggle {
-      display: block;
-
-      font-weight: var(--font-weight-bold);
-      font-size: var(--font-size-extra-large);
-      text-align: center;
-
-      padding: var(--border-radius);
-
-      color: var(--palette-accent);
-      background: var(--palette-light);
-
-      cursor: pointer;
-
-      border-radius: var(--border-radius);
-      transition: all 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    }
-
-    .lbl-toggle:hover {
-      color: var(--palette-900);
-    }
-
-    .lbl-toggle:focus {
-      outline: thin dotted;
-    }
-
-    .collapsible-content {
-      max-height: 0px;
-      overflow: hidden;
-      transition: max-height 0.3s cubic-bezier(0.86, 0, 0.07, 1);
-    }
-
-    .wrap-collapsible:not([button]) .toggle:checked ~ .collapsible-content {
-      max-height: var(--collapsible-max-height, 3000px);
-    }
-
-    .wrap-collapsible:not([button]) .toggle:checked ~ .lbl-toggle {
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;
-      transition: border 0s;
-    }
-
-    .collapsible-content .content-inner {
-      background: var(--palette-white);
-      border-bottom: 1px solid var(--palette-light);
-      border-right: 1px solid var(--palette-light);
-      border-left: 1px solid var(--palette-light);
-      border-bottom-left-radius: var(--border-radius);
-      border-bottom-right-radius: var(--border-radius);
-      padding: var(--font-size);
-    }
-    .collapsible-header {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-    `;
-    }
-
-    render() {
-      return litElement.html`
-    <div class="wrap-collapsible" ?button=${this.button}>
-      <input id="${this.genId}" class="toggle" type="checkbox" ?checked="${this.open}" @change=${this._handleChange}>
-      <label for="${this.genId}" class="lbl-toggle" tabindex="0">
-        <div class="collapsible-header">
-          <div><slot name="header-before"></slot></div>
-          <div><slot name="header"></slot></div>
-          <div><slot name="header-after"></slot></div>
-        </div>
-      </label>
-      <div class="collapsible-content">
-        <div class="content-inner">
-          <slot name="content"></slot>
-        </div>
-      </div>
-    </div>
-    `;
-    }
-
-    firstUpdated() {
-      let myLabels = this.renderRoot.querySelectorAll('.lbl-toggle');
-
-      Array.from(myLabels).forEach(label => {
-        label.addEventListener('keydown', e => {
-          // 32 === spacebar
-          // 13 === enter
-          if (e.which === 32 || e.which === 13) {
-            e.preventDefault();
-            label.click();
-          }      });
-      });
-    }
-
-    updated(changed) {
-      let eventName = 'open';
-      if (changed.has(eventName)) {
-        wgnhsCommon.dispatch(this, eventName, { value: this[eventName] });
-      }
-    }
-
-    _handleChange(e) {
-      this.open = e.target.checked;
-    }
-  }
-  customElements.define('app-collapsible', AppCollapsible);
-
-  class AppSidebar extends litElement.LitElement {
-    static get properties() {
-      return {
-        title: {
-          type: String
-        },
-        tabs: {
-          type: Array
-        }
-      };
-    }
-
-    constructor() {
-      super();
-    }
-
-    static get styles() {
-      return litElement.css`
-      :host {
-        padding: 0 var(--border-radius);
-      }
-    `;
-    }
-
-    switchTab(choice) {
-      this.shadowRoot.querySelectorAll('slot').forEach((el) => {
-        if ((choice === 'default' && !el.getAttribute('name')) || (el.getAttribute('name') === choice)) {
-          el.hidden = false;
-        } else {
-          el.hidden = true;
-        }
-      });
-    }
-
-    handleChoiceChange(e) {
-      this.switchTab(e.detail.choice);
-    }
-
-    render() {
-      return litElement.html`
-      ${(!this.title)?'':litElement.html`<h1 class="header">${this.title}</h1>`}
-      <slot></slot>
-      ${!(this.tabs)?'':this.tabs.map((el) => litElement.html`
-      <slot name='${el}' hidden></slot>
-      `)}
-    `;
-    }
-  }
-
-  customElements.define('app-sidebar', AppSidebar);
-
   const reset = litElement.css`
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0-modified | 20110126
@@ -866,6 +537,337 @@ a {
     reset,
     ...typography
   ];
+
+  class DownloadSection extends litElement.LitElement {
+    static get properties() {
+      return {
+        file: {
+          type: String
+        }
+      };
+    }
+
+    constructor() {
+      super();
+    }
+
+    static get styles() {
+      return [
+        ...styles,
+        litElement.css`
+    a {
+      text-decoration: none;
+    }
+    .download-button:hover {
+      color: var(--palette-900);
+    }
+    .download-button:focus {
+      outline: thin dotted;
+    }
+    .download-button {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      cursor: pointer;
+      text-align: center;
+      background: var(--palette-white);
+      color: var(--palette-accent);
+      border: 1px solid var(--palette-light);
+      border-radius: var(--border-radius);
+      padding: var(--font-size);
+      margin: var(--border-radius) 0;
+    }
+    .download-button > div {
+      display: flex;
+      align-items: center;
+    }
+    .icon {
+      font-size: var(--icon-size-extra-large);
+    }
+    `];
+    }
+
+    render() {
+      return litElement.html`
+    <a class="download-button" href="${this.file}" target="_blank" download>
+      <div>
+        <span>Download</span>
+      </div>
+      <div>
+        <i class="icon material-icons" title="Download">save_alt</i>
+      </div>
+    </a>
+    `;
+    }
+  }
+  customElements.define('download-section', DownloadSection);
+
+  class InRadio extends litElement.LitElement {
+    static get properties() {
+      return {
+        inName: {
+          type: String,
+          attribute: 'in-name'
+        },
+        choices: {
+          type: Array
+        },
+        choice: {
+          type: String,
+          reflect: true
+        }
+      };
+    }
+
+    constructor() {
+      super();
+      this.checked = [];
+      this.genId = (function() {
+        const memo = {};
+        return function(index) {
+          if (!memo[index]) {
+            memo[index] = wgnhsCommon.genId();
+          }
+          return memo[index];
+        }
+      })();
+    }
+
+    firstUpdated() {
+      if (!this.choice && this.choices) {
+        this.choice = this.choices[0];
+      }
+    }
+
+    inChange(e) {
+      this.choice = e.target.value;
+
+      let event = new CustomEvent('choice-change', {
+        detail: {
+          choice: this.choice
+        }
+      });
+      this.dispatchEvent(event);
+    }
+
+    render() {
+      return litElement.html`
+      ${this.choices.map((item, index) => litElement.html`
+        <div class="choice">
+          <input 
+            type="radio" 
+            name="${this.inName}" 
+            id="${this.genId(index)}" 
+            value="${item}" 
+            .checked="${(this.choice === item)}" 
+            @change="${this.inChange}"
+          >
+          <label for="${this.genId(index)}">${item}</label>
+        </div>
+      `)}
+    `;
+    }
+  }
+  customElements.define('in-radio', InRadio);
+
+  /**
+   * Code use and modified from
+   * https://alligator.io/css/collapsible/
+   */
+  class AppCollapsible extends litElement.LitElement {
+    static get properties() {
+      return {
+        genId: {
+          type: String,
+          attribute: false
+        },
+        open: {
+          type: Boolean,
+          reflect: true
+        },
+        button: {
+          type: Boolean
+        }
+      };
+    }
+
+    constructor() {
+      super();
+      this.genId = wgnhsCommon.genId();
+    }
+
+    static get styles() {
+      return litElement.css`
+    .wrap-collapsible {
+      box-sizing: border-box;
+      margin: var(--border-radius) 0;
+      border: var(--el-border, none);
+      border-radius: var(--border-radius);
+    }
+
+    input[type='checkbox'] {
+      display: none;
+    }
+
+    .lbl-toggle {
+      display: block;
+
+      font-weight: var(--el-header-font-weight, var(--font-weight-bold));
+      font-size: var(--el-header-font-size, var(--font-size-extra-large));
+      text-align: center;
+
+      padding: var(--border-radius);
+
+      color: var(--el-header-color, var(--palette-accent));
+      background: var(--el-header-background, var(--palette-light));
+
+      cursor: pointer;
+
+      border-radius: var(--border-radius);
+      transition: border-radius var(--transition-duration, 0.3) cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    }
+
+    .lbl-toggle:hover {
+      color: var(--el-color-hover, var(--palette-900));
+    }
+
+    .lbl-toggle:focus {
+      outline: thin dotted;
+    }
+
+    .collapsible-content {
+      max-height: 0px;
+      overflow: hidden;
+      transition: max-height var(--transition-duration, 0.3) cubic-bezier(0.86, 0, 0.07, 1);
+    }
+
+    .wrap-collapsible:not([button]) .toggle:checked ~ .collapsible-content {
+      max-height: var(--el-max-height, 3000px);
+    }
+
+    .wrap-collapsible:not([button]) .toggle:checked ~ .lbl-toggle {
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+      transition: border 0s;
+    }
+
+    .collapsible-content .content-inner {
+      background: var(--el-content-background, var(--palette-white));
+      border-bottom: 1px solid var(--el-header-background, var(--palette-light));
+      border-right: 1px solid var(--el-header-background, var(--palette-light));
+      border-left: 1px solid var(--el-header-background, var(--palette-light));
+      border-bottom-left-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+      padding: var(--font-size);
+    }
+    .collapsible-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    `;
+    }
+
+    render() {
+      return litElement.html`
+    <div class="wrap-collapsible" ?button=${this.button}>
+      <input id="${this.genId}" class="toggle" type="checkbox" .checked="${this.open}" @change=${this._handleChange}>
+      <label for="${this.genId}" class="lbl-toggle" tabindex="0">
+        <div class="collapsible-header">
+          <div><slot name="header-before"></slot></div>
+          <div><slot name="header"></slot></div>
+          <div><slot name="header-after"></slot></div>
+        </div>
+      </label>
+      <div class="collapsible-content">
+        <div class="content-inner">
+          <slot name="content"></slot>
+        </div>
+      </div>
+    </div>
+    `;
+    }
+
+    firstUpdated() {
+      let myLabels = this.renderRoot.querySelectorAll('.lbl-toggle');
+
+      Array.from(myLabels).forEach(label => {
+        label.addEventListener('keydown', e => {
+          // 32 === spacebar
+          // 13 === enter
+          if (e.which === 32 || e.which === 13) {
+            e.preventDefault();
+            label.click();
+          }      });
+      });
+    }
+
+    updated(changed) {
+      let eventName = 'open';
+      if (changed.has(eventName)) {
+        wgnhsCommon.dispatch(this, eventName, { value: this[eventName] });
+      }
+    }
+
+    _handleChange(e) {
+      this.open = e.target.checked;
+    }
+  }
+  customElements.define('app-collapsible', AppCollapsible);
+
+  class AppSidebar extends litElement.LitElement {
+    static get properties() {
+      return {
+        title: {
+          type: String
+        },
+        tabs: {
+          type: Array
+        }
+      };
+    }
+
+    constructor() {
+      super();
+    }
+
+    static get styles() {
+      return litElement.css`
+      :host {
+        padding: 0 var(--border-radius);
+      }
+    `;
+    }
+
+    switchTab(choice) {
+      this.shadowRoot.querySelectorAll('slot').forEach((el) => {
+        if ((choice === 'default' && !el.getAttribute('name')) || (el.getAttribute('name') === choice)) {
+          el.hidden = false;
+        } else {
+          el.hidden = true;
+        }
+      });
+    }
+
+    handleChoiceChange(e) {
+      this.switchTab(e.detail.choice);
+    }
+
+    render() {
+      return litElement.html`
+      ${(!this.title)?'':litElement.html`<h1 class="header">${this.title}</h1>`}
+      <slot></slot>
+      ${!(this.tabs)?'':this.tabs.map((el) => litElement.html`
+      <slot name='${el}' hidden></slot>
+      `)}
+    `;
+    }
+  }
+
+  customElements.define('app-sidebar', AppSidebar);
 
   class ModalDialog extends litElement.LitElement {
     static get properties() {
@@ -1725,7 +1727,7 @@ a {
   };
   const keyLookup = {
     'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
-    'Conductivity_uS': { 'title': 'Specific Conductance (µmho/cm)', 'desc': 'Measured as close to spring source as possible (µmho/cm).' },
+    'Conductivity_uS': { 'title': 'Conductivity (µS)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
     'Water_Temp_C': { 'title': 'Temperature (°C)', 'desc': 'Measured as close to spring source as possible (°C).' },
     'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
     'County': { 'title': 'County', 'desc': 'County where spring is located.' },
@@ -1778,6 +1780,112 @@ a {
     'GlobalID': { 'title': 'Global ID', 'desc': 'Automatically generated unique and global ID' },
     'gps_time_date': { 'title': 'GPS time and date', 'desc': 'Automatically generated GPS time and date stamp' },
     'sat_signals': { 'title': 'Number of satellites', 'desc': 'Automatically generated number of satellites visible' }
+  };
+
+  const colorRange = [
+    'var(--map-bin-0)',
+    'var(--map-bin-1)',
+    'var(--map-bin-2)',
+    'var(--map-bin-3)',
+    'var(--map-bin-4)',
+    'var(--map-bin-5)',
+    'var(--map-bin-6)'
+  ];
+
+  const binRanges = {
+    'Conductivity_uS': [
+      [],
+      [],
+      [0, 300],
+      [300, 502],
+      [502, 676],
+      [676, 926],
+      [926, 2000]
+    ],
+    'Discharge_cfs': [
+      [0.1, 0.2],
+      [0.2, 0.5],
+      [0.5, 1.0],
+      [1, 2],
+      [2, 5],
+      [5, 10],
+      [10, 20]
+    ]
+  };
+  const RestylingCircleMarker = L.CircleMarker.extend({
+    getEvents: function() {
+      return {
+        zoomend: this._restyle,
+        normalpoints: this._normal,
+        typepoints: this._orifice,
+        condpoints: this._conductivity,
+        qpoints: this._discharge
+      }
+    },
+    _restyle: function(e) {
+      this.setRadius(RestylingCircleMarker.calcRadius(e.target.getZoom()));
+    },
+    _normal: function() {
+      let color = 'var(--map-symbol)';
+      if (!this._activeBackup) {
+        this.setStyle({'color': color});
+      } else {
+        this._activeBackup = color;
+      }
+    },
+    _orifice: function() {
+      var color = 'var(--map-symbol)';
+      var prop = 'Orifice_Geom';
+      if (this.feature.properties[prop] === 'seepage/filtration') {
+        color = 'var(--map-symbol-alt)';
+      }
+      if (!this._activeBackup) {
+        this.setStyle({'color': color});
+      } else {
+        this._activeBackup = color;
+      }
+    },
+    _conductivity: function() {
+      var prop = 'Conductivity_uS';
+      this._binPoint(prop);
+    },
+    _discharge: function() {
+      var prop = 'Discharge_cfs';
+      this._binPoint(prop);
+    },
+    _binPoint: function(prop) {
+      let result = RestylingCircleMarker.binPoint(prop, this.feature.properties);
+      if (!this._activeBackup) {
+        this.setStyle({'color': result});
+      } else {
+        this._activeBackup = result;
+      }
+    },
+    highlight: function() {
+      this._activeBackup = this.options.color;
+      this.setStyle({'color': 'var(--map-symbol-active'});
+    },
+    removeHighlight: function() {
+      if (this._activeBackup) {
+        this.setStyle({'color': this._activeBackup});
+        this._activeBackup = null;
+      }
+    }
+  });
+
+  RestylingCircleMarker.calcRadius = (a) => Math.max(Math.floor(a/1.5),3);
+  RestylingCircleMarker.binPoint = (prop, data) => {
+    let result = "#406058";
+    const ranges = binRanges[prop];
+    if (ranges) {
+      const val = data[prop];
+      for (let i = 0; i < ranges.length; i++) {
+        if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
+          result = colorRange[i];
+        }
+      }
+    }
+    return result;
   };
 
   // https://github.com/wbkd/d3-extended
@@ -2020,7 +2128,7 @@ a {
            // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
            .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
            .attr('r', 3)                                      // radius
-           .attr("fill", "#406058")                           // fill color
+           .attr("fill", (d) => { return RestylingCircleMarker.binPoint(options.attributeKey, d) })                           // fill color
            .attr("stroke", "#000")
            .attr("stroke-width", 0)
            .attr("opacity", "0.7")                           // opacity
@@ -2029,6 +2137,7 @@ a {
                  })
            .on('click', (d) => {
                  console.log("switch to "+d['Site_Code']);
+                 wgnhsCommon.dispatch(document, 'interaction', {params: d});
   //            this.annotate(d['Site_Code'])
            })
            .on('mouseenter', (d) => {this.highlight(d['Site_Code']);})
