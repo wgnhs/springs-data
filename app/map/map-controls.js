@@ -1,6 +1,11 @@
 import { LitElement, html, css } from 'lit-element';
-import { genId } from 'wgnhs-common';
+import { genId, dispatch } from 'wgnhs-common';
 import { styles } from 'wgnhs-styles';
+export { AppCollapsible } from 'wgnhs-layout';
+
+const CHANGE_EVENT = 'map-control';
+const STYLE_EVENT = 'stylepoints';
+const RESET_TYPE = 'normal';
 
 export class MapControls extends LitElement {
   static get properties() {
@@ -21,60 +26,26 @@ export class MapControls extends LitElement {
         box-sizing: border-box;
         padding: var(--border-radius)
       }
-      .icon {
-        font-size: var(--icon-size-extra-large);
-      }
     `];
   }
 
   render() {
     return html`
       <div class="option-container">
-        <map-control-item @click="${this.typePoints}">
-          <div slot="item-before"><span>Spring Type</span></div>
-          <div slot="item"></div>
-          <i slot="item-after" class="icon material-icons" title="View on map">map</i>
+        <map-control-item 
+          name="Spring Type"
+          type="type">
         </map-control-item>
-        <map-control-item @click="${this.qPoints}">
-          <div slot="item-before"><span>Discharge</span></div>
-          <div slot="item"></div>
-          <i slot="item-after" class="icon material-icons" title="View on map">map</i>
+        <map-control-item 
+          name="Discharge"
+          type="q">
         </map-control-item>
-        <map-control-item @click="${this.condPoints}">
-          <div slot="item-before"><span>Conductivity</span></div>
-          <div slot="item"></div>
-          <i slot="item-after" class="icon material-icons" title="View on map">map</i>
-        </map-control-item>
-        <map-control-item @click="${this.normalPoints}">
-          <div slot="item-before">Reset</div>
-          <i slot="item-after" class="icon material-icons" title="View on map">clear</i>
+        <map-control-item 
+          name="Conductivity"
+          type="cond">
         </map-control-item>
       </div>
     `;
-  }
-
-  handleSelection(fn) {
-
-  }
-
-  _fire(eventName, detail) {
-    let event = new CustomEvent(eventName, {
-      bubbles: true,
-      detail: detail || {}
-    });
-    this.dispatchEvent(event);
-  }
-  normalPoints() {
-    this._fire('stylepoints', {type: 'normal'});
-  }
-  typePoints() {
-    this._fire('stylepoints', {type: 'type'});
-  }
-  condPoints() {
-    this._fire('stylepoints', {type: 'cond'});
-  }
-  qPoints() {
-    this._fire('stylepoints', {type: 'q'});
   }
 }
 customElements.define('map-controls', MapControls);
@@ -82,8 +53,15 @@ customElements.define('map-controls', MapControls);
 export class MapControlItem extends LitElement {
   static get properties() {
     return {
+      name: {
+        type: String
+      },
+      type: {
+        type: String
+      },
       selected: {
-        type: Boolean
+        type: Boolean,
+        attribute: false
       }
     };
   }
@@ -91,76 +69,66 @@ export class MapControlItem extends LitElement {
   constructor() {
     super();
     this.genId = genId();
+    this.selected = false;
   }
 
   static get styles() {
-    return css`
-
-    input[type='checkbox'] {
-      display: none;
+    return [
+      ...styles,
+      css`
+    .icon {
+      font-size: var(--icon-size-extra-large);
     }
-    .lbl-toggle {
-      display: block;
-      text-align: center;
-      cursor: pointer;
+    .icon[active] {
+      color: var(--palette-active);
     }
-    .lbl-toggle:hover {
-      color: var(--palette-900);
+    app-collapsible {
+      --transition-duration: 0;
     }
-    .lbl-toggle:focus {
-      outline: thin dotted;
-    }
-    .option-row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-
-      background: var(--palette-white);
-      color: var(--palette-accent);
-      border: 1px solid var(--palette-light);
-      border-radius: var(--border-radius);
-      padding: var(--font-size);
-      margin: var(--border-radius) 0;
-    }
-    /* .toggle:checked + .option-row {
-      background: var(--palette-light);
-      color: var(--palette-900);
-    } */
-    .option-row > div {
-      display: flex;
-      align-items: center;
-    }
-    `;
+    `];
   }
 
   render() {
     return html`
-    <input id="${this.genId}" class="toggle" type="checkbox">
-    <label for="${this.genId}" class="lbl-toggle option-row" tabindex="0">
-      <!-- <div class="option-row"> -->
-        <div><slot name="item-before"></slot></div>
-        <div><slot name="item"></slot></div>
-        <div><slot name="item-after"></slot></div>
-      <!-- </div> -->
-    </label>
+    <app-collapsible @open="${this.handleOpen}" .open=${this.selected}>
+      <span slot="header-before">${this.name}</span>
+      <i slot="header-after" 
+        class="icon material-icons" 
+        title="View on map"
+        ?active=${this.selected}>map</i>
+    </app-collapsible>
     `;
   }
 
-  firstUpdated() {
-    this.$input = this.renderRoot.querySelector('.toggle');
-    let myLabels = this.renderRoot.querySelectorAll('.lbl-toggle');
-
-    Array.from(myLabels).forEach(label => {
-      label.addEventListener('keydown', e => {
-        // 32 === spacebar
-        // 13 === enter
-        if (e.which === 32 || e.which === 13) {
-          e.preventDefault();
-          label.click();
-        };
+  handleOpen(e) {
+    if (this.selected !== e.detail.value) {
+      dispatch(this.parentElement, CHANGE_EVENT, {
+        type: this.type, 
+        value: e.detail.value
       });
-    });
+    }
+  }
+
+  handleSelect(e) {
+    if (e.detail.type === this.type) {
+      this.selected = e.detail.value;
+      dispatch(document, STYLE_EVENT, {
+        type: (this.selected)?this.type:RESET_TYPE
+      });
+    } else {
+      this.selected = false;
+    }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.__selectHandler = this.handleSelect.bind(this);
+    this.parentElement.addEventListener(CHANGE_EVENT, this.__selectHandler);
+  }
+
+  disconnectedCallback() {
+    this.parentElement.removeEventListener(CHANGE_EVENT, this.__selectHandler);
+    super.disconnectedCallback();
   }
 }
 customElements.define('map-control-item', MapControlItem);
