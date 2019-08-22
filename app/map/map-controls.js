@@ -35,14 +35,30 @@ export class MapControls extends LitElement {
         <map-control-item 
           name="Spring Type"
           type="type">
+          <p>
+          About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 
+          percent have seepage-filtration morphologies. At a fracture spring, groundwater discharges 
+          from joints or fractures in bedrock. Contact springs discharge water at a stratigraphic 
+          contact, along which fractures often form. Groundwater discharges from many small openings 
+          in permeable, unlithified material at a seepage-filtration spring.
+          </p>
         </map-control-item>
         <map-control-item 
           name="Discharge"
           type="q">
+          <p>
+          The average flow rate of the springs for which flow could be measured was 0.96 ft3/s; 
+          values ranged from 0.14 ft3/s to 18.3 ft3/s.
+          </p>
         </map-control-item>
         <map-control-item 
           name="Conductivity"
           type="cond">
+          <p>
+          Conductivity approximate the concentration of total dissolved solids in spring water. 
+          The lowest spring water conductivity values are in the north-central and northwestern 
+          parts of the state and the highest values are in southern and south-eastern Wisconsin.
+          </p>
         </map-control-item>
       </div>
     `;
@@ -103,6 +119,7 @@ export class MapControlItem extends LitElement {
         class="icon material-icons" 
         title="View on map"
         ?active=${this.selected}>map</i>
+      <slot slot="content"></slot>
     </app-collapsible>
     `;
   }
