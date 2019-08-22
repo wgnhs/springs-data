@@ -242,6 +242,8 @@ class DotPlot {
          .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
          .attr('r', 3)                                      // radius
          .attr("fill", "#406058")                           // fill color
+         .attr("stroke", "#000")
+         .attr("stroke-width", 0)
          .attr("opacity", "0.7")                           // opacity
          .attr("class", (d) => {
                   return d.Site_Code
@@ -358,10 +360,7 @@ class DotPlot {
          .moveToFront();
 
          g.select('circle')
-         .attr('r', 5) 
-         
-         .attr("stroke", "#000")
-         .attr("stroke-width", 2)
+         .attr("stroke-width", 3)
          .attr("opacity", "0.85")   
       
    } // end highlight
@@ -372,9 +371,6 @@ class DotPlot {
          .moveToFront();
 
          g.select('circle')
-         .attr('r', 3) 
-   
-         .attr("stroke", "#000")
          .attr("stroke-width", 0)
          .attr("opacity", "0.7") 
       
