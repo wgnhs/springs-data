@@ -275,28 +275,52 @@ class DotPlot {
       var annotationLabelPadding = 5;
 
 
-
+      //select all groups within the circles group, then filter down to the one that matches the site code. 
       var g = this.circles.selectAll("g")
          .filter((d) => d['Site_Code'] === siteCode)
          .moveToFront();
+      
+      var circle = g.select('circle')
 
-         g.select('circle')
          .attr('r', annotationRadius)                        // radius
          .attr("fill", "#000")                           // fill color
-         .attr("stroke", "#eee")
+         .attr("stroke", "#333")
          .attr("stroke-width", 2)
          .attr("opacity", "0.85")                           // opacity
-         
-      
-         g.append("text")
-         .attr('dy', '-1em')
+
+
+      var label = g.append("text")
+         .attr('dy', '-0.75em') //vertical displacement 
          .html((d) => { 
             //console.log("keyLookup is: ", keyLookup[options.attributeKey]['title']);
- 
+            console.log("circle x:", circle.attr('cx'));
             return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
          })
          ;
-        
+      
+      g.append("polyline")
+         .attr('stroke', "#333333")      //set appearance
+         .attr("stroke-width", 3)        //set appearance
+         .style('fill', 'none')          //set appearance
+         .attr('points', (d) => {
+         
+            // two points on each line:
+             // A: center top of the circle 
+             // B: point directly above the circle at a certain height 
+             // each point is defined by an [x, y]
+            var startpoint = [0,0]
+                startpoint[0] = circle.attr('cx');
+                startpoint[1] = circle.attr('cy')-circle.attr('r');
+
+            var endpoint = [0,0];
+                endpoint[0] = circle.attr('cx');
+                endpoint[1] = -7;
+
+             // console.log("start, end", startpoint, endpoint)
+             return [startpoint, endpoint]        // return A, B
+         
+      })
+
 
 
 
@@ -342,20 +366,7 @@ class DotPlot {
       //             return [startpoint, endpoint]        // return A, B
       //      })
 
-      //   annotation.selectAll("text")
-      //      .data(annotationData)
-      //      .enter()
-      //      .append("text")
-      //      .attr("font-weight", "bold")
-      //      .html((d) => { return options.label+": "+options.attributeKey})
-      //      .attr("transform", (d) => {
-      //         var textpoint = [0, 0]
-      //             textpoint[0] = this.x_scale(d[options.attributeKey]);
-      //             textpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding;
-      //      return 'translate('+textpoint+')'
-
-      //      })
-      //      .style('text-anchor', "middle")
+     
    } //end ennotate 
    
    highlight(siteCode){
