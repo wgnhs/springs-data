@@ -1,4 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
+import { styles } from '../styles/index.js';
 
 export class DownloadSection extends LitElement {
   static get properties() {
@@ -14,7 +15,9 @@ export class DownloadSection extends LitElement {
   }
 
   static get styles() {
-    return css`
+    return [
+      ...styles,
+      css`
     a {
       text-decoration: none;
     }
@@ -46,14 +49,11 @@ export class DownloadSection extends LitElement {
     .icon {
       font-size: var(--icon-size-extra-large);
     }
-    `;
+    `];
   }
 
   render() {
     return html`
-    <style>
-      @import url("./css/typography.css");
-    </style>
     <a class="download-button" href="${this.file}" target="_blank" download>
       <div>
         <span>Download</span>

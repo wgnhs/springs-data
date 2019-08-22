@@ -30,7 +30,10 @@ export class AppCollapsible extends LitElement {
   static get styles() {
     return css`
     .wrap-collapsible {
+      box-sizing: border-box;
       margin: var(--border-radius) 0;
+      border: var(--el-border, none);
+      border-radius: var(--border-radius);
     }
 
     input[type='checkbox'] {
@@ -40,23 +43,23 @@ export class AppCollapsible extends LitElement {
     .lbl-toggle {
       display: block;
 
-      font-weight: var(--font-weight-bold);
-      font-size: var(--font-size-extra-large);
+      font-weight: var(--el-header-font-weight, var(--font-weight-bold));
+      font-size: var(--el-header-font-size, var(--font-size-extra-large));
       text-align: center;
 
       padding: var(--border-radius);
 
-      color: var(--palette-accent);
-      background: var(--palette-light);
+      color: var(--el-header-color, var(--palette-accent));
+      background: var(--el-header-background, var(--palette-light));
 
       cursor: pointer;
 
       border-radius: var(--border-radius);
-      transition: all 0.3s cubic-bezier(0.755, 0.05, 0.855, 0.06);
+      transition: border-radius var(--transition-duration, 0.3) cubic-bezier(0.755, 0.05, 0.855, 0.06);
     }
 
     .lbl-toggle:hover {
-      color: var(--palette-900);
+      color: var(--el-color-hover, var(--palette-900));
     }
 
     .lbl-toggle:focus {
@@ -66,11 +69,11 @@ export class AppCollapsible extends LitElement {
     .collapsible-content {
       max-height: 0px;
       overflow: hidden;
-      transition: max-height 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+      transition: max-height var(--transition-duration, 0.3) cubic-bezier(0.86, 0, 0.07, 1);
     }
 
     .wrap-collapsible:not([button]) .toggle:checked ~ .collapsible-content {
-      max-height: var(--collapsible-max-height, 3000px);
+      max-height: var(--el-max-height, 3000px);
     }
 
     .wrap-collapsible:not([button]) .toggle:checked ~ .lbl-toggle {
@@ -80,10 +83,10 @@ export class AppCollapsible extends LitElement {
     }
 
     .collapsible-content .content-inner {
-      background: var(--palette-white);
-      border-bottom: 1px solid var(--palette-light);
-      border-right: 1px solid var(--palette-light);
-      border-left: 1px solid var(--palette-light);
+      background: var(--el-content-background, var(--palette-white));
+      border-bottom: 1px solid var(--el-header-background, var(--palette-light));
+      border-right: 1px solid var(--el-header-background, var(--palette-light));
+      border-left: 1px solid var(--el-header-background, var(--palette-light));
       border-bottom-left-radius: var(--border-radius);
       border-bottom-right-radius: var(--border-radius);
       padding: var(--font-size);
@@ -100,7 +103,7 @@ export class AppCollapsible extends LitElement {
   render() {
     return html`
     <div class="wrap-collapsible" ?button=${this.button}>
-      <input id="${this.genId}" class="toggle" type="checkbox" ?checked="${this.open}" @change=${this._handleChange}>
+      <input id="${this.genId}" class="toggle" type="checkbox" .checked="${this.open}" @change=${this._handleChange}>
       <label for="${this.genId}" class="lbl-toggle" tabindex="0">
         <div class="collapsible-header">
           <div><slot name="header-before"></slot></div>

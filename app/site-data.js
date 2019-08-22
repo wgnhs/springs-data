@@ -105,7 +105,7 @@ export const ignoredKeys = [
 ];
 export const keyLookup = {
   'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
-  'Conductivity_uS': { 'title': 'Specific Conductance (µmho/cm)', 'desc': 'Measured as close to spring source as possible (µmho/cm).' },
+  'Conductivity_uS': { 'title': 'Conductivity (µS)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
   'Water_Temp_C': { 'title': 'Temperature (°C)', 'desc': 'Measured as close to spring source as possible (°C).' },
   'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
   'County': { 'title': 'County', 'desc': 'County where spring is located.' },

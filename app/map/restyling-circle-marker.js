@@ -8,6 +8,27 @@ const colorRange = [
   'var(--map-bin-5)',
   'var(--map-bin-6)'
 ];
+
+const binRanges = {
+  'Conductivity_uS': [
+    [],
+    [],
+    [0, 300],
+    [300, 502],
+    [502, 676],
+    [676, 926],
+    [926, 2000]
+  ],
+  'Discharge_cfs': [
+    [0.1, 0.2],
+    [0.2, 0.5],
+    [0.5, 1.0],
+    [1, 2],
+    [2, 5],
+    [5, 10],
+    [10, 20]
+  ]
+}
 export const RestylingCircleMarker = L.CircleMarker.extend({
   getEvents: function() {
     return {
@@ -42,39 +63,15 @@ export const RestylingCircleMarker = L.CircleMarker.extend({
     }
   },
   _conductivity: function() {
-    var binRanges = [
-      [],
-      [],
-      [0, 300],
-      [300, 502],
-      [502, 676],
-      [676, 926],
-      [926, 2000]
-    ];
     var prop = 'Conductivity_uS';
-    this._binPoint(binRanges, colorRange, prop);
+    this._binPoint(prop);
   },
   _discharge: function() {
-    var binRanges = [
-      [0.1, 0.2],
-      [0.2, 0.5],
-      [0.5, 1.0],
-      [1, 2],
-      [2, 5],
-      [5, 10],
-      [10, 20]
-    ];
     var prop = 'Discharge_cfs';
-    this._binPoint(binRanges, colorRange, prop);
+    this._binPoint(prop);
   },
-  _binPoint: function(ranges, colors, prop) {
-    let result = colors[0];
-    const val = this.feature.properties[prop];
-    for (let i = 0; i < ranges.length; i++) {
-      if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
-        result = colors[i];
-      }
-    }
+  _binPoint: function(prop) {
+    let result = RestylingCircleMarker.binPoint(prop, this.feature.properties);
     if (!this._activeBackup) {
       this.setStyle({'color': result});
     } else {
@@ -94,3 +91,16 @@ export const RestylingCircleMarker = L.CircleMarker.extend({
 });
 
 RestylingCircleMarker.calcRadius = (a) => Math.max(Math.floor(a/1.5),3);
+RestylingCircleMarker.binPoint = (prop, data) => {
+  let result = "#406058";
+  const ranges = binRanges[prop];
+  if (ranges) {
+    const val = data[prop];
+    for (let i = 0; i < ranges.length; i++) {
+      if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
+        result = colorRange[i];
+      }
+    }
+  }
+  return result;
+}
