@@ -121,6 +121,15 @@ window.siteMap.once('init', function() {
   });
 });
 
+document.addEventListener('interaction', function(e) {
+  const params = e.detail.params;
+  if (params['Site_Code']) {
+    window.router.setRoute('view', params);
+  } else {
+    window.router.clearRoute();
+  }
+});
+
 document.addEventListener('clear-selection', function(e) {
   window.router.clearRoute();
 });

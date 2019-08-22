@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { keyLookup, ignoredKeys } from '../app/site-data.js';
 import { RestylingCircleMarker } from '../app/map/restyling-circle-marker.js';
+import { dispatch } from 'wgnhs-common';
 
     // https://github.com/wbkd/d3-extended
     d3.selection.prototype.moveToFront = function() {  
@@ -251,6 +252,7 @@ class DotPlot {
                })
          .on('click', (d) => {
                console.log("switch to "+d['Site_Code']);
+               dispatch(document, 'interaction', {params: d});
 //            this.annotate(d['Site_Code'])
          })
          .on('mouseenter', (d) => {this.highlight(d['Site_Code'])})
