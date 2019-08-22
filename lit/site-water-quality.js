@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { keyLookup, ignoredKeys } from '../app/site-data.js';
+import { RestylingCircleMarker } from '../app/map/restyling-circle-marker.js';
 
     // https://github.com/wbkd/d3-extended
     d3.selection.prototype.moveToFront = function() {  
@@ -241,7 +242,7 @@ class DotPlot {
          // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
          .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
          .attr('r', 3)                                      // radius
-         .attr("fill", "#406058")                           // fill color
+         .attr("fill", (d) => { return RestylingCircleMarker.binPoint(options.attributeKey, d) })                           // fill color
          .attr("stroke", "#000")
          .attr("stroke-width", 0)
          .attr("opacity", "0.7")                           // opacity
