@@ -161,7 +161,7 @@ class DotPlot {
    this.options = dotPlotOptions;
 
    this.svgWidth = 400;
-   this.svgHeight = 130;
+   this.svgHeight = 140;
 
    this.margin = {
                   top: 50,
@@ -172,6 +172,8 @@ class DotPlot {
    
    this.chartWidth = this.svgWidth - this.margin.left - this.margin.right,
    this.chartHeight = this.svgHeight - this.margin.top - this.margin.bottom;
+   this.tickPadding = 10; // spacing needed to see the ticks extend past the dots. 
+   
    }
 
    get x_scale() {
@@ -230,7 +232,7 @@ class DotPlot {
 
      this.circles = chartgroup.append("g").attr("class", "circles");
 
-     var jitterWidth = this.chartHeight;
+     var jitterWidth = this.chartHeight-this.tickPadding;
      
       
       // within the circles group, append a (sub)group for each data point, and append to that (sub)group a circle. 
