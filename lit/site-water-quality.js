@@ -104,14 +104,12 @@ export class SiteWaterQuality extends LitElement {
 
       var phDotPlotOptions = {
          svg: this.phchart,
-         label: "pH",
          attributeKey: "pH",
 
          tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0],
          chartMin: 5.5,
          chartMax: 10,
 
-        // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
 
@@ -125,7 +123,6 @@ export class SiteWaterQuality extends LitElement {
          chartMin: 5,
          chartMax: 17,
 
-        // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
 
@@ -133,14 +130,12 @@ export class SiteWaterQuality extends LitElement {
 
       var conductivityDotPlotOptions = {
          svg: this.conductivitychart,
-         //label: "Conductivity (uS)",
          attributeKey: "Conductivity_uS",
 
          tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750],
          chartMin: 0,
          chartMax: 1750,
 
-        // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
 
@@ -289,8 +284,6 @@ class DotPlot {
    annotate(siteCode) {
      
       var options = this.options;
-      var annotationData = options.allData;
-
 
       //select all groups within the circles group, then filter down to the one that matches the site code. 
       var g = this.circles.selectAll("g")
