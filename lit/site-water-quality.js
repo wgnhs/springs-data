@@ -298,8 +298,7 @@ class DotPlot {
       var label = g.append("text")
          .attr('dy', '-0.75em') //vertical displacement 
          .html((d) => { 
-            //console.log("keyLookup is: ", keyLookup[options.attributeKey]['title']);
-            console.log("circle x:", circle.attr('cx'));
+
             return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
          });
       
@@ -310,21 +309,23 @@ class DotPlot {
          .attr('points', (d) => {
          
             // two points on each line:
-             // A: center top of the circle 
-             // B: point directly above the circle at a certain height 
+             // A: top of the plot, vertically aligned with the dot
+             // B: bottom of the plot, vertically aligned with the dot
              // each point is defined by an [x, y]
             var startpoint = [0,0]
                 startpoint[0] = circle.attr('cx');
-                startpoint[1] = circle.attr('cy')-circle.attr('r');
+                startpoint[1] = 0;
 
             var endpoint = [0,0];
                 endpoint[0] = circle.attr('cx');
-                endpoint[1] = -7;
+                endpoint[1] = this.chartHeight;
 
              // console.log("start, end", startpoint, endpoint)
              return [startpoint, endpoint]        // return A, B
          
-      }); // end append polyline
+         })
+         .moveToBack()  // move behind the dot (moves to the back of the group)
+         ; // end append polyline
 
      
    } //end annotate 
