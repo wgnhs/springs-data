@@ -76,6 +76,8 @@ export class SiteWaterQuality extends LitElement {
     return html`
         <div class="container">
         <!-- <h2>Water quality</h2> -->
+       <!-- <span class="label">Discharge: </span><span>${this.siteinfo.Discharge_cfs}</span><br> -->
+         <svg id="discharge-chart"></svg><br>
 
        <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
          <svg id="conductivity-chart"></svg><br>
@@ -88,11 +90,12 @@ export class SiteWaterQuality extends LitElement {
   } //end render
 
    firstUpdated() {
+      this.dischargechart = d3.select(this.renderRoot.querySelector('#discharge-chart'));
       this.phchart = d3.select(this.renderRoot.querySelector('#ph-chart'));
       this.temperaturechart = d3.select(this.renderRoot.querySelector('#temperature-chart'));
       this.conductivitychart = d3.select(this.renderRoot.querySelector('#conductivity-chart'));
 
-
+      var siteDischarge = [{Discharge:this.siteinfo.Discharge_cfs}];
       var siteph = [{pH:this.siteinfo.pH}];
       var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
       var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
@@ -100,6 +103,22 @@ export class SiteWaterQuality extends LitElement {
 
 
       /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
+      
+      var dischargeDotPlotOptions = {
+         svg: this.dischargechart,
+         attributeKey: "Discharge_cfs",
+
+         tickValues:[0, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20],
+         chartMin: 0,
+         chartMax: 20,
+         
+         domain: [0, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0],
+         labelFormat: ".1f", //show one number past the decimal point. 
+
+         siteInfo: this.siteinfo,
+         allData:  aggrData.data
+
+      };
 
 
       var phDotPlotOptions = {
@@ -109,6 +128,9 @@ export class SiteWaterQuality extends LitElement {
          tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0],
          chartMin: 5.5,
          chartMax: 10,
+         
+         domain: [5.5, 10],
+         labelFormat: ".1f", //show one number past the decimal point.
 
          siteInfo: this.siteinfo,
          allData:  aggrData.data
@@ -122,6 +144,9 @@ export class SiteWaterQuality extends LitElement {
          tickValues:[5,7,9,11,13,15,17],
          chartMin: 5,
          chartMax: 17,
+         
+         domain: [5, 17],
+         labelFormat: "d", //show as integer (decimal notation)
 
          siteInfo: this.siteinfo,
          allData:  aggrData.data
@@ -135,6 +160,9 @@ export class SiteWaterQuality extends LitElement {
          tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750],
          chartMin: 0,
          chartMax: 1750,
+         
+         domain: [0, 1750],
+         labelFormat: "d", //show as integer (decimal notation)
 
          siteInfo: this.siteinfo,
          allData:  aggrData.data
@@ -148,14 +176,17 @@ export class SiteWaterQuality extends LitElement {
       this.tempPlot = new DotPlot(tempDotPlotOptions);
       this.phPlot = new DotPlot(phDotPlotOptions);
       this.condPlot = new DotPlot(conductivityDotPlotOptions);
+      this.dischargePlot = new DotPlot(dischargeDotPlotOptions);
 
       this.tempPlot.draw();
       this.phPlot.draw();
       this.condPlot.draw();
+      this.dischargePlot.draw();
 
    }
 
    updated() {
+      this.dischargePlot.annotate(this.siteinfo['Site_Code']);
       this.tempPlot.annotate(this.siteinfo['Site_Code']);
       this.phPlot.annotate(this.siteinfo['Site_Code']);
       this.condPlot.annotate(this.siteinfo['Site_Code']);
@@ -188,7 +219,14 @@ class DotPlot {
    }
 
    get x_scale() {
-      return d3.scaleLinear().domain([this.options.chartMin, this.options.chartMax]).range([0, this.chartWidth]);
+      
+      //calculate the range values based on the domain values. If the domain has only two values, the range will be 0 and chartWidth. If there are more than two domain values, the chartWidth is evenly divided among them, creating a "polylinear" scale.  
+      var setRange = []; 
+      this.options.domain.forEach((e, i) => {
+         setRange.push(this.chartWidth*i/(this.options.domain.length-1)); 
+      });
+      
+      return d3.scaleLinear().domain(this.options.domain).range(setRange);
    }
 
    get y_scale() {
@@ -201,9 +239,7 @@ class DotPlot {
       // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
 
 
-      options.svg.attr('width', this.svgWidth).attr("height", this.svgHeight)
-     // .style('background', "#cecece")
-      ;
+      options.svg.attr('width', this.svgWidth).attr("height", this.svgHeight);
 
 
       //append a group.
@@ -222,6 +258,7 @@ class DotPlot {
              .tickSizeOuter(0)
              .tickPadding(5)
              .tickValues(options.tickValues)
+             .tickFormat(d3.format(this.options.labelFormat))
          )
          .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick.
 
