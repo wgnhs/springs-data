@@ -53,6 +53,22 @@ export class SiteWaterQuality extends LitElement {
                flex-direction: column;
                align-items: center;
             }
+
+            .annotated{
+               stroke-width: 2; 
+               stroke: #333; 
+               opacity: 1; 
+               fill: #000;
+               r:5;
+               
+            }
+            .highlighted{
+               stroke-width: 2;
+               stroke: #000;
+               opacity: 1; 
+               r:5;
+
+            }
         `;
     }
 
@@ -60,6 +76,8 @@ export class SiteWaterQuality extends LitElement {
     return html`
         <div class="container">
         <!-- <h2>Water quality</h2> -->
+       <!-- <span class="label">Discharge: </span><span>${this.siteinfo.Discharge_cfs}</span><br> -->
+         <svg id="discharge-chart"></svg><br>
 
        <!-- <span class="label">conductivity: </span><span>${this.siteinfo.Conductivity_uS}</span><br> -->
          <svg id="conductivity-chart"></svg><br>
@@ -72,11 +90,12 @@ export class SiteWaterQuality extends LitElement {
   } //end render
 
    firstUpdated() {
+      this.dischargechart = d3.select(this.renderRoot.querySelector('#discharge-chart'));
       this.phchart = d3.select(this.renderRoot.querySelector('#ph-chart'));
       this.temperaturechart = d3.select(this.renderRoot.querySelector('#temperature-chart'));
       this.conductivitychart = d3.select(this.renderRoot.querySelector('#conductivity-chart'));
 
-
+      var siteDischarge = [{Discharge:this.siteinfo.Discharge_cfs}];
       var siteph = [{pH:this.siteinfo.pH}];
       var siteWaterTemp = [{Water_Temp_C: this.siteinfo.Water_Temp_C}];
       var siteConductivity = [{Conductivity_uS: this.siteinfo.Conductivity_uS}];
@@ -84,18 +103,35 @@ export class SiteWaterQuality extends LitElement {
 
 
       /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
+      
+      var dischargeDotPlotOptions = {
+         svg: this.dischargechart,
+         attributeKey: "Discharge_cfs",
+
+         tickValues:[0, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20],
+         chartMin: 0,
+         chartMax: 20,
+         
+         domain: [0, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0],
+         labelFormat: ".1f", //show one number past the decimal point. 
+
+         siteInfo: this.siteinfo,
+         allData:  aggrData.data
+
+      };
 
 
       var phDotPlotOptions = {
          svg: this.phchart,
-         label: "pH",
          attributeKey: "pH",
 
          tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0],
          chartMin: 5.5,
          chartMax: 10,
+         
+         domain: [5.5, 10],
+         labelFormat: ".1f", //show one number past the decimal point.
 
-        // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
 
@@ -108,8 +144,10 @@ export class SiteWaterQuality extends LitElement {
          tickValues:[5,7,9,11,13,15,17],
          chartMin: 5,
          chartMax: 17,
+         
+         domain: [5, 17],
+         labelFormat: "d", //show as integer (decimal notation)
 
-        // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
 
@@ -117,14 +155,15 @@ export class SiteWaterQuality extends LitElement {
 
       var conductivityDotPlotOptions = {
          svg: this.conductivitychart,
-         //label: "Conductivity (uS)",
          attributeKey: "Conductivity_uS",
 
          tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750],
          chartMin: 0,
          chartMax: 1750,
+         
+         domain: [0, 1750],
+         labelFormat: "d", //show as integer (decimal notation)
 
-        // svgWidth: svgWidth,
          siteInfo: this.siteinfo,
          allData:  aggrData.data
 
@@ -137,14 +176,17 @@ export class SiteWaterQuality extends LitElement {
       this.tempPlot = new DotPlot(tempDotPlotOptions);
       this.phPlot = new DotPlot(phDotPlotOptions);
       this.condPlot = new DotPlot(conductivityDotPlotOptions);
+      this.dischargePlot = new DotPlot(dischargeDotPlotOptions);
 
       this.tempPlot.draw();
       this.phPlot.draw();
       this.condPlot.draw();
+      this.dischargePlot.draw();
 
    }
 
    updated() {
+      this.dischargePlot.annotate(this.siteinfo['Site_Code']);
       this.tempPlot.annotate(this.siteinfo['Site_Code']);
       this.phPlot.annotate(this.siteinfo['Site_Code']);
       this.condPlot.annotate(this.siteinfo['Site_Code']);
@@ -161,7 +203,7 @@ class DotPlot {
    this.options = dotPlotOptions;
 
    this.svgWidth = 400;
-   this.svgHeight = 130;
+   this.svgHeight = 140;
 
    this.margin = {
                   top: 50,
@@ -172,10 +214,19 @@ class DotPlot {
    
    this.chartWidth = this.svgWidth - this.margin.left - this.margin.right,
    this.chartHeight = this.svgHeight - this.margin.top - this.margin.bottom;
+   this.tickPadding = 10; // spacing needed to see the ticks extend past the dots. 
+   
    }
 
    get x_scale() {
-      return d3.scaleLinear().domain([this.options.chartMin, this.options.chartMax]).range([0, this.chartWidth]);
+      
+      //calculate the range values based on the domain values. If the domain has only two values, the range will be 0 and chartWidth. If there are more than two domain values, the chartWidth is evenly divided among them, creating a "polylinear" scale.  
+      var setRange = []; 
+      this.options.domain.forEach((e, i) => {
+         setRange.push(this.chartWidth*i/(this.options.domain.length-1)); 
+      });
+      
+      return d3.scaleLinear().domain(this.options.domain).range(setRange);
    }
 
    get y_scale() {
@@ -188,9 +239,7 @@ class DotPlot {
       // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
 
 
-      options.svg.attr('width', this.svgWidth).attr("height", this.svgHeight)
-     // .style('background', "#cecece")
-      ;
+      options.svg.attr('width', this.svgWidth).attr("height", this.svgHeight);
 
 
       //append a group.
@@ -209,6 +258,7 @@ class DotPlot {
              .tickSizeOuter(0)
              .tickPadding(5)
              .tickValues(options.tickValues)
+             .tickFormat(d3.format(this.options.labelFormat))
          )
          .call(g => g.select(".domain").remove())              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick.
 
@@ -230,15 +280,18 @@ class DotPlot {
 
      this.circles = chartgroup.append("g").attr("class", "circles");
 
-     var jitterWidth = this.chartHeight;
+     var jitterWidth = this.chartHeight-this.tickPadding;
      
       
       // within the circles group, append a (sub)group for each data point, and append to that (sub)group a circle. 
-     this.circles.selectAll("g")
+     var datapoint = this.circles.selectAll("g")
          .data(options.allData, (d) => { return d.Site_Code; })
          .enter()
          .append("g")
-         .append("circle")
+         .attr("class", "datapoint")
+      
+      
+      var dot = datapoint.append("circle")
          .attr("cx", (d) => {return this.x_scale(d[options.attributeKey])})     // x position
          // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
          .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
@@ -257,6 +310,9 @@ class DotPlot {
          })
          .on('mouseenter', (d) => {this.highlight(d['Site_Code'])})
          .on('mouseleave', (d) => {this.unhighlight(d['Site_Code'])})
+      
+         .append("svg:title")
+         .text((d) => d['Site_Code'])
          ;
 
    } // END DRAW. draw is called once when on firstUpdated. 
@@ -266,95 +322,49 @@ class DotPlot {
      
       var options = this.options;
 
-      // var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
-      var annotationData = options.allData;
-      var annotationRadius = 6;
-      var annotationLineLength = 30;
-      var annotationLabelPadding = 5;
-
-
-
+      //select all groups within the circles group, then filter down to the one that matches the site code. 
       var g = this.circles.selectAll("g")
          .filter((d) => d['Site_Code'] === siteCode)
          .moveToFront();
-
-         g.select('circle')
-         .attr('r', annotationRadius)                        // radius
-         .attr("fill", "#000")                           // fill color
-         .attr("stroke", "#eee")
-         .attr("stroke-width", 2)
-         .attr("opacity", "0.85")                           // opacity
-         
       
-         g.append("text")
-         .attr('dy', '-1em')
+      var circle = g.select('circle')         
+         .classed('annotated', true);          // add the annotation styling class to the circle. 
+
+
+      var label = g.append("text")
+         .attr('dy', '-0.75em') //vertical displacement 
          .html((d) => { 
-            //console.log("keyLookup is: ", keyLookup[options.attributeKey]['title']);
- 
+
             return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
-         })
-         ;
-        
-
-
-
-
-      // annotation.selectAll("circle")
-      //    .data(annotationData, (d) => { return d.Site_Code; })
-      //    .enter()
-      //    .append("circle")
-      //    .attr("cx", (d) => {
-      //          return this.x_scale(d[options.attributeKey])})              // x position
-      //    .attr("cy", (d) => {
-      //       console.log(this.chartHeight)
-      //       return this.chartHeight/2})     // y position
-      //    .attr('r', annotationRadius)                        // radius
-      //    .attr("fill", "#406058")                           // fill color
-      //    .attr("stroke", "#000")
-      //    .attr("stroke-width", 2)
-      //    .attr("opacity", "0.85");                           // opacity
-
+         });
       
-      //   annotation.selectAll("polyline")
-      //      .data(annotationData)
-      //      .enter()
-      //      .append("polyline")
-      //      .attr('stroke', "#333333")      //set appearance
-      //      .attr("stroke-width", 2)        //set appearance
-      //      .style('fill', 'none')          //set appearance
-      //      .attr('points', (d) => {
+      g.append("polyline")
+         .attr('stroke', "#333333")      //set appearance
+         .attr("stroke-width", 3)        //set appearance
+         .style('fill', 'none')          //set appearance
+         .attr('points', (d) => {
+         
+            // two points on each line:
+             // A: top of the plot, vertically aligned with the dot
+             // B: bottom of the plot, vertically aligned with the dot
+             // each point is defined by an [x, y]
+            var startpoint = [0,0]
+                startpoint[0] = circle.attr('cx');
+                startpoint[1] = 0;
 
-      //             // two points on each line:
-      //             // A: centroid of the circle
-      //             // B: 10 px above the circle
-      //             // each point is defined by an [x, y]
-      //            var startpoint = [0,0]
-      //                startpoint[0] = this.x_scale(d[options.attributeKey]);
-      //                startpoint[1] = (this.chartHeight/2)-annotationRadius;
+            var endpoint = [0,0];
+                endpoint[0] = circle.attr('cx');
+                endpoint[1] = this.chartHeight;
 
-      //            var endpoint = [0,0];
-      //                endpoint[0] = this.x_scale(d[options.attributeKey]);
-      //                endpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength;
+             // console.log("start, end", startpoint, endpoint)
+             return [startpoint, endpoint]        // return A, B
+         
+         })
+         .moveToBack()  // move behind the dot (moves to the back of the group)
+         ; // end append polyline
 
-      //             // console.log("start, end", startpoint, endpoint)
-      //             return [startpoint, endpoint]        // return A, B
-      //      })
-
-      //   annotation.selectAll("text")
-      //      .data(annotationData)
-      //      .enter()
-      //      .append("text")
-      //      .attr("font-weight", "bold")
-      //      .html((d) => { return options.label+": "+options.attributeKey})
-      //      .attr("transform", (d) => {
-      //         var textpoint = [0, 0]
-      //             textpoint[0] = this.x_scale(d[options.attributeKey]);
-      //             textpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength-annotationLabelPadding;
-      //      return 'translate('+textpoint+')'
-
-      //      })
-      //      .style('text-anchor', "middle")
-   } //end ennotate 
+     
+   } //end annotate 
    
    highlight(siteCode){
       
@@ -362,20 +372,15 @@ class DotPlot {
          .filter((d) => d['Site_Code'] === siteCode)
          .moveToFront();
 
-         g.select('circle')
-         .attr("stroke-width", 3)
-         .attr("opacity", "0.85")   
+         g.select('circle').classed('highlighted', true); 
       
    } // end highlight
    
    unhighlight(siteCode){
       var g = this.circles.selectAll("g")
-         .filter((d) => d['Site_Code'] === siteCode)
-         .moveToFront();
+         .filter((d) => d['Site_Code'] === siteCode);
 
-         g.select('circle')
-         .attr("stroke-width", 0)
-         .attr("opacity", "0.7") 
+         g.select('circle').classed('highlighted', false); 
       
    }  // end unhighlight 
    
