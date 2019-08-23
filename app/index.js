@@ -764,6 +764,14 @@
       app-collapsible i {
         font-size: var(--icon-size-large);
       }
+
+      app-collapsible i[slot="header-after"]::after {
+        content: "expand_more";
+      }
+
+      app-collapsible[open] i[slot="header-after"]::after {
+        content: "expand_less";
+      }
     `];
     }
 
@@ -806,7 +814,7 @@
         <app-collapsible open>
           <i slot="header-before" class="material-icons" title="Water quality">bar_chart</i>
           <span slot="header">Water quality</span>
-          <i slot="header-after" class="material-icons">expand_more</i>
+          <i slot="header-after" class="material-icons"></i>
           <div slot="content">
             <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
           </div>
@@ -814,15 +822,15 @@
         <app-collapsible open>
           <i slot="header-before" class="material-icons" title="Spring-bed materials">bar_chart</i>
           <span slot="header">Spring-bed materials</span>
-          <i slot="header-after" class="material-icons">expand_more</i>
+          <i slot="header-after" class="material-icons"></i>
           <div slot="content">
             <site-bed-materials .siteinfo="${this.siteinfo}"></site-bed-materials> 
           </div>
         </app-collapsible>
-        <app-collapsible ?open="${this.printLayout}">
+        <app-collapsible .open="${this.printLayout}">
           <i slot="header-before" class="material-icons" title="All data">view_list</i>
           <span slot="header">All data</span>
-          <i slot="header-after" class="material-icons">expand_more</i>
+          <i slot="header-after" class="material-icons"></i>
           <div slot="content" data-element="table">
             ${this.renderTable}
           </div>
