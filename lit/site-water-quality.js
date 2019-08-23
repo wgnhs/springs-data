@@ -252,11 +252,14 @@ class DotPlot {
      
       
       // within the circles group, append a (sub)group for each data point, and append to that (sub)group a circle. 
-     this.circles.selectAll("g")
+     var datapoint = this.circles.selectAll("g")
          .data(options.allData, (d) => { return d.Site_Code; })
          .enter()
          .append("g")
-         .append("circle")
+         .attr("class", "datapoint")
+      
+      
+      var dot = datapoint.append("circle")
          .attr("cx", (d) => {return this.x_scale(d[options.attributeKey])})     // x position
          // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
          .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
