@@ -283,12 +283,7 @@ class DotPlot {
    annotate(siteCode) {
      
       var options = this.options;
-
-      // var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
       var annotationData = options.allData;
-//      var annotationRadius = 6;
-//      var annotationLineLength = 30;
-//      var annotationLabelPadding = 5;
 
 
       //select all groups within the circles group, then filter down to the one that matches the site code. 
@@ -306,8 +301,7 @@ class DotPlot {
             //console.log("keyLookup is: ", keyLookup[options.attributeKey]['title']);
             console.log("circle x:", circle.attr('cx'));
             return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
-         })
-         ;
+         });
       
       g.append("polyline")
          .attr('stroke', "#333333")      //set appearance
@@ -330,55 +324,10 @@ class DotPlot {
              // console.log("start, end", startpoint, endpoint)
              return [startpoint, endpoint]        // return A, B
          
-      })
-
-
-
-
-
-      // annotation.selectAll("circle")
-      //    .data(annotationData, (d) => { return d.Site_Code; })
-      //    .enter()
-      //    .append("circle")
-      //    .attr("cx", (d) => {
-      //          return this.x_scale(d[options.attributeKey])})              // x position
-      //    .attr("cy", (d) => {
-      //       console.log(this.chartHeight)
-      //       return this.chartHeight/2})     // y position
-      //    .attr('r', annotationRadius)                        // radius
-      //    .attr("fill", "#406058")                           // fill color
-      //    .attr("stroke", "#000")
-      //    .attr("stroke-width", 2)
-      //    .attr("opacity", "0.85");                           // opacity
-
-      
-      //   annotation.selectAll("polyline")
-      //      .data(annotationData)
-      //      .enter()
-      //      .append("polyline")
-      //      .attr('stroke', "#333333")      //set appearance
-      //      .attr("stroke-width", 2)        //set appearance
-      //      .style('fill', 'none')          //set appearance
-      //      .attr('points', (d) => {
-
-      //             // two points on each line:
-      //             // A: centroid of the circle
-      //             // B: 10 px above the circle
-      //             // each point is defined by an [x, y]
-      //            var startpoint = [0,0]
-      //                startpoint[0] = this.x_scale(d[options.attributeKey]);
-      //                startpoint[1] = (this.chartHeight/2)-annotationRadius;
-
-      //            var endpoint = [0,0];
-      //                endpoint[0] = this.x_scale(d[options.attributeKey]);
-      //                endpoint[1] = (this.chartHeight/2)-annotationRadius-annotationLineLength;
-
-      //             // console.log("start, end", startpoint, endpoint)
-      //             return [startpoint, endpoint]        // return A, B
-      //      })
+      }); // end append polyline
 
      
-   } //end ennotate 
+   } //end annotate 
    
    highlight(siteCode){
       
