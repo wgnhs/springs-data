@@ -278,6 +278,9 @@ class DotPlot {
          })
          .on('mouseenter', (d) => {this.highlight(d['Site_Code'])})
          .on('mouseleave', (d) => {this.unhighlight(d['Site_Code'])})
+      
+         .append("svg:title")
+         .text((d) => d['Site_Code'])
          ;
 
    } // END DRAW. draw is called once when on firstUpdated. 
