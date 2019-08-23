@@ -53,6 +53,22 @@ export class SiteWaterQuality extends LitElement {
                flex-direction: column;
                align-items: center;
             }
+
+            .annotated{
+               stroke-width: 2; 
+               stroke: #333; 
+               opacity: 1; 
+               fill: #000;
+               r:5;
+               
+            }
+            .highlighted{
+               stroke-width: 2;
+               stroke: #000;
+               opacity: 1; 
+               r:5;
+
+            }
         `;
     }
 
@@ -270,9 +286,9 @@ class DotPlot {
 
       // var annotation = options.svg.append("g").attr("class", "annotation").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
       var annotationData = options.allData;
-      var annotationRadius = 6;
-      var annotationLineLength = 30;
-      var annotationLabelPadding = 5;
+//      var annotationRadius = 6;
+//      var annotationLineLength = 30;
+//      var annotationLabelPadding = 5;
 
 
       //select all groups within the circles group, then filter down to the one that matches the site code. 
@@ -280,13 +296,8 @@ class DotPlot {
          .filter((d) => d['Site_Code'] === siteCode)
          .moveToFront();
       
-      var circle = g.select('circle')
-
-         .attr('r', annotationRadius)                        // radius
-         .attr("fill", "#000")                           // fill color
-         .attr("stroke", "#333")
-         .attr("stroke-width", 2)
-         .attr("opacity", "0.85")                           // opacity
+      var circle = g.select('circle')         
+         .classed('annotated', true);          // add the annotation styling class to the circle. 
 
 
       var label = g.append("text")
@@ -375,20 +386,15 @@ class DotPlot {
          .filter((d) => d['Site_Code'] === siteCode)
          .moveToFront();
 
-         g.select('circle')
-         .attr("stroke-width", 3)
-         .attr("opacity", "0.85")   
+         g.select('circle').classed('highlighted', true); 
       
    } // end highlight
    
    unhighlight(siteCode){
       var g = this.circles.selectAll("g")
-         .filter((d) => d['Site_Code'] === siteCode)
-         .moveToFront();
+         .filter((d) => d['Site_Code'] === siteCode);
 
-         g.select('circle')
-         .attr("stroke-width", 0)
-         .attr("opacity", "0.7") 
+         g.select('circle').classed('highlighted', false); 
       
    }  // end unhighlight 
    
