@@ -1,8 +1,8 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@uirouter/core'), require('lit-element'), require('wgnhs-common'), require('wgnhs-layout'), require('wgnhs-viz'), require('wgnhs-styles')) :
-  typeof define === 'function' && define.amd ? define(['exports', '@uirouter/core', 'lit-element', 'wgnhs-common', 'wgnhs-layout', 'wgnhs-viz', 'wgnhs-styles'], factory) :
-  (global = global || self, factory(global.app = {}, global.common, global.common, global.common, global.lit, global.lit, global.lit));
-}(this, function (exports, core, litElement, wgnhsCommon, wgnhsLayout, wgnhsViz, wgnhsStyles) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@uirouter/core'), require('lit-element'), require('wgnhs-common'), require('wgnhs-layout'), require('wgnhs-styles')) :
+  typeof define === 'function' && define.amd ? define(['exports', '@uirouter/core', 'lit-element', 'wgnhs-common', 'wgnhs-layout', 'wgnhs-styles'], factory) :
+  (global = global || self, factory(global.app = {}, global.common, global.common, global.common, global.lit, global.lit));
+}(this, function (exports, core, litElement, wgnhsCommon, wgnhsLayout, wgnhsStyles) { 'use strict';
 
   const colorRange = [
     'var(--map-bin-0)',
@@ -480,6 +480,572 @@
     }
   }
 
+  class SiteBedMaterials extends litElement.LitElement{
+      static get properties(){
+          return {
+              siteinfo: Object
+          };
+      }
+
+      constructor() {
+          super();
+      }
+
+      static get styles(){
+          return litElement.css`
+        :host {
+
+        }
+        text {
+            font-size: var(--font-size-small);
+            font-weight: bold;
+            fill: #414c43;
+
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .donutSegments {
+
+        }
+        .chartLabels {
+
+        }
+        .leaderLines {
+
+        }
+        `;
+      }
+
+
+      render() {
+
+          return litElement.html `
+        <div class="container">
+        <!-- <h2>Spring-bed materials</h2> -->
+        <svg id="bed-materials-chart"></svg>
+        </div>
+        `;
+
+      }
+
+      firstUpdated() {
+          this.chart = d3.select(this.renderRoot.querySelector('#bed-materials-chart'));
+      }
+
+      updated() {
+
+          var width = 500;
+          var height = 300;
+          var margin = 15; //space between the circle and the edge of the SVG
+          var radius = (Math.min(width, height) / 2) - (margin * 2); //outer radius of the circle
+
+
+          /* ~~~~~~~~~ SVG SETUP ~~~~~~~~~ */
+
+          this.chart.attr("width", width).attr("height", height);
+
+          // set up groups within the svg:
+          var masterGroup = this.chart.append("g").attr("transform", "translate("+width/2+","+height/2+")"); //append a group and move it to the center of the SVG.
+          var donutGroup = masterGroup.append("g").attr("class", "donutSegments");
+          var labelGroup = masterGroup.append("g").attr("class", "chartLabels");
+          var linesGroup = masterGroup.append("g").attr("class", "leaderLines");
+
+
+          /* ~~~~~~~~~ DATA ~~~~~~~~~ */
+
+          var values = [
+              {material: "organic", percent: this.siteinfo.Percent_organic, color: "#406058"},
+              {material: "fines", percent: this.siteinfo.Percent_fines, color: "#adcaba"},
+              {material: "sand", percent: this.siteinfo.Percent_sand, color: "#b7b098"},
+              {material: "gravel", percent: this.siteinfo.Percent_gravel, color: "#cccccc"},
+              {material: "cobble", percent: this.siteinfo.Percent_cobble, color: "#7b6888"},
+              {material: "boulder", percent: this.siteinfo.Percent_boulder, color: "#514b47"},
+              {material: "bedrock", percent: this.siteinfo.Percent_bedrock, color: "#98abc5"}
+          ];
+
+          //process the data array for use in the donut chart...
+           var pie = d3.pie()
+                      .sort(null)             // do not sort by size
+                      .value(function(d){     // set the value that is used to size each pie chart segment
+                          return d.percent    // the data attribute that gives the charted value for each segment
+                      })(values);             // call this function, giving it the values array
+
+          // the pie function returns an array of objects representing the segments, containing their the start and end angles, data value, etc.
+
+
+          // the pie function always returns 7 objects. filter it down to only the objects with a percent value greater than zero, so we are not going to draw any 0-dimension paths.
+          var filterpie = pie.filter(function(el){return el.value > 0;});
+
+          //console.log("filtered pie is ", filterpie);
+
+          /* ~~~~~~~~~ DONUT SEGMENTS ~~~~~~~~~ */
+          // right now, the website is set up so that it re-renders everything in the side panel when a each spring is queried.
+          // therefore, everything is cleared and re-generated with each query.
+          // this code could be designed differently if more dynamic updating were required.
+
+
+          //define the properties of a donut arc.
+          var arc = d3.arc()
+                      .outerRadius(radius)
+                      .innerRadius(radius - 45)   //lower numbers here make a thinner ring
+                      .padAngle(0.025);              //about 0.025 is a good visible gap.
+
+
+          donutGroup.selectAll("path")                            // we are using all paths within the group
+              .data(filterpie)                                          // we want to use the data as processed by the pie function. this returns the update selection, which includes all data values that have corresponding DOM elements.
+              .enter()                                            // enter is a selection with placeholders for each data value (datum) that lacks a corresponding DOM element.
+              .append("path")                                     // for any datum missing a DOM element, create one of these.
+              .attr("d", arc)                                     //
+              .attr("fill", function(d){return (d.data.color);})  // apply fill color, which is a function of the color data attribute.
+              .style("opacity", 1)                                // apply any styles for the donut chart segments
+              ;
+
+
+          /* ~~~~~~~~~~ LABELS ~~~~~~~~~~~ */
+
+           // calculates the angle for the middle of a slice
+          function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }
+
+          // arc for positioning labels; won't be drawn.
+          var outerArc = d3.arc()
+                          .innerRadius(radius * 1.1)
+                          .outerRadius(radius * 1.1);
+
+
+
+
+          var label = this.chart.select(".chartLabels").selectAll("text")
+              .data(filterpie)
+              .enter()
+              .append('text')
+              .html(function(d){ return d.data.percent+"% "+d.data.material; })   // build the content of the label
+              .attr('dy', '.35em')                                                //vertical alignment
+              .attr("transform", function(d){
+
+                      var anchorpoint = outerArc.centroid(d);                             // initially, set the anchorpoint of text to be where the bisecting angle meets the outer arc
+                      anchorpoint[0] = radius * 1.15 * (midAngle(d) < Math.PI ? 1 : -1);  // then shift the anchorpoint on the x axis.
+                      // changes the point to be on left or right depending on where label is (multiply by 1 or by -1).
+
+                      return 'translate('+anchorpoint+')';
+              })
+              .style('text-anchor', function(d){
+                      // if slice centre is on the left, anchor text to start, otherwise anchor to end
+                      return (midAngle(d)) < Math.PI ? 'start' : 'end';
+              })
+              ;
+
+
+          /* ~~~~~~~~~ LEADER LINES ~~~~~~~~~ */
+          var polyline = this.chart.select(".leaderLines").selectAll('polyline')
+              .data(filterpie)
+              .enter()
+              .append('polyline')
+              .attr('stroke', "#333333")      //set appearance
+              .attr("stroke-width", 1)        //set appearance
+              .style('fill', 'none')          //set appearance
+              .attr('points', function(d){
+
+                  // three points on each line:
+                  // A: centroid of the donut segment
+                  // B: where the bisecting angle meets the outer arc (breakpoint in the line)
+                  // C: outer endpoint at the same y position as B, but with x coordinate near the side of the SVG
+
+                  var endpoint = outerArc.centroid(d);                            // initially, set the endpoint (C) to point B.
+                  endpoint[0] = radius * 1.1 * (midAngle(d) < Math.PI ? 1 : -1);  // then shift point C on the x axis.
+
+                  return [arc.centroid(d), outerArc.centroid(d), endpoint]        // return A, B, and C
+              })
+              ;
+
+      } //close updated method.
+  } //close export
+  customElements.define('site-bed-materials', SiteBedMaterials);
+
+  // https://github.com/wbkd/d3-extended
+  d3.selection.prototype.moveToFront = function() {  
+    return this.each(function(){
+      this.parentNode.appendChild(this);
+    });
+  };
+  d3.selection.prototype.moveToBack = function() {  
+      return this.each(function() { 
+          var firstChild = this.parentNode.firstChild; 
+          if (firstChild) { 
+              this.parentNode.insertBefore(this, firstChild); 
+          } 
+      });
+  };
+
+  const dischargeDotPlotOptions = {
+    attributeKey: "Discharge_cfs",
+
+    tickValues:[0, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20],
+    chartMin: 0,
+    chartMax: 20,
+
+    domain: [0, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0],
+    labelFormat: ".1f", //show one number past the decimal point. 
+  };
+
+  const conductivityDotPlotOptions = {
+    attributeKey: "Conductivity_uS",
+
+    tickValues:[0, 250, 500, 750, 1000, 1250, 1500, 1750],
+    chartMin: 0,
+    chartMax: 1750,
+
+    domain: [0, 1750],
+    labelFormat: "d", //show as integer (decimal notation)
+  };
+
+  const tempDotPlotOptions = {
+    attributeKey: "Water_Temp_C",
+
+    tickValues:[5,7,9,11,13,15,17],
+    chartMin: 5,
+    chartMax: 17,
+
+    domain: [5, 17],
+    labelFormat: "d", //show as integer (decimal notation)
+  };
+
+  const phDotPlotOptions = {
+    attributeKey: "pH",
+
+    tickValues:[5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0],
+    chartMin: 5.5,
+    chartMax: 10,
+
+    domain: [5.5, 10],
+    labelFormat: ".1f", //show one number past the decimal point.
+  };
+
+
+  class SiteWaterQuality extends litElement.LitElement {
+    static get properties() {
+      return {
+          siteinfo: {
+            type: Object,
+            attribute: false
+          },
+          alldata: {
+            type: Object,
+            attribute: false
+          }
+      };
+    }
+
+    constructor() {
+      super();
+    }
+
+    static get styles(){
+      return litElement.css`
+      .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+      }
+    `;
+    }
+
+    render() {
+      return litElement.html`
+      <div class="container">
+        <dot-plot
+          .options="${dischargeDotPlotOptions}"
+          .annotated="${this.annotated}"
+          .alldata="${this.alldata}"></dot-plot>
+        <dot-plot
+          .options="${conductivityDotPlotOptions}"
+          .annotated="${this.annotated}"
+          .alldata="${this.alldata}"></dot-plot>
+        <dot-plot 
+          .options="${tempDotPlotOptions}"
+          .annotated="${this.annotated}"
+          .alldata="${this.alldata}"></dot-plot>
+        <dot-plot
+          .options="${phDotPlotOptions}"
+          .annotated="${this.annotated}"
+          .alldata="${this.alldata}"></dot-plot>
+      </div>
+    `;
+    } //end render
+
+    get annotated() {
+      return this.siteinfo['Site_Code'];
+    }
+
+  }   //end export class
+
+  customElements.define('site-water-quality', SiteWaterQuality);
+
+  class DotPlotElement extends litElement.LitElement {
+    static get properties() {
+      return {
+        alldata: {
+          type: Object,
+          attribute: false
+        },
+        options: {
+          type: Object,
+          attribute: false
+        },
+        annotated: {
+          type: String,
+          attribute: false
+        }
+      };
+    }
+
+    constructor() {
+      super();
+    }
+
+    static get styles(){
+      return [
+        ...wgnhsStyles.styles,
+        litElement.css`
+      .label{
+          font-weight: bold;
+      }
+      .tick {
+          font-size: 13px;
+
+          color: #777;
+      }
+      .tick line {
+          stroke: #777;
+      }
+      .annotation {
+          font-size: 14px;
+      }
+      .annotated {
+          stroke-width: 2; 
+          stroke: #333; 
+          opacity: 1; 
+          fill: #000;
+          r:5;
+      }
+      .highlighted {
+          stroke-width: 2;
+          stroke: #000;
+          opacity: 1; 
+          r:5;
+      }
+    `];
+    }
+
+    render() {
+      return litElement.html`
+      <svg></svg>
+    `;
+    }
+
+    firstUpdated() {
+      this.d3svg = d3.select(this.renderRoot.querySelector('svg'));
+    }
+
+    updated(prev) {
+      if ((prev.has('alldata') || prev.has('options')) && this.options && this.alldata) {
+        this.plot = new DotPlot(this.d3svg, this.options, this.alldata);
+        this.plot.draw();
+      }
+      if (this.plot && prev.has('annotated') && this.annotated) {
+        this.plot.annotate(this.annotated);
+      }
+    }
+  }
+  customElements.define('dot-plot', DotPlotElement);
+
+  class DotPlot {
+    constructor(d3svg, dotPlotOptions, alldata) {
+      this.options = dotPlotOptions;
+      this.svg = d3svg;
+      this.allData = alldata;
+
+      this.svgWidth = 400;
+      this.svgHeight = 140;
+
+      this.margin = {
+        top: 50,
+        right: 20,
+        bottom: 50,
+        left: 20
+      };
+
+      this.chartWidth = this.svgWidth - this.margin.left - this.margin.right,
+      this.chartHeight = this.svgHeight - this.margin.top - this.margin.bottom;
+      this.tickPadding = 10; // spacing needed to see the ticks extend past the dots.
+     }
+
+     get x_scale() {
+        
+        //calculate the range values based on the domain values. If the domain has only two values, the range will be 0 and chartWidth. If there are more than two domain values, the chartWidth is evenly divided among them, creating a "polylinear" scale.  
+        var setRange = []; 
+        this.options.domain.forEach((e, i) => {
+           setRange.push(this.chartWidth*i/(this.options.domain.length-1)); 
+        });
+        
+        return d3.scaleLinear().domain(this.options.domain).range(setRange);
+     }
+
+     get y_scale() {
+        return d3.scaleBand().domain([""]).rangeRound([0, this.chartHeight]);
+     }
+
+     draw(){
+        var options = this.options;
+
+        // console.log("draw dot plot ranging from "+options.chartMin+" to "+options.chartMax+" with the value "+options.siteInfo[options.attributeKey]+" annotated. ");
+
+
+        this.svg.attr('width', this.svgWidth).attr("height", this.svgHeight);
+
+
+        //append a group.
+        var chartgroup = this.svg.append("g").attr("class", "chartgroup").attr("transform", "translate("+this.margin.left+", "+this.margin.top+")");
+
+        /* ~~~~~~~~~ Draw the chart ~~~~~~~~~ */
+
+
+        var xAxis = chartgroup.append("g").attr("class", "x-axis");
+        xAxis
+          .attr("transform", "translate(0," + this.chartHeight + ")")
+          .call(
+            d3
+              .axisBottom(this.x_scale)
+              .tickSizeInner(-this.chartHeight)
+              .tickSizeOuter(0)
+              .tickPadding(5)
+              .tickValues(options.tickValues)
+              .tickFormat(d3.format(this.options.labelFormat))
+          )
+          .call(g => g.select(".domain").remove());              // remove the horizontal line of the x axis. The horizontal line through the chart is a y axis tick.
+
+
+        var yAxis = chartgroup.append("g").attr("class", "y-axis");    // the y axis will have one tick, which forms the horizontal line through the center of the chart.
+        yAxis
+          .call(
+            d3
+              .axisLeft(this.y_scale)
+              .tickSizeInner(-this.chartWidth)
+              .tickSizeOuter(0)
+              .tickPadding(0)
+          )
+          .call(g => g.select(".domain").remove())           // no vertical line for the y axis (all vertical lines are x axis ticks)
+          .call(g => g.selectAll("text").remove());          // no labels on y axis
+
+       /* ~~~~~~~~~ create circles ~~~~~~~~~ */
+
+       this.circles = chartgroup.append("g").attr("class", "circles");
+
+       var jitterWidth = this.chartHeight-this.tickPadding;
+
+        // within the circles group, append a (sub)group for each data point, and append to that (sub)group a circle. 
+       var datapoint = this.circles.selectAll("g")
+           .data(this.allData, (d) => { return d.Site_Code; })
+           .enter()
+           .append("g")
+           .attr("class", "datapoint");
+        
+        
+        var dot = datapoint.append("circle")
+           .attr("cx", (d) => {return this.x_scale(d[options.attributeKey])})     // x position
+           // Math.random() returns values from 0 to less than 1, in approximately uniform distribution.
+           .attr("cy", (d) => {return this.chartHeight/2 - jitterWidth/2 + Math.random()*jitterWidth})     // y position
+           .attr('r', 3)                                      // radius
+           .attr("fill", (d) => { return RestylingCircleMarker.binPoint(options.attributeKey, d) })                           // fill color
+           .attr("stroke", "#000")
+           .attr("stroke-width", 0)
+           .attr("opacity", "0.7")                           // opacity
+           .attr("class", (d) => {
+                    return d.Site_Code
+                 })
+           .on('click', (d) => {
+                 console.log("switch to "+d['Site_Code']);
+                 wgnhsCommon.dispatch(document, 'interaction', {params: d});
+           })
+           .on('mouseenter', (d) => {this.highlight(d['Site_Code']);})
+           .on('mouseleave', (d) => {this.unhighlight(d['Site_Code']);})
+        
+           .append("svg:title")
+           .text((d) => d['Site_Code'])
+           ;
+
+     } // END DRAW. draw is called once when on firstUpdated. 
+     
+     //annotate is called on update only. 
+     annotate(siteCode) {
+       
+        var options = this.options;
+
+        //select all groups within the circles group, then filter down to the one that matches the site code. 
+        var g = this.circles.selectAll("g")
+           .filter((d) => d['Site_Code'] === siteCode)
+           .moveToFront();
+        
+        var circle = g.select('circle')         
+           .classed('annotated', true);          // add the annotation styling class to the circle. 
+
+
+        var label = g.append("text")
+           .attr('dy', '-0.75em') //vertical displacement
+           .html((d) => { 
+              return keyLookup[options.attributeKey]['title'] + ": "+d[options.attributeKey]
+           });
+        
+        g.append("polyline")
+           .attr('stroke', "#333333")      //set appearance
+           .attr("stroke-width", 3)        //set appearance
+           .style('fill', 'none')          //set appearance
+           .attr('points', (d) => {
+           
+              // two points on each line:
+               // A: top of the plot, vertically aligned with the dot
+               // B: bottom of the plot, vertically aligned with the dot
+               // each point is defined by an [x, y]
+              var startpoint = [0,0];
+                  startpoint[0] = circle.attr('cx');
+                  startpoint[1] = 0;
+
+              var endpoint = [0,0];
+                  endpoint[0] = circle.attr('cx');
+                  endpoint[1] = this.chartHeight;
+
+               // console.log("start, end", startpoint, endpoint)
+               return [startpoint, endpoint]        // return A, B
+           
+           })
+           .moveToBack()  // move behind the dot (moves to the back of the group)
+           ; // end append polyline
+
+       
+     } //end annotate 
+     
+     highlight(siteCode){
+        
+        var g = this.circles.selectAll("g")
+           .filter((d) => d['Site_Code'] === siteCode)
+           .moveToFront();
+
+           g.select('circle').classed('highlighted', true); 
+        
+     } // end highlight
+     
+     unhighlight(siteCode){
+        var g = this.circles.selectAll("g")
+           .filter((d) => d['Site_Code'] === siteCode);
+
+           g.select('circle').classed('highlighted', false); 
+        
+     }  // end unhighlight 
+     
+  }
+
   const TOGGLE_EVENT = 'toggle-pdf-panel';
 
   class SiteSketchButton extends litElement.LitElement {
@@ -679,13 +1245,16 @@
     static get properties() {
       return {
         siteinfo: {
-          type: Object
+          type: Object,
+          attribute: false
         },
         photos: {
-          type: Array
+          type: Array,
+          attribute: false
         },
         pdfpanel: {
-          type: Object
+          type: Object,
+          attribute: false
         },
         pdfsrc: {
           type: String
@@ -693,6 +1262,10 @@
         printLayout: {
           type: Boolean,
           attribute: 'print-layout'
+        },
+        alldata: {
+          type: Object,
+          attribute: false
         }
       };
     }
@@ -816,7 +1389,7 @@
           <span slot="header">Water quality</span>
           <i slot="header-after" class="material-icons"></i>
           <div slot="content">
-            <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
+            <site-water-quality .siteinfo="${this.siteinfo}" .alldata="${this.alldata}"></site-water-quality>
           </div>
         </app-collapsible>
         <app-collapsible open>
@@ -870,7 +1443,10 @@
   class MapControls extends litElement.LitElement {
     static get properties() {
       return {
-
+        alldata: {
+          type: Object,
+          attribute: false
+        }
       };
     }
 
@@ -885,6 +1461,11 @@
       .option-container {
         box-sizing: border-box;
         padding: var(--border-radius)
+      }
+      .plot-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
     `];
     }
@@ -904,16 +1485,26 @@
           </p>
         </map-control-item>
         <map-control-item 
-          name="Discharge"
+          name="Discharge (cfs)"
           type="q">
+          <div class="plot-container">
+            <dot-plot
+              .options="${dischargeDotPlotOptions}"
+              .alldata="${this.alldata}"></dot-plot>
+          </div>
           <p>
-          The average flow rate of the springs for which flow could be measured was 0.96 ft3/s; 
-          values ranged from 0.14 ft3/s to 18.3 ft3/s.
+          The average flow rate of the springs for which flow could be measured was 0.96 ft&sup3;/s; 
+          values ranged from 0.14 ft&sup3;/s to 18.3 ft&sup3;/s.
           </p>
         </map-control-item>
         <map-control-item 
-          name="Conductivity"
+          name="Conductivity (µS)"
           type="cond">
+          <div class="plot-container">
+            <dot-plot
+              .options="${conductivityDotPlotOptions}"
+              .alldata="${this.alldata}"></dot-plot>
+          </div>
           <p>
           Conductivity approximate the concentration of total dissolved solids in spring water. 
           The lowest spring water conductivity values are in the north-central and northwestern 
@@ -1021,20 +1612,20 @@
   window.sidebar = document.querySelector('#sidebar');
   window.pdfPanel = document.querySelector('#sketch');
   window.pdfDownload = document.querySelector('#sketch-download');
-  document.querySelectorAll('site-details').forEach(function(details) {
-    details['pdfpanel'] = window.pdfPanel;
-  });
+  window.details = document.querySelector('#details');
+  window.controls = document.querySelector('#controls');
+
+  window.details['pdfpanel'] = window.pdfPanel;
 
   window.siteMap.once('init', function() {
     window.siteData = new SiteData(window.siteMap.springs, window.siteMap.springPhotos, window.siteMap.springSketches);
-    window.aggrData = siteData.aggrData;
+    window.details.alldata = window.siteData.aggrData.data;
+    window.controls.alldata = window.siteData.aggrData.data;
 
     var deselectFeature = function() {
-      document.querySelectorAll('site-details').forEach(function(details) {
-        details['siteinfo'] = null;
-        details['photos'] = null;
-        pdfDownload['file'] = null;
-      });
+      window.details['siteinfo'] = null;
+      window.details['photos'] = null;
+      window.pdfDownload['file'] = null;
     };
 
     async function selectFeature(info) {
@@ -1044,14 +1635,12 @@
         window.siteData.lookupSketches(info['Site_Code']).catch(()=>[])
       ]).then(function(resolved) {
         // console.log('loaded site photos and sketches');
-        document.querySelectorAll('site-details').forEach(function(details) {
-          details['siteinfo'] = info;
-          details['photos'] = resolved[0];
-          if (resolved[1]) {
-            details['pdfsrc'] = resolved[1][0];
-            pdfDownload['file'] = resolved[1][0];
-          }
-        });
+        window.details['siteinfo'] = info;
+        window.details['photos'] = resolved[0];
+        if (resolved[1]) {
+          window.details['pdfsrc'] = resolved[1][0];
+          window.pdfDownload['file'] = resolved[1][0];
+        }
       })
     }
     window.router = new SiteRouter();
@@ -1078,9 +1667,7 @@
         let params = trans.params();
         let attr = window.siteMap.selectPoint(params);
         if (attr) {
-          document.querySelectorAll('site-details').forEach(function(details) {
-            details['printLayout'] = false;
-          });
+          window.details['printLayout'] = false;
           selectFeature(attr).then(() => {
             document.querySelector('#app').setAttribute('data-view', 'app');
             window.sidebar.switchTab('details');
@@ -1102,9 +1689,7 @@
         let params = trans.params();
         let attr = window.siteMap.selectPoint(params);
         if (attr) {
-          document.querySelectorAll('site-details').forEach(function(details) {
-            details['printLayout'] = true;
-          });
+          window.details['printLayout'] = true;
           selectFeature(attr).then(() => {
             document.querySelector('#app').removeAttribute('data-view');
             window.sidebar.switchTab('details');
