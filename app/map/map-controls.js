@@ -3,6 +3,12 @@ import { genId, dispatch } from 'wgnhs-common';
 import { styles } from 'wgnhs-styles';
 export { AppCollapsible } from 'wgnhs-layout';
 
+import {
+  dischargeDotPlotOptions,
+  conductivityDotPlotOptions
+} from '../details/site-water-quality.js';
+export { DotPlotElement } from '../details/site-water-quality.js';
+
 const CHANGE_EVENT = 'map-control';
 const STYLE_EVENT = 'stylepoints';
 const RESET_TYPE = 'normal';
@@ -10,7 +16,10 @@ const RESET_TYPE = 'normal';
 export class MapControls extends LitElement {
   static get properties() {
     return {
-
+      alldata: {
+        type: Object,
+        attribute: false
+      }
     };
   }
 
@@ -25,6 +34,11 @@ export class MapControls extends LitElement {
       .option-container {
         box-sizing: border-box;
         padding: var(--border-radius)
+      }
+      .plot-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
     `];
   }
@@ -44,16 +58,26 @@ export class MapControls extends LitElement {
           </p>
         </map-control-item>
         <map-control-item 
-          name="Discharge"
+          name="Discharge (cfs)"
           type="q">
+          <div class="plot-container">
+            <dot-plot
+              .options="${dischargeDotPlotOptions}"
+              .alldata="${this.alldata}"></dot-plot>
+          </div>
           <p>
-          The average flow rate of the springs for which flow could be measured was 0.96 ft3/s; 
-          values ranged from 0.14 ft3/s to 18.3 ft3/s.
+          The average flow rate of the springs for which flow could be measured was 0.96 ft&sup3;/s; 
+          values ranged from 0.14 ft&sup3;/s to 18.3 ft&sup3;/s.
           </p>
         </map-control-item>
         <map-control-item 
-          name="Conductivity"
+          name="Conductivity (µS)"
           type="cond">
+          <div class="plot-container">
+            <dot-plot
+              .options="${conductivityDotPlotOptions}"
+              .alldata="${this.alldata}"></dot-plot>
+          </div>
           <p>
           Conductivity approximate the concentration of total dissolved solids in spring water. 
           The lowest spring water conductivity values are in the north-central and northwestern 

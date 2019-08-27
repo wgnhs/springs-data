@@ -2,8 +2,8 @@ import { LitElement, html, css } from 'lit-element';
 import { genId } from 'wgnhs-common';
 import { keyLookup, ignoredKeys } from '../site-data.js';
 export { AppCollapsible } from 'wgnhs-layout';
-export { SiteWaterQuality } from 'wgnhs-viz';
-export { SiteBedMaterials } from 'wgnhs-viz';
+export { SiteBedMaterials } from './site-bed-materials.js';
+export { SiteWaterQuality } from './site-water-quality.js';
 import { styles } from 'wgnhs-styles';
 
 export { SiteSketchButton } from './site-sketch.js';
@@ -13,13 +13,16 @@ export class SiteDetails extends LitElement {
   static get properties() {
     return {
       siteinfo: {
-        type: Object
+        type: Object,
+        attribute: false
       },
       photos: {
-        type: Array
+        type: Array,
+        attribute: false
       },
       pdfpanel: {
-        type: Object
+        type: Object,
+        attribute: false
       },
       pdfsrc: {
         type: String
@@ -27,6 +30,10 @@ export class SiteDetails extends LitElement {
       printLayout: {
         type: Boolean,
         attribute: 'print-layout'
+      },
+      alldata: {
+        type: Object,
+        attribute: false
       }
     };
   }
@@ -150,7 +157,7 @@ export class SiteDetails extends LitElement {
           <span slot="header">Water quality</span>
           <i slot="header-after" class="material-icons"></i>
           <div slot="content">
-            <site-water-quality .siteinfo="${this.siteinfo}"></site-water-quality>
+            <site-water-quality .siteinfo="${this.siteinfo}" .alldata="${this.alldata}"></site-water-quality>
           </div>
         </app-collapsible>
         <app-collapsible open>

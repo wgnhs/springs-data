@@ -9,20 +9,20 @@ window.siteMap = new SiteMap();
 window.sidebar = document.querySelector('#sidebar');
 window.pdfPanel = document.querySelector('#sketch');
 window.pdfDownload = document.querySelector('#sketch-download');
-document.querySelectorAll('site-details').forEach(function(details) {
-  details['pdfpanel'] = window.pdfPanel;
-});
+window.details = document.querySelector('#details');
+window.controls = document.querySelector('#controls');
+
+window.details['pdfpanel'] = window.pdfPanel;
 
 window.siteMap.once('init', function() {
   window.siteData = new SiteData(window.siteMap.springs, window.siteMap.springPhotos, window.siteMap.springSketches);
-  window.aggrData = siteData.aggrData;
+  window.details.alldata = window.siteData.aggrData.data;
+  window.controls.alldata = window.siteData.aggrData.data;
 
   var deselectFeature = function() {
-    document.querySelectorAll('site-details').forEach(function(details) {
-      details['siteinfo'] = null;
-      details['photos'] = null;
-      pdfDownload['file'] = null;
-    });
+    window.details['siteinfo'] = null;
+    window.details['photos'] = null;
+    window.pdfDownload['file'] = null;
   }
 
   async function selectFeature(info) {
@@ -32,14 +32,12 @@ window.siteMap.once('init', function() {
       window.siteData.lookupSketches(info['Site_Code']).catch(()=>[])
     ]).then(function(resolved) {
       // console.log('loaded site photos and sketches');
-      document.querySelectorAll('site-details').forEach(function(details) {
-        details['siteinfo'] = info;
-        details['photos'] = resolved[0];
-        if (resolved[1]) {
-          details['pdfsrc'] = resolved[1][0];
-          pdfDownload['file'] = resolved[1][0];
-        }
-      });
+      window.details['siteinfo'] = info;
+      window.details['photos'] = resolved[0];
+      if (resolved[1]) {
+        window.details['pdfsrc'] = resolved[1][0];
+        window.pdfDownload['file'] = resolved[1][0];
+      }
     })
   };
 
@@ -67,9 +65,7 @@ window.siteMap.once('init', function() {
       let params = trans.params();
       let attr = window.siteMap.selectPoint(params);
       if (attr) {
-        document.querySelectorAll('site-details').forEach(function(details) {
-          details['printLayout'] = false;
-        });
+        window.details['printLayout'] = false;
         selectFeature(attr).then(() => {
           document.querySelector('#app').setAttribute('data-view', 'app');
           window.sidebar.switchTab('details');
@@ -91,9 +87,7 @@ window.siteMap.once('init', function() {
       let params = trans.params();
       let attr = window.siteMap.selectPoint(params);
       if (attr) {
-        document.querySelectorAll('site-details').forEach(function(details) {
-          details['printLayout'] = true;
-        });
+        window.details['printLayout'] = true;
         selectFeature(attr).then(() => {
           document.querySelector('#app').removeAttribute('data-view');
           window.sidebar.switchTab('details');

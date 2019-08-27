@@ -8,7 +8,4 @@ export { ModalDialog } from './layout/modal-dialog.js';
 export { AppSpinner } from './viz/app-spinner.js';
 export { PDFViewPanel, PDFViewButton } from './viz/pdf-view.js';
 
-export { SiteBedMaterials } from './site-bed-materials.js';
-export { SiteWaterQuality } from './site-water-quality.js';
-
 export { styles } from './styles/index.js';
