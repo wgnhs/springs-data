@@ -40,6 +40,9 @@ export class MapControls extends LitElement {
         flex-direction: column;
         align-items: center;
       }
+      .type-container {
+        margin: var(--font-size);
+      }
     `];
   }
 
@@ -49,6 +52,10 @@ export class MapControls extends LitElement {
         <map-control-item 
           name="Spring Type"
           type="type">
+          <div class="type-container">
+            <div><legend-dot></legend-dot><span>Fracture or contact spring</span></div>
+            <div><legend-dot alt></legend-dot><span>Seepage-filtration morphology</span></div>
+          </div>
           <p>
           About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 
           percent have seepage-filtration morphologies. At a fracture spring, groundwater discharges 
@@ -180,3 +187,65 @@ export class MapControlItem extends LitElement {
   }
 }
 customElements.define('map-control-item', MapControlItem);
+
+export class LegendDot extends LitElement {
+  static get properties() {
+    return {
+      alt: {
+        type: Boolean
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this.alt = false;
+  }
+
+  static get styles() {
+    return [
+      ...styles,
+      css`
+        .svg-icon {
+          display: inline-flex;
+          align-self: center;
+        }
+        .svg-icon svg {
+          top: calc(var(--line-height) / 5);
+          position: relative;
+        }
+        svg {
+          width: var(--font-size);
+          height: var(--line-height);
+        }
+      `
+    ];
+  }
+
+  render() {
+    return html`
+    <span class="svg-icon">
+    <svg viewBox="-4 -12 16 22">
+      <g>
+        <path
+          stroke="${this.color}"
+          stroke-opacity="1"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          fill="${this.color}"
+          fill-opacity="0.2"
+          fill-rule="evenodd"
+          d="M0,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0">
+        </path>
+      </g>
+    </svg>
+  </span>
+    `;
+  }
+
+  get color() {
+    return (!this.alt)?'var(--map-symbol)':'var(--map-symbol-alt)';
+  }
+}
+customElements.define('legend-dot', LegendDot);
