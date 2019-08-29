@@ -718,7 +718,7 @@ a {
       font-size: var(--el-header-font-size, var(--font-size-extra-large));
       text-align: center;
 
-      padding: var(--border-radius);
+      padding: var(--el-header-padding, var(--border-radius));
 
       color: var(--el-header-color, var(--palette-accent));
       background: var(--el-header-background, var(--palette-light));
@@ -726,7 +726,7 @@ a {
       cursor: pointer;
 
       border-radius: var(--border-radius);
-      transition: border-radius var(--transition-duration, 0.3) cubic-bezier(0.755, 0.05, 0.855, 0.06);
+      transition: border-radius var(--transition-duration, 0.3s) cubic-bezier(0.755, 0.05, 0.855, 0.06);
     }
 
     .lbl-toggle:hover {
@@ -738,13 +738,15 @@ a {
     }
 
     .collapsible-content {
-      max-height: 0px;
       overflow: hidden;
-      transition: max-height var(--transition-duration, 0.3) cubic-bezier(0.86, 0, 0.07, 1);
+      max-height: 0px;
+      visibility: hidden;
+      transition: max-height var(--transition-duration, 0.3s) cubic-bezier(0.86, 0, 0.07, 1), visibility var(--transition-duration, 0.3s) linear;
     }
 
     .wrap-collapsible:not([button]) .toggle:checked ~ .collapsible-content {
       max-height: var(--el-max-height, 3000px);
+      visibility: visible;
     }
 
     .wrap-collapsible:not([button]) .toggle:checked ~ .lbl-toggle {
@@ -763,11 +765,11 @@ a {
       padding: var(--font-size);
     }
     .collapsible-header {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
     `;
     }
 
@@ -1245,6 +1247,9 @@ a {
     :host {
       overflow: auto;
     }
+    .panel {
+      position: relative;
+    }
     .container {
       min-height: 10em;
       display: grid;
@@ -1286,17 +1291,19 @@ a {
 
     render() {
       return litElement.html`
-    <div class="controls">
-      <button class="control" @click=${this.hide}><i class="material-icons" title="Hide">close</i></button>
-      <button class="control" @click=${this.zoomIn} ?disabled=${this.isMaxZoom}><i class="material-icons" title="Zoom In">zoom_in</i></button>
-      <button class="control" @click=${this.zoomOut} ?disabled=${this.isMinZoom}><i class="material-icons" title="Zoom Out">zoom_out</i></button>
-      <button class="control" @click=${this.rotateLeft}><i class="material-icons" title="Rotate Left">rotate_left</i></button>
-      <button class="control" @click=${this.rotateRight}><i class="material-icons" title="Rotate Right">rotate_right</i></button>
-    </div>
-    <app-spinner ?data-closed=${this.imgsrc}></app-spinner>
-    <div class="container" ?data-closed=${!this.imgsrc}>
-      ${this.imageTag}
-      <slot></slot>
+    <div class="panel">
+      <div class="controls">
+        <button class="control" @click=${this.hide}><i class="material-icons" title="Hide">close</i></button>
+        <button class="control" @click=${this.zoomIn} ?disabled=${this.isMaxZoom}><i class="material-icons" title="Zoom In">zoom_in</i></button>
+        <button class="control" @click=${this.zoomOut} ?disabled=${this.isMinZoom}><i class="material-icons" title="Zoom Out">zoom_out</i></button>
+        <button class="control" @click=${this.rotateLeft}><i class="material-icons" title="Rotate Left">rotate_left</i></button>
+        <button class="control" @click=${this.rotateRight}><i class="material-icons" title="Rotate Right">rotate_right</i></button>
+      </div>
+      <app-spinner ?data-closed=${this.imgsrc}></app-spinner>
+      <div class="container" ?data-closed=${!this.imgsrc}>
+        ${this.imageTag}
+        <slot></slot>
+      </div>
     </div>
     `;
     }
