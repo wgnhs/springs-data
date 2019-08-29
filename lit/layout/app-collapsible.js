@@ -47,7 +47,7 @@ export class AppCollapsible extends LitElement {
       font-size: var(--el-header-font-size, var(--font-size-extra-large));
       text-align: center;
 
-      padding: var(--border-radius);
+      padding: var(--el-header-padding, var(--border-radius));
 
       color: var(--el-header-color, var(--palette-accent));
       background: var(--el-header-background, var(--palette-light));
@@ -55,7 +55,7 @@ export class AppCollapsible extends LitElement {
       cursor: pointer;
 
       border-radius: var(--border-radius);
-      transition: border-radius var(--transition-duration, 0.3) cubic-bezier(0.755, 0.05, 0.855, 0.06);
+      transition: border-radius var(--transition-duration, 0.3s) cubic-bezier(0.755, 0.05, 0.855, 0.06);
     }
 
     .lbl-toggle:hover {
@@ -67,13 +67,15 @@ export class AppCollapsible extends LitElement {
     }
 
     .collapsible-content {
-      max-height: 0px;
       overflow: hidden;
-      transition: max-height var(--transition-duration, 0.3) cubic-bezier(0.86, 0, 0.07, 1);
+      max-height: 0px;
+      visibility: hidden;
+      transition: max-height var(--transition-duration, 0.3s) cubic-bezier(0.86, 0, 0.07, 1), visibility var(--transition-duration, 0.3s) linear;
     }
 
     .wrap-collapsible:not([button]) .toggle:checked ~ .collapsible-content {
       max-height: var(--el-max-height, 3000px);
+      visibility: visible;
     }
 
     .wrap-collapsible:not([button]) .toggle:checked ~ .lbl-toggle {
@@ -92,11 +94,11 @@ export class AppCollapsible extends LitElement {
       padding: var(--font-size);
     }
     .collapsible-header {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
     `;
   }
 
