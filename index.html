@@ -57,6 +57,9 @@
         grid-template: "left right"
                       / 1fr 1fr;
       }
+      .left-panel {
+        overflow-y: auto;
+      }
     }
     @media (max-width: 1023px) {
       [data-view=app] {
@@ -68,7 +71,6 @@
     }
     .left-panel {
       grid-area: left;
-      overflow-y: auto;
     }
     .right-panel {
       grid-area: right;
