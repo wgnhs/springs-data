@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit-element';
 import { styles } from 'wgnhs-styles';
 export { AppCollapsible } from 'wgnhs-layout';
+export { DownloadSection } from './download-section.js';
 
 const TOGGLE_EVENT = 'toggle-pdf-panel';
 

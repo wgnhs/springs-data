@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit-element';
-import { styles } from '../styles/index.js';
+import { styles } from 'wgnhs-styles';
 
 export class ModalDialog extends LitElement {
   static get properties() {

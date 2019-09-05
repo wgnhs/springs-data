@@ -1,11 +1,11 @@
 import { LitElement, html, css } from 'lit-element';
 import { genId } from 'wgnhs-common';
-import { keyLookup, ignoredKeys } from '../site-data.js';
+import { styles } from 'wgnhs-styles';
 export { AppCollapsible } from 'wgnhs-layout';
+
+import { keyLookup, ignoredKeys } from '../site-data.js';
 export { SiteBedMaterials } from './site-bed-materials.js';
 export { SiteWaterQuality } from './site-water-quality.js';
-import { styles } from 'wgnhs-styles';
-
 export { SiteSketchButton } from './site-sketch.js';
 export { SitePhotos } from './site-photos.js';
 

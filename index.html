@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Springs Data</title>
   <base href="/springs-data/">
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -21,54 +21,59 @@
     })();
   </script>
 
+  <!-- Load Web Component base -->
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
+
   <!-- Load Leaflet from a CDN -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@^1/dist/leaflet.css" />
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@^1/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.5.1/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.5.1/dist/leaflet.js"></script>
 
   <!-- Load Esri Leaflet from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@^2/dist/esri-leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/esri-leaflet@2.3.0/dist/esri-leaflet.js"></script>
     
   <!--load D3 --> 
   <script src="https://d3js.org/d3.v5.js"></script>  
    
    <!-- load leaflet-basemaps from a CDN --> 
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-basemaps/L.Control.Basemaps.css" />
-   <script src="https://cdn.jsdelivr.net/npm/leaflet-basemaps"></script>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-basemaps@0.3.4/L.Control.Basemaps.css" />
+   <script src="https://cdn.jsdelivr.net/npm/leaflet-basemaps@0.3.4/L.Control.Basemaps-min.js"></script>
 
   <!-- Load PDF viewer -->
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@^2/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.2.228/build/pdf.min.js"></script>
 
-  <!-- Load Web Component base -->
-  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js"></script>
-  <script src="js/common.min.js"></script>
-  <script src="lit/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@wgnhs/elements@^0/dist/common.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@wgnhs/elements@^0/dist/router.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@wgnhs/elements@^0/dist/layout.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@wgnhs/elements@^0/dist/pdf.min.js"></script>
 
-  <link rel="stylesheet" href="css/reset.css" />
   <link rel="stylesheet" href="css/variables.css" />
-  <link rel="stylesheet" href="css/typography.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@wgnhs/elements@^0/dist/css/reset.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@wgnhs/elements@^0/dist/css/typography.css" />
 
   <style>
     @media (min-width: 1024px) {
       [data-view=app] {
         display: grid;
-        grid-template-columns: 50% 50%;
-      }
-      app-sidebar {
-        overflow-y: auto;
-      }
-      .right-panel {
-        grid-column-start: 2;
+        grid-template: "left right"
+                      / 1fr 1fr;
       }
     }
     @media (max-width: 1023px) {
       [data-view=app] {
         display: grid;
-        grid-template-rows: 80% 100%;
+        grid-template: "right" 80vh
+                       "left" 1fr;
         overflow-y: auto;
       }
-      .right-panel {
-        grid-row-start: 1;
-      }
+    }
+    .left-panel {
+      grid-area: left;
+      overflow-y: auto;
+    }
+    .right-panel {
+      grid-area: right;
+      display: flex;
+      justify-content: center;
     }
     [data-view] {
       position: fixed;
@@ -104,6 +109,13 @@
     }
     section h2 {
       margin: 0 var(--border-radius);
+    }
+    .positioned {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
     }
   </style>
 </head>
@@ -143,7 +155,7 @@
       </div>
     </app-sidebar>
     <div id="map" class="right-panel"></div>
-    <pdf-view-panel id="sketch" class="right-panel" data-closed>
+    <pdf-view-panel id="sketch" class="right-panel positioned" data-closed>
       <download-section id="sketch-download"></download-section>
     </pdf-view-panel>
   </div>
