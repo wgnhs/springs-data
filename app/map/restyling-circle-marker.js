@@ -1,13 +1,44 @@
 
-const colorRange = [
-  'var(--map-bin-0)',
-  'var(--map-bin-1)',
-  'var(--map-bin-2)',
-  'var(--map-bin-3)',
-  'var(--map-bin-4)',
-  'var(--map-bin-5)',
-  'var(--map-bin-6)'
-];
+const colorRange = {
+
+'Conductivity_uS': [
+     'var(--map-bin-blue-0)',
+     'var(--map-bin-blue-1)',
+     'var(--map-bin-blue-2)',
+     'var(--map-bin-blue-3)',
+     'var(--map-bin-blue-4)',
+     'var(--map-bin-blue-5)',
+     'var(--map-bin-blue-6)'
+   ], 
+'Discharge_cfs': [
+     'var(--map-bin-purple-0)',
+     'var(--map-bin-purple-1)',
+     'var(--map-bin-purple-2)',
+     'var(--map-bin-purple-3)',
+     'var(--map-bin-purple-4)',
+     'var(--map-bin-purple-5)',
+     'var(--map-bin-purple-6)'
+   ], 
+'Water_Temp_C':[
+     'var(--map-bin-green-0)',
+     'var(--map-bin-green-1)',
+     'var(--map-bin-green-2)',
+     'var(--map-bin-green-3)',
+     'var(--map-bin-green-4)',
+     'var(--map-bin-green-5)',
+     'var(--map-bin-green-6)'
+   ], 
+   'pH':  [
+     'var(--map-bin-brown-0)',
+     'var(--map-bin-brown-1)',
+     'var(--map-bin-brown-2)',
+     'var(--map-bin-brown-3)',
+     'var(--map-bin-brown-4)',
+     'var(--map-bin-brown-5)',
+     'var(--map-bin-brown-6)'
+   ]
+
+};
 
 const binRanges = {
   'Conductivity_uS': [
@@ -24,10 +55,28 @@ const binRanges = {
     [0.2, 0.5],
     [0.5, 1.0],
     [1, 2],
+    [2, ],
     [2, 5],
-    [5, 10],
-    [10, 20]
-  ]
+    [5, 20]
+  ], 
+   'Water_Temp_C': [
+    [5,6],
+    [6,7],
+    [7,8],
+    [8, 9],
+    [9, 10],
+    [10, 13],
+    [13, 17]
+   ], 
+   'pH':[
+    [],
+    [5.5, 6.5],
+    [6.5, 7],
+    [7, 7.5],
+    [7.5, 8],
+    [8, 9],
+    [9, 10]
+   ]
 }
 export const RestylingCircleMarker = L.CircleMarker.extend({
   getEvents: function() {
@@ -98,7 +147,7 @@ RestylingCircleMarker.binPoint = (prop, data) => {
     const val = data[prop];
     for (let i = 0; i < ranges.length; i++) {
       if (ranges[i] && val > ranges[i][0] && val <= ranges[i][1]) {
-        result = colorRange[i];
+        result = colorRange[prop][i];
       }
     }
   }
