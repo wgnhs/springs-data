@@ -1,6 +1,6 @@
 import { SiteMap } from './map/site-map.js';
 import { SiteData } from './site-data.js';
-import { SiteRouter } from './site-router.js';
+import { SiteRouter } from 'wgnhs-router';
 
 export { SiteDetails } from './details/site-details.js';
 export { MapControls } from './map/map-controls.js';
@@ -138,6 +138,11 @@ document.addEventListener('toggle-print', function(e) {
 
 document.addEventListener('toggle-pdf-panel', function(e) {
   window.siteMap.setVisibility(e.detail.closed);
+  if (e.detail.closed) {
+    window.pdfPanel.setAttribute('data-closed', true);
+  } else {
+    window.pdfPanel.removeAttribute('data-closed');
+  }
 });
 
 document.addEventListener('stylepoints', function(e) {
