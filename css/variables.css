@@ -39,4 +39,36 @@ html {
     --map-bin-4: #8c6bb1;
     --map-bin-5: #88419d;
     --map-bin-6: #810f7c;
+    --map-bin-purple-0: #e0ecf4;
+    --map-bin-purple-1: #bfd3e6;
+    --map-bin-purple-2: #9ebcda;
+    --map-bin-purple-3: #8c96c6;
+    --map-bin-purple-4: #8c6bb1;
+    --map-bin-purple-5: #88419d;
+    --map-bin-purple-6: #810f7c;
+   
+    --map-bin-blue-0: #c6d2e4;
+    --map-bin-blue-1: #afbfd7;
+    --map-bin-blue-2: #97a9c4;
+    --map-bin-blue-3: #7e91ad;
+    --map-bin-blue-4: #647691;
+    --map-bin-blue-5: #4a5a71;
+    --map-bin-blue-6: #313d4e;
+   
+    --map-bin-green-0: #e1f5ef;
+    --map-bin-green-1: #b8cfc8;
+    --map-bin-green-2: #91aba1;
+    --map-bin-green-3: #6b887b;
+    --map-bin-green-4: #476754;
+    --map-bin-green-5: #24482e;
+    --map-bin-green-6: #002a00;
+      
+    --map-bin-brown-0: #e5dfc8;
+    --map-bin-brown-1: #c4b6a3;
+    --map-bin-brown-2: #a38e80;
+    --map-bin-brown-3: #83695f;
+    --map-bin-brown-4: #64453f;
+    --map-bin-brown-5: #452322;
+    --map-bin-brown-6: #2a0000;
+}
 }
