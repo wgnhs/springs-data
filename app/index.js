@@ -455,7 +455,7 @@
     'Spring_Type': { 'title': 'Spring Type', 'desc': 'List: helocrene, rheocrene, limnocrene, hillslope spring, cased, flowing well, other.' },
     'Spring_Source': { 'title': 'Spring Source', 'desc': 'List: single orifice, multiple orifices, diffuse flow, other.' },
     'Orifice_Geom': { 'title': 'Orifice Geomorphic Type', 'desc': 'List: seepage/filtration, fracture, tubular, contact.' },
-    'Discharge_cfs': { 'title': 'Discharge (ft&sup3;/s)', 'desc': 'Spring flow (cfs).' },
+    'Discharge_cfs': { 'title': 'Discharge (ft³/s)', 'desc': 'Spring flow (ft³/s).' },
     'Flow_Accuracy': { 'title': 'Flow Accuracy', 'desc': 'Level of accuracy of flow measurement, List: low, high' },
     'Discharge_Meas': { 'title': 'How Measured', 'desc': 'List: timed volume, float velocity method, flume, AA meter, AD meter (acoustic Doppler meter), EM meter (electromagnetic meter).' },
     'Flow_Location': { 'title': 'Flow Location', 'desc': 'Where flow was measured.' },
