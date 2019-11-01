@@ -105,7 +105,7 @@ export const ignoredKeys = [
 ];
 export const keyLookup = {
   'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
-  'Conductivity_uS': { 'title': 'Conductivity (µS)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
+  'Conductivity_uS': { 'title': 'Specific conductance (µS/cm, 25°C)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
   'Water_Temp_C': { 'title': 'Temperature (°C)', 'desc': 'Measured as close to spring source as possible (°C).' },
   'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
   'County': { 'title': 'County', 'desc': 'County where spring is located.' },
@@ -147,7 +147,7 @@ export const keyLookup = {
   'Spring_Type': { 'title': 'Spring Type', 'desc': 'List: helocrene, rheocrene, limnocrene, hillslope spring, cased, flowing well, other.' },
   'Spring_Source': { 'title': 'Spring Source', 'desc': 'List: single orifice, multiple orifices, diffuse flow, other.' },
   'Orifice_Geom': { 'title': 'Orifice Geomorphic Type', 'desc': 'List: seepage/filtration, fracture, tubular, contact.' },
-  'Discharge_cfs': { 'title': 'Discharge (cfs)', 'desc': 'Spring flow (cfs).' },
+  'Discharge_cfs': { 'title': 'Discharge (ft&sup3;/s)', 'desc': 'Spring flow (cfs).' },
   'Flow_Accuracy': { 'title': 'Flow Accuracy', 'desc': 'Level of accuracy of flow measurement, List: low, high' },
   'Discharge_Meas': { 'title': 'How Measured', 'desc': 'List: timed volume, float velocity method, flume, AA meter, AD meter (acoustic Doppler meter), EM meter (electromagnetic meter).' },
   'Flow_Location': { 'title': 'Flow Location', 'desc': 'Where flow was measured.' },
