@@ -53,11 +53,10 @@ export class MapControls extends LitElement {
           name="Spring Type"
           type="type">
           <span>
-          About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 
-          percent have seepage-filtration morphologies. At a fracture spring, groundwater discharges 
-          from joints or fractures in bedrock. Contact springs discharge water at a stratigraphic 
-          contact, along which fractures often form. Groundwater discharges from many small openings 
-          in permeable, unlithified material at a seepage-filtration spring.
+         About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 percent have seepage-filtration morphologies.<br><br>
+         <strong><b>Fracture spring</b></strong>—Groundwater discharges from joints or fractures in bedrock.<br>
+         <strong><b>Contact springs</b></strong>—Groundwater discharges at a stratigraphic contact, along which fractures often form.<br>
+         <strong><b>Seepage-filtration spring</b></strong>—Groundwater discharges from many small openings in permeable, unlithified material.
           </span>
           <div class="type-container">
             <div><legend-dot></legend-dot><span>Fracture or contact spring</span></div>
@@ -65,11 +64,10 @@ export class MapControls extends LitElement {
           </div>
         </map-control-item>
         <map-control-item 
-          name="Discharge (cfs)"
+          name="Discharge (ft&sup3;/s)"
           type="q">
           <span>
-          The average flow rate of the springs for which flow could be measured was 0.96 ft&sup3;/s; 
-          values ranged from 0.14 ft&sup3;/s to 18.3 ft&sup3;/s.
+          The average flow rate of the springs for which flow could be measured was 0.96 ft³/s; values ranged from 0.14 ft³/s to 18.3 ft³/s.
           </span>
           <div class="plot-container">
             <dot-plot
@@ -78,12 +76,10 @@ export class MapControls extends LitElement {
           </div>
         </map-control-item>
         <map-control-item 
-          name="Conductivity (µS)"
+          name="Specific conductance (µS/cm, 25°C)"
           type="cond">
           <span>
-          Conductivity approximates the concentration of total dissolved solids in spring water. 
-          The lowest spring water conductivity values are in the north-central and northwestern 
-          parts of the state and the highest values are in southern and south-eastern Wisconsin.
+          Specific conductance is a general measure of the total dissolved solids in spring water. The lowest spring water conductivity values are in northern Wisconsin; the highest values are found in the southeastern part of the state.
           </span>
           <div class="plot-container">
             <dot-plot
