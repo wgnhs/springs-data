@@ -413,7 +413,7 @@
   ];
   const keyLookup = {
     'pH': { 'title': 'pH', 'desc': 'Measured as close to spring source as possible.' },
-    'Conductivity_uS': { 'title': 'Conductivity (µS)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
+    'Conductivity_uS': { 'title': 'Specific conductance (µS/cm, 25°C)', 'desc': 'Specific Conductance: Measured as close to spring source as possible (µmho/cm).' },
     'Water_Temp_C': { 'title': 'Temperature (°C)', 'desc': 'Measured as close to spring source as possible (°C).' },
     'SpringID': { 'title': 'Spring ID', 'desc': 'Unique identifier within county.' },
     'County': { 'title': 'County', 'desc': 'County where spring is located.' },
@@ -455,7 +455,7 @@
     'Spring_Type': { 'title': 'Spring Type', 'desc': 'List: helocrene, rheocrene, limnocrene, hillslope spring, cased, flowing well, other.' },
     'Spring_Source': { 'title': 'Spring Source', 'desc': 'List: single orifice, multiple orifices, diffuse flow, other.' },
     'Orifice_Geom': { 'title': 'Orifice Geomorphic Type', 'desc': 'List: seepage/filtration, fracture, tubular, contact.' },
-    'Discharge_cfs': { 'title': 'Discharge (cfs)', 'desc': 'Spring flow (cfs).' },
+    'Discharge_cfs': { 'title': 'Discharge (ft&sup3;/s)', 'desc': 'Spring flow (cfs).' },
     'Flow_Accuracy': { 'title': 'Flow Accuracy', 'desc': 'Level of accuracy of flow measurement, List: low, high' },
     'Discharge_Meas': { 'title': 'How Measured', 'desc': 'List: timed volume, float velocity method, flume, AA meter, AD meter (acoustic Doppler meter), EM meter (electromagnetic meter).' },
     'Flow_Location': { 'title': 'Flow Location', 'desc': 'Where flow was measured.' },
@@ -1629,11 +1629,10 @@
           name="Spring Type"
           type="type">
           <span>
-          About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 
-          percent have seepage-filtration morphologies. At a fracture spring, groundwater discharges 
-          from joints or fractures in bedrock. Contact springs discharge water at a stratigraphic 
-          contact, along which fractures often form. Groundwater discharges from many small openings 
-          in permeable, unlithified material at a seepage-filtration spring.
+         About 26 percent of the springs inventoried emerge as fracture or contact springs, and 74 percent have seepage-filtration morphologies.<br><br>
+         <strong><b>Fracture spring</b></strong>—Groundwater discharges from joints or fractures in bedrock.<br>
+         <strong><b>Contact springs</b></strong>—Groundwater discharges at a stratigraphic contact, along which fractures often form.<br>
+         <strong><b>Seepage-filtration spring</b></strong>—Groundwater discharges from many small openings in permeable, unlithified material.
           </span>
           <div class="type-container">
             <div><legend-dot></legend-dot><span>Fracture or contact spring</span></div>
@@ -1641,11 +1640,10 @@
           </div>
         </map-control-item>
         <map-control-item 
-          name="Discharge (cfs)"
+          name="Discharge (ft&sup3;/s)"
           type="q">
           <span>
-          The average flow rate of the springs for which flow could be measured was 0.96 ft&sup3;/s; 
-          values ranged from 0.14 ft&sup3;/s to 18.3 ft&sup3;/s.
+          The average flow rate of the springs for which flow could be measured was 0.96 ft³/s; values ranged from 0.14 ft³/s to 18.3 ft³/s.
           </span>
           <div class="plot-container">
             <dot-plot
@@ -1654,12 +1652,10 @@
           </div>
         </map-control-item>
         <map-control-item 
-          name="Conductivity (µS)"
+          name="Specific conductance (µS/cm, 25°C)"
           type="cond">
           <span>
-          Conductivity approximates the concentration of total dissolved solids in spring water. 
-          The lowest spring water conductivity values are in the north-central and northwestern 
-          parts of the state and the highest values are in southern and south-eastern Wisconsin.
+          Specific conductance is a general measure of the total dissolved solids in spring water. The lowest spring water conductivity values are in northern Wisconsin; the highest values are found in the southeastern part of the state.
           </span>
           <div class="plot-container">
             <dot-plot
