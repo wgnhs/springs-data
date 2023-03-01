@@ -33,7 +33,10 @@ export class SiteMap extends window.L.Evented {
     
     
     //Stamen basemap 
-    const stamenterrain = new L.StamenTileLayer("terrain", {label: "Stamen Terrain", attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL."});
+    const stamenterrain = new L.StamenTileLayer("terrain", {
+      label: "Stamen Terrain", 
+      attribution: "Map tiles by <a href="http://stamen.com">Stamen Design</a>,under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0.</a> Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>."
+    });
   
 
     // add the basemap control to the map  
