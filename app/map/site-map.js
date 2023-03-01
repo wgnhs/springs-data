@@ -19,17 +19,25 @@ export class SiteMap extends window.L.Evented {
      
     /* ~~~~~~~~ Basemap Layers ~~~~~~~~ */
      
-    // basemaps from Open Street Map
-    const osmhot = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
-       label: "OpenStreetMap Humanitarian"
-    }).addTo(map);
+    // basemaps from Open Street Map -- disable because some users cannot access .fr 
+//     const osmhot = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+//       attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
+//        label: "OpenStreetMap Humanitarian"
+//     }).addTo(map);
+    
 
+    
     // Esri basemaps 
     const esrisat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
+   
+    
+    
+    //Stamen basemap 
+    const stamenterrain = new L.StamenTileLayer("terrain", {label: "Stamen Terrain", attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL."});
+  
 
     // add the basemap control to the map  
-    var basemaps = [osmhot, esrisat]; 
+    var basemaps = [esrisat, stamenterrain]; 
     map.addControl(L.control.basemaps({
        basemaps: basemaps, 
        tileX: 0, 
