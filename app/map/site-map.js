@@ -28,14 +28,16 @@ export class SiteMap extends window.L.Evented {
 
     //basemaps from Esri: 
     const esriImagery = L.esri.Vector.vectorBasemapLayer("arcgis/imagery", {
-        apiKey: apiKey       
-      }).addTo(map);
-      
+        apiKey: api_key       
+      });
+
+    // esriImagery._getSubdomain = ()=> esriImagery;
+    esriImagery.addTo(map);
       
     const esriStreets = L.esri.Vector.vectorBasemapLayer("arcgis/streets", {
-        apiKey: apiKey       
+        apiKey: api_key       
       });
-   
+    
     
     
     //Stamen basemap 
@@ -44,11 +46,9 @@ export class SiteMap extends window.L.Evented {
 //      label: "Stamen Terrain", 
 //      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0.</a> Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
 //    });
-  
 
     // add the basemap control to the map  
-
-    map.addControl(L.control.basemaps({basemaps: [esriImagery, esriStreets]})); 
+    // map.addControl(L.control.basemaps({basemaps: [esriImagery, esriStreets]})); 
 
 
     /* +++++++++++ Springs layer +++++++++++ */ 
