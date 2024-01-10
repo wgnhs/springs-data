@@ -1,5 +1,7 @@
 import { RestylingCircleMarker } from './restyling-circle-marker.js';
 
+const api_key = "AAPK2e0a5cf929c34c46a7e4272f2ead6aa4ilvTW75nWcHxARC1ZF--cRIhmfhAJcsRkjdmZQr6C2CDqUxeqMF1yu6E7qzaEq_q"; 
+
 export class SiteMap extends window.L.Evented {
   constructor() {
     super();
@@ -19,35 +21,40 @@ export class SiteMap extends window.L.Evented {
      
     /* ~~~~~~~~ Basemap Layers ~~~~~~~~ */
      
-    // basemaps from Open Street Map -- disable because some users cannot access .fr 
-//     const osmhot = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-//       attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors', 
-//        label: "OpenStreetMap Humanitarian"
-//     }).addTo(map);
-    
 
     
-    // Esri basemaps 
-    const esrisat = L.esri.basemapLayer('Imagery', {label: "Esri Satellite"});
-   
+    // Esri basemaps     
+    // other basemap options can be found here: https://developers.arcgis.com/esri-leaflet/maps/change-the-basemap-style-v2/ 
+
+    //stage any basemap from Esri: 
+    function esriBasemap(style){
+        return L.esri.Vector.vectorBasemapLayer(style, {
+        apiKey: api_key,  
+        version:2
+      })
+        
+    }
+        
+    
+    const basemapLayers = {
+        
+        "Streets Basemap": esriBasemap("arcgis/streets").addTo(map), 
+        "Topographic Basemap": esriBasemap("arcgis/topographic"),
+        "Imagery Basemap": esriBasemap("arcgis/imagery") 
+        
+    }
+    
+    //add a basemap controller to the map. 
+    L.control.layers(basemapLayers, null, {collapsed:true}).addTo(map); 
     
     
     //Stamen basemap 
-    const stamenterrain = new L.StamenTileLayer("terrain", {
-      label: "Stamen Terrain", 
-      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0.</a> Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
-    });
-  
+      //no longer works. 
+//    const stamenterrain = new L.StamenTileLayer("terrain", {
+//      label: "Stamen Terrain", 
+//      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0.</a> Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+//    });
 
-    // add the basemap control to the map  
-    var basemaps = [esrisat, stamenterrain]; 
-    map.addControl(L.control.basemaps({
-       basemaps: basemaps, 
-       tileX: 0, 
-       tileY: 0, 
-       tileZ: 1
-
-    })); 
 
 
     /* +++++++++++ Springs layer +++++++++++ */ 
