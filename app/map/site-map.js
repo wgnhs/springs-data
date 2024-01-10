@@ -26,18 +26,26 @@ export class SiteMap extends window.L.Evented {
     // Esri basemaps     
     // other basemap options can be found here: https://developers.arcgis.com/esri-leaflet/maps/change-the-basemap-style-v2/ 
 
-    //basemaps from Esri: 
-    const esriImagery = L.esri.Vector.vectorBasemapLayer("arcgis/imagery", {
-        apiKey: api_key       
-      });
-
-    // esriImagery._getSubdomain = ()=> esriImagery;
-    esriImagery.addTo(map);
-      
-    const esriStreets = L.esri.Vector.vectorBasemapLayer("arcgis/streets", {
-        apiKey: api_key       
-      });
+    //stage any basemap from Esri: 
+    function esriBasemap(style){
+        return L.esri.Vector.vectorBasemapLayer(style, {
+        apiKey: api_key,  
+        version:2
+      })
+        
+    }
+        
     
+    const basemapLayers = {
+        
+        "Streets Basemap": esriBasemap("arcgis/streets").addTo(map), 
+        "Topographic Basemap": esriBasemap("arcgis/topographic"),
+        "Imagery Basemap": esriBasemap("arcgis/imagery") 
+        
+    }
+    
+    //add a basemap controller to the map. 
+    L.control.layers(basemapLayers, null, {collapsed:true}).addTo(map); 
     
     
     //Stamen basemap 
@@ -47,8 +55,6 @@ export class SiteMap extends window.L.Evented {
 //      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>,under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0.</a> Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
 //    });
 
-    // add the basemap control to the map  
-    // map.addControl(L.control.basemaps({basemaps: [esriImagery, esriStreets]})); 
 
 
     /* +++++++++++ Springs layer +++++++++++ */ 
